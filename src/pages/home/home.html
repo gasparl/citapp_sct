@@ -1,14 +1,59 @@
-<ion-header>
-  <ion-navbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
-  </ion-navbar>
-</ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+
+<ion-content  padding [ngSwitch]="current_div">
+
+    <div *ngSwitchDefault>
+      <header>
+          <ion-navbar >
+        <ion-title>
+          CIT App - Settings
+        </ion-title>
+      </ion-navbar>
+    </header>
+ <form  (ngSubmit)="task_start();">
+  <ion-item>
+    <ion-label stacked>Probe</ion-label>
+    <ion-input [(ngModel)]="cit_items[0]" name="probe" type="text"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label stacked>Irrelevant 1</ion-label>
+    <ion-input [(ngModel)]="cit_items[1]" name="irr1" type="text"></ion-input>
+  </ion-item>
+   <ion-item>
+      <ion-label stacked>Irrelevant 2</ion-label>
+      <ion-input [(ngModel)]="cit_items[2]" name="irr2" type="text"></ion-input>
+    </ion-item>
+      <ion-item>
+    <ion-label stacked>Irrelevant 3</ion-label>
+    <ion-input [(ngModel)]="cit_items[3]" name="irr3" type="text"></ion-input>
+  </ion-item>
+  <ion-item>
+      <ion-label stacked>Irrelevant 4</ion-label>
+      <ion-input [(ngModel)]="cit_items[4]" name="irr4" type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-label stacked>Irrelevant 5</ion-label>
+        <ion-input [(ngModel)]="cit_items[5]" name="irr5" type="text"></ion-input>
+      </ion-item>
+      <button ion-button type="button" (click)="saving()">Save</button>
+
+      <ion-item>
+          <ion-label>Email address</ion-label>
+          <ion-input [(ngModel)]="email_addr" name="email" type="email"></ion-input>
+        </ion-item>
+    <button ion-button type="button" (click)="send_email()">Send data</button>
+
+      <button ion-button type="submit" block>Do it</button>
+</form>
+</div>
+
+<div id="div_cit_blockstart" *ngSwitchCase="'task_start'">
+            <p *ngIf="visib">to hide</p>
+            <p >Whatever</p>
+            <br >
+            <br>
+            <button ion-button (tap)="goback($event)">Go back</button>
+            <br>
+</div>
+
 </ion-content>

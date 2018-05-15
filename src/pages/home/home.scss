@@ -1,5 +1,7 @@
 page-home {
-
+  #div_inputs {
+    max-height: 100vh;
+  }
   #div_cit_blockstart {
     text-align: center;
     font-size: 3vw;
@@ -9,5 +11,23 @@ page-home {
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);
+  }
+  ion-input.invalid {
+    border: 2px solid #ea6153;
+  }
+  .item-inner {
+    border-bottom-color: grey !important;
+    box-shadow: none !important;
+  }
+  .error_msg {
+    border-bottom-color: invisible !important;
+    box-shadow: none !important;
+  }
+  .stackedlabels {
+    font-size: 80% !important;
+  }
+  .error_label {
+    color: red;
+    float: right !important;
   }
 }

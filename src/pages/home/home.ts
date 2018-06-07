@@ -25,6 +25,8 @@ export class HomePage {
   form_items: FormGroup;
   form_dems: FormGroup;
   submit_failed: boolean = false;
+  age: number;
+  gender: number;
 
   constructor(
     public navCtrl: NavController,
@@ -60,6 +62,8 @@ export class HomePage {
         ])
       ]
     });
+
+
   }
 
   goback(event) {
@@ -72,6 +76,8 @@ export class HomePage {
   saving() {
     console.log("saving!");
     this.storage.set("cititems", this.cit_items);
+    this.gender = this.form_dems.get('gender').value
+    this.age = this.form_dems.get('age').value
   }
 
   hide() {
@@ -117,6 +123,16 @@ export class HomePage {
       alert("This is a native plugin - only works on the phone.");
     }
   }
+
+
+
+
+
+
+
+
+
+
 }
 
 console.log("outside");

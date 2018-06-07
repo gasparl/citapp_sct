@@ -57,13 +57,12 @@
 
 
           <ion-item>
-            <ion-label class="stackedlabels" stacked>Gender {{ form_dems.get('age').value }}<span  *ngIf="!form_dems.controls.gender.valid  && submit_failed" class="error_label">Please choose gender.</span></ion-label>
+            <ion-label class="stackedlabels" stacked>Gender <span  *ngIf="!form_dems.controls.gender.valid  && submit_failed" class="error_label">Please choose gender.</span></ion-label>
             <ion-select interface='popover' formControlName="gender"  [class.invalid]="!form_dems.controls.gender.valid  && submit_failed">
-            <ion-option value="f">Female</ion-option>
-            <ion-option value="m">Male</ion-option>
+            <ion-option value="1">Male</ion-option>
+            <ion-option value="2">Female</ion-option>
             </ion-select>
         </ion-item>
-
 
             <ion-item>
                 <ion-label  class="stackedlabels" stacked>Text item<span  *ngIf="!form_dems.controls.text_test.valid  && submit_failed" class="error_label">Please enter a valid text.</span></ion-label>

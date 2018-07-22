@@ -4,12 +4,7 @@ import { NavController } from "ionic-angular";
 import { Storage } from "@ionic/storage";
 import { EmailComposer } from "@ionic-native/email-composer";
 import { Platform } from "ionic-angular";
-import {
-  Validators,
-  FormBuilder,
-  FormGroup,
-  FormControl
-} from "@angular/forms"; // TODO
+import { Validators, FormBuilder, FormGroup } from "@angular/forms"; // TODO
 import { AgeValidator } from "./home_validation";
 
 @Component({
@@ -22,6 +17,7 @@ export class HomePage {
   visib: boolean;
   email_addr: string;
   cit_data: string;
+  block_texts: string[] = [];
   form_items: FormGroup;
   form_dems: FormGroup;
   submit_failed: boolean = false;
@@ -37,7 +33,7 @@ export class HomePage {
   ) {
     console.log("inside");
     this.cit_items = ["Gasper", "Ben", "Chris", "Daniel", "Evan", "Frank"];
-    this.current_div = "dems"; // default: set_items
+    this.current_div = "task_start"; // default: set_items
     this.visib = true;
     this.email_addr = "lkcsgaspar@gmail.com";
     this.cit_data = "";
@@ -47,10 +43,7 @@ export class HomePage {
 
       gender: [
         "",
-        Validators.compose([
-          Validators.maxLength(30),
-          Validators.required
-        ])
+        Validators.compose([Validators.maxLength(30), Validators.required])
       ],
 
       text_test: [
@@ -62,8 +55,6 @@ export class HomePage {
         ])
       ]
     });
-
-
   }
 
   goback(event) {
@@ -76,8 +67,8 @@ export class HomePage {
   saving() {
     console.log("saving!");
     this.storage.set("cititems", this.cit_items);
-    this.gender = this.form_dems.get('gender').value
-    this.age = this.form_dems.get('age').value
+    this.gender = this.form_dems.get("gender").value;
+    this.age = this.form_dems.get("age").value;
   }
 
   hide() {
@@ -89,11 +80,11 @@ export class HomePage {
     this.current_div = "dems";
   }
 
-  // TODO: before start, check wifi off and airplane mode - if not, "please set"
+  // laterTODO: before start, check wifi off and airplane mode - if not, "please set"
   task_start() {
     if (!this.form_dems.valid) {
       this.submit_failed = true;
-      console.log('failed');
+      console.log("failed");
     } else {
       this.current_div = "task_start";
       this.storage.get("cititems").then(val => {
@@ -115,7 +106,7 @@ export class HomePage {
     if (this.platform.is("cordova")) {
       let email = {
         to: this.email_addr,
-        subject: "CITapp mail",
+        subject: "CITapp data",
         body: "Testing"
       };
       this.emailComposer.open(email);
@@ -123,16 +114,23 @@ export class HomePage {
       alert("This is a native plugin - only works on the phone.");
     }
   }
+  // texts to display before blocks
 
-
-
-
-
-
-
-
-
-
+  set_block_texts() {
+    this.block_texts[0] = "";
+    this.block_texts[1] =
+      'There will be three short practice rounds, each with 15-16 items. In this first practice round, we just want to make sure that you clearly understand the task. Therefore, you will have plenty of time to choose each of your responses, just make sure you choose accurately. Here all items from different categories (countries, dates, animals) will be intermixed randomly. <b>You must respond to each item correctly.</b> If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice task.<br><br>Remember: press "<b>e</b>" or "<b>i</b>" keys depending to which side the given item belongs (if needed, click <b>show full instructions again</b> to reread the details). <br><br>Click on <b>Start</b> to start the first round.';
+    this.block_texts[2] =
+      "Great, you passed the first practice round. In this second practice round, there will be a shorter deadline for the responses, but a certain rate of errors is allowed. Try to be as accurate and as fast as possible.<br><br>The first category will be... <br><br>Click on <b>Start</b> to start this second round.";
+    this.block_texts[3] =
+      "You passed the second practice round. This will be the third and last practice round. The response deadline is again shorter. The task is designed to be difficult, so don't be surprised if you make mistakes, but please do your best: <b>try to be as accurate and as fast as possible.</b><br><br>Click on <b>Start</b> to start this third round.";
+    this.block_texts[4] =
+      "Good job. Now begins the actual test. The task is the same. This first block tests the category of ..., so you will be again shown the related items. The evaluation will now be much less strict than in the practice phase, but these blocks cannot be repeated, so you must keep paying attention in order to perform the test validly. <b>Again: try to be as accurate and as fast as possible.</b><br><br>When you are ready, click on <b>Start</b> to start the first block of the main test.";
+    this.block_texts[5] =
+      "The first block is now done. The second block will test the category of ..., so the presented items will be related to ... The task is otherwise the same. <b>Again: try to be as accurate and as fast as possible.</b><br><br>When you are ready, click on <b>Start</b> to start the first block of the main test.";
+    this.block_texts[6] =
+      "The second block is now done. This third and final block will test the category of ..., so the presented items will be related to ... The task is otherwise still the same. <b>Again: try to be as accurate and as fast as possible.</b><br><br>When you are ready, click on <b>Start</b> to start the first block of the main test.";
+  }
 }
 
 console.log("outside");

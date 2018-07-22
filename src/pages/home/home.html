@@ -50,11 +50,9 @@
         <form  (ngSubmit)="task_start();" [formGroup]="form_dems" >
 
             <ion-item>
-
                 <ion-label class="stackedlabels" stacked>Age <span  *ngIf="!form_dems.controls.age.valid  && submit_failed" class="error_label">Please enter a valid age (digits only, 15-99).</span></ion-label>
             <ion-input formControlName="age"  type="number"  [class.invalid]="!form_dems.controls.age.valid  && submit_failed"></ion-input>
           </ion-item>
-
 
           <ion-item>
             <ion-label class="stackedlabels" stacked>Gender <span  *ngIf="!form_dems.controls.gender.valid  && submit_failed" class="error_label">Please choose gender.</span></ion-label>

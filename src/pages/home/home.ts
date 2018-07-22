@@ -117,19 +117,61 @@ export class HomePage {
   // texts to display before blocks
 
   set_block_texts() {
-    this.block_texts[0] = "";
-    this.block_texts[1] =
-      'There will be three short practice rounds, each with 15-16 items. In this first practice round, we just want to make sure that you clearly understand the task. Therefore, you will have plenty of time to choose each of your responses, just make sure you choose accurately. Here all items from different categories (countries, dates, animals) will be intermixed randomly. <b>You must respond to each item correctly.</b> If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice task.<br><br>Remember: press "<b>e</b>" or "<b>i</b>" keys depending to which side the given item belongs (if needed, click <b>show full instructions again</b> to reread the details). <br><br>Click on <b>Start</b> to start the first round.';
-    this.block_texts[2] =
-      "Great, you passed the first practice round. In this second practice round, there will be a shorter deadline for the responses, but a certain rate of errors is allowed. Try to be as accurate and as fast as possible.<br><br>The first category will be... <br><br>Click on <b>Start</b> to start this second round.";
-    this.block_texts[3] =
-      "You passed the second practice round. This will be the third and last practice round. The response deadline is again shorter. The task is designed to be difficult, so don't be surprised if you make mistakes, but please do your best: <b>try to be as accurate and as fast as possible.</b><br><br>Click on <b>Start</b> to start this third round.";
-    this.block_texts[4] =
-      "Good job. Now begins the actual test. The task is the same. This first block tests the category of ..., so you will be again shown the related items. The evaluation will now be much less strict than in the practice phase, but these blocks cannot be repeated, so you must keep paying attention in order to perform the test validly. <b>Again: try to be as accurate and as fast as possible.</b><br><br>When you are ready, click on <b>Start</b> to start the first block of the main test.";
-    this.block_texts[5] =
-      "The first block is now done. The second block will test the category of ..., so the presented items will be related to ... The task is otherwise the same. <b>Again: try to be as accurate and as fast as possible.</b><br><br>When you are ready, click on <b>Start</b> to start the first block of the main test.";
-    this.block_texts[6] =
-      "The second block is now done. This third and final block will test the category of ..., so the presented items will be related to ... The task is otherwise still the same. <b>Again: try to be as accurate and as fast as possible.</b><br><br>When you are ready, click on <b>Start</b> to start the first block of the main test.";
+    var country_for_disp = capitalize(the_probes[0]);
+    countrs_orig.forEach(function(countr, index) {
+      if (countr.toLowerCase() == the_probes[0]) {
+        country_for_disp = countr;
+      }
+    });
+    if (condition == 2 || condition == 5) {
+      target_reminder = ["", "", "", ""];
+    } else {
+      target_reminder = [
+        "Remember: in this category, your target that requires a different response is <b>" +
+          stim_base[0][1].word.toUpperCase() +
+          "</b>. ",
+        "Remember: in this category, your target that requires a different response is <b>" +
+          stim_base[1][1].word.toUpperCase() +
+          "</b>. ",
+        "Again, your target that requires a different response is <b>" +
+          stim_base[2][1].word.toUpperCase() +
+          "</b>. ",
+        "Again, your target that requires a different response is <b>" +
+          stim_base[3][1].word.toUpperCase() +
+          "</b>. "
+      ];
+    }
+    block_texts[0] = "";
+    block_texts[1] =
+      'There will be three short practice rounds. In this first practice round, we just want to see that you clearly understand the task. Therefore, you will have a lot of time to choose each of your responses, just make sure you choose accurately. Here, all items from the two categories (countries, animals) will be mixed together randomly. <b>You must respond to each item correctly.</b> If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice round.<br><br>Remember: press "<b>E</b>" or "<b>I</b>" keys depending on the category to which the given item belongs. If needed, click <b>show full instructions again</b> to reread the details.<br><br><p id="chances_id"></p>';
+    block_texts[2] =
+      '<span id="feedback_id2">Great, you passed the first practice round. In this second practice round, there will be a shorter deadline for the responses, but a certain rate of errors is allowed. (Items will be first country names, then animal names, then again countries, etc.) Try to be as accurate and as fast as possible.<br><br></span><p id="chances_id"></p>';
+    block_texts[3] =
+      "<span id='feedback_id3'>You passed the second practice round. This will be the third and last practice round. The response deadline is again shorter.<br><br>The task is designed to be difficult, so don't be surprised if you make mistakes, but do your best: <b>try to be as accurate and as fast as possible</b>.<br></span><p id='chances_id'></p>";
+    block_texts[4] =
+      "Good job. Now begins the actual test. The task is the same. There will be four blocks, with pauses between them. This first block tests the category of " +
+      stim_base[0][0].cat +
+      ", so you will be shown only the related items. " +
+      target_reminder[0] +
+      "<br><br>The minimum accuracy will now be much less strict than in the practice phase, but these blocks cannot be repeated, so you must keep paying attention in order to perform the test validly. <b>Again: try to be as accurate and as fast as possible.</b><br><br>When you are ready, click on <b>Start</b> to start the first block of the main test.";
+    block_texts[5] =
+      "The first block is now done. The second block will test the category of " +
+      stim_base[1][0].cat +
+      ". " +
+      target_reminder[1] +
+      "The task is otherwise the same. <b>Again: try to be as accurate and as fast as possible.</b>";
+    block_texts[6] =
+      "The second block is now done. This third block will again test the category of " +
+      stim_base[2][0].cat +
+      ". " +
+      target_reminder[2] +
+      " <b>Again: try to be as accurate and as fast as possible.</b>";
+    block_texts[7] =
+      "The third block is now done. This fourth and final block will again test the category of " +
+      stim_base[3][0].cat +
+      ". " +
+      target_reminder[3] +
+      " The task is otherwise still the same. <b>Again: try to be as accurate and as fast as possible.</b>";
   }
 }
 

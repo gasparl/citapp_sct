@@ -30,4 +30,108 @@ page-home {
     color: red;
     float: right !important;
   }
+  #div_cit_main {
+      text-align: center;
+      width: 100%;
+      height: 100%;
+      background-color: #031116;
+      color: #000000;
+  }
+  #start_text {
+      height: 10%;
+      width: 95%;
+      text-align: center;
+      font-size: 5vw;
+      position: fixed;
+      margin: 0;
+      top: 7%;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%, -50%);
+      color: #ff0000;
+      background-color: #999999;
+      border-color: #ff0000;
+      border-width: thick;
+  }
+  #stimulus {
+      font-size: 7vw;
+      font-family: Arial;
+      color: #ffffff;
+      text-align: center;
+      font-weight: bolder;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      margin: 0;
+      margin-right: -50%;
+      transform: translate(-50%, -50%);
+  }
+  #label_top {
+      height: 15%;
+      width: 30%;
+      text-align: center;
+      font-size: 5vw;
+      position: fixed;
+      margin: 0;
+      top: 60%;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%, -50%);
+      background-color: #888888;
+  }
+  #label_left {
+      height: 30%;
+      width: 30%;
+      text-align: center;
+      font-size: 5vw;
+      position: fixed;
+      top: 80%;
+      left: 20%;
+      margin: 0;
+      margin-right: -50%;
+      transform: translate(-50%, -50%);
+      background-color: #888888;
+  }
+  #label_right {
+      height: 30%;
+      width: 30%;
+      text-align: center;
+      font-size: 5vw;
+      position: fixed;
+      top: 80%;
+      left: 80%;
+      margin: 0;
+      margin-right: -50%;
+      transform: translate(-50%, -50%);
+      background-color: #888888;
+  }
+  #tooslow {
+      color: #ff080a;
+      text-align: center;
+      font-size: 5vw;
+      position: fixed;
+      margin: 0;
+      margin-right: -50%;
+      transform: translate(-50%, -50%);
+      font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+      display: none;
+      left: 50%;
+      top: 25%;
+  }
+  #false {
+      color: #ff080a;
+      text-align: center;
+      font-size: 6vw;
+      position: fixed;
+      margin: 0;
+      margin-right: -50%;
+      transform: translate(-50%, -50%);
+      font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+      display: block;
+      left: 50%;
+      top: 20%;
+      left: 50%;
+      top: 75%;
+      display: none;
+  }
 }

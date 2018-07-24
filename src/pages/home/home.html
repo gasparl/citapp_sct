@@ -80,10 +80,21 @@
         <p>Whatever</p>
         <br>
         <br>
+        <button ion-button large primary (touchstart)="touchstart($event);" (touchend)="touchend($event);">touchstartend</button>
         <button ion-button (tap)="goback($event)">Go back</button>
         <br>
     </div>
 
+
+    <div id="div_cit_main" *ngSwitchCase="'cit_main'">
+        <p id="tooslow"><b>TOO SLOW</b></p>
+        <p id="false"><b>WRONG</b></p>
+        <p id="label_top">FAMILIAR?</p>
+        <p id="label_left">NO: e</p>
+        <p id="label_right">YES: i</p>
+        <p id="stimulus">STIMULUS</p>
+        <p id="start_text">To begin, tap NO and YES at once.</p>
+    </div>
 
 
     <div id="div_end" *ngSwitchCase="'ending'">

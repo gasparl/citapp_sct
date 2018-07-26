@@ -1,109 +1,96 @@
 <ion-content padding [ngSwitch]="current_div" text-wrap>
 
-    <div id='div_items' *ngSwitchDefault>
-        <header>
-            <ion-navbar>
-                <ion-title>
-                    CIT App
-                </ion-title>
-            </ion-navbar>
-        </header>
-        <form (ngSubmit)="basics();">
-            <ion-item>
-                <ion-label stacked>Probe</ion-label>
-                <ion-input [(ngModel)]="cit_items[0]" name="probe" type="text"></ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label stacked>Irrelevant 1</ion-label>
-                <ion-input [(ngModel)]="cit_items[1]" name="irr1" type="text"></ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label stacked>Irrelevant 2</ion-label>
-                <ion-input [(ngModel)]="cit_items[2]" name="irr2" type="text"></ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label stacked>Irrelevant 3</ion-label>
-                <ion-input [(ngModel)]="cit_items[3]" name="irr3" type="text"></ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label stacked>Irrelevant 4</ion-label>
-                <ion-input [(ngModel)]="cit_items[4]" name="irr4" type="text"></ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label stacked>Irrelevant 5</ion-label>
-                <ion-input [(ngModel)]="cit_items[5]" name="irr5" type="text"></ion-input>
-            </ion-item>
-            <button ion-button type="button" (click)="saving()">Save</button>
-            <button ion-button type="submit" block>Do it</button>
-        </form>
+  <div id='div_items' *ngSwitchDefault>
+
+    <header>
+      <ion-navbar>
+        <ion-title>
+          CIT App
+        </ion-title>
+      </ion-navbar>
+    </header>
+    <br/>
+    <br/>
+    <p>
+      Select condition:
+    </p>
+    <ion-item>
+      <ion-select [(ngModel)]="condition" interface="popover">
+        <ion-option value="0">0 (i)</ion-option>
+        <ion-option value="1">1 (g)</ion-option>
+      </ion-select>
+    </ion-item>
+    <br/>
+    <br/>
+    <div text-center>
+      <button ion-button type="button" (click)="this.current_div = 'dems'"><b> {{condition}} </b> </button>
     </div>
 
-    <div id='div_dems' *ngSwitchCase="'dems'"  >
-        <header>
-            <ion-navbar>
-                <ion-title>
-                    Demographics
-                </ion-title>
-            </ion-navbar>
-        </header>
+  </div>
 
-        <form  (ngSubmit)="task_start();" [formGroup]="form_dems" >
+  <div id='div_dems' *ngSwitchCase="'dems'">
+    <header>
+      <ion-navbar>
+        <ion-title>
+          Details
+        </ion-title>
+      </ion-navbar>
+    </header>
 
-            <ion-item>
-                <ion-label class="stackedlabels" stacked>Age <span  *ngIf="!form_dems.controls.age.valid  && submit_failed" class="error_label">Please enter a valid age (digits only, 15-99).</span></ion-label>
-            <ion-input formControlName="age"  type="number"  [class.invalid]="!form_dems.controls.age.valid  && submit_failed"></ion-input>
-          </ion-item>
+    <form (ngSubmit)="task_start();" [formGroup]="form_dems">
 
-          <ion-item>
-            <ion-label class="stackedlabels" stacked>Gender <span  *ngIf="!form_dems.controls.gender.valid  && submit_failed" class="error_label">Please choose gender.</span></ion-label>
-            <ion-select interface='popover' formControlName="gender"  [class.invalid]="!form_dems.controls.gender.valid  && submit_failed">
-            <ion-option value="1">Male</ion-option>
-            <ion-option value="2">Female</ion-option>
-            </ion-select>
-        </ion-item>
-
-            <ion-item>
-                <ion-label  class="stackedlabels" stacked>Text item<span  *ngIf="!form_dems.controls.text_test.valid  && submit_failed" class="error_label">Please enter a valid text.</span></ion-label>
-                <ion-input [(ngModel)]="cit_items[1]" formControlName="text_test" type="text"  [class.invalid]="!form_dems.controls.text_test.valid  && submit_failed"></ion-input>
-            </ion-item>
-
-            <p *ngIf="!form_dems.valid  && submit_failed" style="color: #ea6153;">Please fill out all details accurately.</p>
-
-            <button ion-button type="button" (click)="saving()">Save</button>
-            <button ion-button type="submit" block>Further</button>
-        </form>
-    </div>
+      <p>
+        Make sure to enter the <b>exact</b> same items both on the PC and on the phone. In your name, always use the exact same characters.
+      </p>
+      <ion-item>
+        <ion-label class="stackedlabels" stacked>Text item<span *ngIf="!form_dems.controls.text_test.valid  && submit_failed" class="error_label">Please enter a valid text.</span></ion-label>
+        <ion-input [(ngModel)]="true_name" formControlName="text_test" type="text" [class.invalid]="!form_dems.controls.text_test.valid  && submit_failed"></ion-input>
+      </ion-item>
 
 
-    <div id="div_cit_blockstart" *ngSwitchCase="'task_start'">
-        <p *ngIf="visib">to hide</p>
-        <p>Whatever</p>
-        <br>
-        <br>
-        <button ion-button large primary (touchstart)="touchstart($event);" (touchend)="touchend($event);">touchstartend</button>
-        <button ion-button (tap)="goback($event)">Go back</button>
-        <br>
-    </div>
+      <ion-item>
+        <ion-label class="stackedlabels" stacked>Text item<span *ngIf="!form_dems.controls.text_test.valid  && submit_failed" class="error_label">Please enter a valid text.</span></ion-label>
+        <ion-input [(ngModel)]="true_anim" formControlName="text_test" type="text" [class.invalid]="!form_dems.controls.text_test.valid  && submit_failed"></ion-input>
+      </ion-item>
 
 
-    <div id="div_cit_main" *ngSwitchCase="'cit_main'">
-        <p id="tooslow"><b>TOO SLOW</b></p>
-        <p id="false"><b>WRONG</b></p>
-        <p id="label_top">FAMILIAR?</p>
-        <p id="label_left">NO: e</p>
-        <p id="label_right">YES: i</p>
-        <p id="stimulus">STIMULUS</p>
-        <p id="start_text">To begin, tap NO and YES at once.</p>
-    </div>
+      <p *ngIf="!form_dems.valid  && submit_failed" style="color: #ea6153;">Please fill out all details accurately.</p>
+
+      <button ion-button type="button" (click)="saving()">Save</button>
+      <button ion-button type="submit" block>Further</button>
+    </form>
+  </div>
 
 
-    <div id="div_end" *ngSwitchCase="'ending'">
-        This is the end!
-        <ion-item>
-            <ion-label>Email address</ion-label>
-            <ion-input [(ngModel)]="email_addr" name="email" type="email"></ion-input>
-        </ion-item>
-        <button ion-button type="button" (click)="send_email()">Send data</button>
-    </div>
+  <div id="div_cit_blockstart" *ngSwitchCase="'task_start'">
+    <p *ngIf="visib">to hide</p>
+    <p>Whatever</p>
+    <br>
+    <br>
+    <button ion-button large primary (touchstart)="touchstart($event);" (touchend)="touchend($event);">touchstartend</button>
+    <button ion-button (tap)="goback($event)">Go back</button>
+    <br>
+  </div>
+
+
+  <div id="div_cit_main" *ngSwitchCase="'cit_main'">
+    <p id="tooslow"><b>TOO SLOW</b></p>
+    <p id="false"><b>WRONG</b></p>
+    <p id="label_top">FAMILIAR?</p>
+    <p id="label_left">NO: e</p>
+    <p id="label_right">YES: i</p>
+    <p id="stimulus">STIMULUS</p>
+    <p id="start_text">To begin, tap NO and YES at once.</p>
+  </div>
+
+
+  <div id="div_end" *ngSwitchCase="'ending'">
+    This is the end!
+    <ion-item>
+      <ion-label>Email address</ion-label>
+      <ion-input [(ngModel)]="email_addr" name="email" type="email"></ion-input>
+    </ion-item>
+    <button ion-button type="button" (click)="send_email()">Send data</button>
+  </div>
 
 </ion-content>

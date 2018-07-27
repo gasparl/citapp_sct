@@ -18,7 +18,7 @@ export class HomePage {
   isi_delay_minmax: number[] = [100, 300];
   end_url: string = "https://www.figure-eight.com/";
   all_conditions: number[] = [0, 1, 2, 3, 4, 5];
-  condition: number = 9999;
+  condition: number = 0;//9999;
   subj_id: string;
   response_deadline: number;
   response_deadline_main: number = 800;
@@ -114,8 +114,7 @@ export class HomePage {
     public platform: Platform,
     public formBuilder: FormBuilder
   ) {
-    console.log("inside");
-    this.current_div = "set_items"; // default: set_items other: cit_main
+    this.current_div = "dems"; // default: set_cond other: cit_main dems
     this.visib = true;
     this.email_addr = "lkcsgaspar@gmail.com";
     this.basic_times.loaded = Date();
@@ -129,18 +128,21 @@ export class HomePage {
     ];
 
     this.form_dems = formBuilder.group({
-      age: ["", AgeValidator.isValid],
-
       gender: [
         "",
         Validators.compose([Validators.maxLength(30), Validators.required])
       ],
-
-      text_test: [
+      name_inp: [
         "",
         Validators.compose([
           Validators.maxLength(30),
           Validators.pattern("[a-zA-ZÖöÜüÉéÁáÄäß]*"),
+          Validators.required
+        ])
+      ],
+      animal_inp: [
+        "",
+        Validators.compose([
           Validators.required
         ])
       ]
@@ -216,9 +218,7 @@ export class HomePage {
     this.visib = false;
   }
 
-  basics() {
-    this.current_div = "dems";
-  }
+
 
   // laterTODO: before start, check wifi off and airplane mode - if not, "please set"
   task_start() {
@@ -327,7 +327,7 @@ export class HomePage {
   }
 
   seconds_between_dates(startDate, endDate) {
-      return Math.abs(+new Date(startDate) - +new Date(endDate)) / 1000;
+    return Math.abs(+new Date(startDate) - +new Date(endDate)) / 1000;
   }
   randomdigit(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -744,11 +744,11 @@ export class HomePage {
     if (is_valid == false) {
       this.practice_chances--;
 
-        var feedback_text =
-          "You will have to repeat this practice round, because of too few correct responses.<br><br>You need at least 60% accuracy on each item type, but you did not have enough correct responses for the following one(s):" +
-          types_failed.join(",") +
-          ".<br><br>Try to make responses both accurately and in time.<br><br>";
-        $("#feedback_id" + this.blocknum).html(feedback_text);
+      var feedback_text =
+        "You will have to repeat this practice round, because of too few correct responses.<br><br>You need at least 60% accuracy on each item type, but you did not have enough correct responses for the following one(s):" +
+        types_failed.join(",") +
+        ".<br><br>Try to make responses both accurately and in time.<br><br>";
+      $("#feedback_id" + this.blocknum).html(feedback_text);
 
     }
     return is_valid;
@@ -758,7 +758,7 @@ export class HomePage {
     var verylow = false;
     var types_failed = [];
     for (var it_type in this.rt_data_dict) {
-      var rts_correct =  this.rt_data_dict[it_type].filter(function(rt_item) {
+      var rts_correct = this.rt_data_dict[it_type].filter(function(rt_item) {
         return rt_item > 150;
       });
       var corr_ratio = rts_correct.length / this.rt_data_dict[it_type].length;
@@ -936,9 +936,9 @@ export class HomePage {
   }
   start_trials() {
     if (this.can_start === true) {
-        this.can_start = false;
-        $("#start_text").hide();
-        this.next_trial();
+      this.can_start = false;
+      $("#start_text").hide();
+      this.next_trial();
 
     }
   }
@@ -1036,7 +1036,7 @@ export class HomePage {
           days_to_filt2 = days_to_filt1.concat([29, 30, 31]);
         } else {
           if (
-            ["april", "june", "september", "november"].indexOf(month)  > -1
+            ["april", "june", "september", "november"].indexOf(month) > -1
           ) {
             days_to_filt2.push(31);
           }
@@ -1194,44 +1194,44 @@ export class HomePage {
 
   final_probe_check() {
     // if (all_filled) { // should validate form
-      var multip = 1 + 999 * this.failed_final;
-      if (
-        $("#fcheck_countries")
-          .val()
-          .toUpperCase() != this.the_probes[0].toUpperCase()
-      ) {
-        this.num_of_failed_fin += 100 * multip;
-      }
-      if (
-        $("#fcheck_animals")
-          .val()
-          .toUpperCase() != this.the_probes[1].toUpperCase()
-      ) {
-        this.num_of_failed_fin += 1 * multip;
-      }
-      if (
-        $("#fcheck_countries")
-          .val()
-          .toUpperCase() != this.the_probes[0].toUpperCase() ||
-        $("#fcheck_animals")
-          .val()
-          .toUpperCase() != this.the_probes[1].toUpperCase()
-      ) {
-        if (this.failed_final == 0) {
-          this.failed_final = 1;
-          alert("Wrong!");
-          $("#final_check_feedback").html(
-            "<b>Your selection was not correct! It is crucial that you select these details correctly. Please take your time and make sure you understand what you need to select. Then try to select all details correctly.</b><br>"
-          );
-          return false;
-        } else {
-          this.failed_final = 2;
-          return true;
-        }
+    var multip = 1 + 999 * this.failed_final;
+    if (
+      $("#fcheck_countries")
+        .val()
+        .toUpperCase() != this.the_probes[0].toUpperCase()
+    ) {
+      this.num_of_failed_fin += 100 * multip;
+    }
+    if (
+      $("#fcheck_animals")
+        .val()
+        .toUpperCase() != this.the_probes[1].toUpperCase()
+    ) {
+      this.num_of_failed_fin += 1 * multip;
+    }
+    if (
+      $("#fcheck_countries")
+        .val()
+        .toUpperCase() != this.the_probes[0].toUpperCase() ||
+      $("#fcheck_animals")
+        .val()
+        .toUpperCase() != this.the_probes[1].toUpperCase()
+    ) {
+      if (this.failed_final == 0) {
+        this.failed_final = 1;
+        alert("Wrong!");
+        $("#final_check_feedback").html(
+          "<b>Your selection was not correct! It is crucial that you select these details correctly. Please take your time and make sure you understand what you need to select. Then try to select all details correctly.</b><br>"
+        );
+        return false;
       } else {
+        this.failed_final = 2;
         return true;
       }
-   //else {
+    } else {
+      return true;
+    }
+    //else {
     //  return false;
     //}
   }

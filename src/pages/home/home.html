@@ -1,6 +1,6 @@
 <ion-content padding [ngSwitch]="current_div" text-wrap>
 
-  <div id='div_items' *ngSwitchDefault>
+  <div id='div_conds' *ngSwitchDefault>
 
     <header>
       <ion-navbar>
@@ -17,13 +17,13 @@
     <ion-item>
       <ion-select [(ngModel)]="condition" interface="popover">
         <ion-option value="0">0 (i)</ion-option>
-        <ion-option value="1">1 (g)</ion-option>
+        <ion-option value="3">3 (g)</ion-option>
       </ion-select>
     </ion-item>
     <br/>
     <br/>
     <div text-center>
-      <button ion-button type="button" (click)="this.current_div = 'dems'"><b> {{condition}} </b> </button>
+      <button ion-button type="button" style="text-transform: none;" (click)="this.current_div = 'dems'" *ngIf="condition != 9999"><b> select: {{condition}} </b> </button>
     </div>
 
   </div>
@@ -39,25 +39,45 @@
 
     <form (ngSubmit)="task_start();" [formGroup]="form_dems">
 
-      <p>
+      <p style="border-bottom: 2px solid grey; padding-bottom:3vw">
         Make sure to enter the <b>exact</b> same items both on the PC and on the phone. In your name, always use the exact same characters.
       </p>
-      <ion-item>
-        <ion-label class="stackedlabels" stacked>Text item<span *ngIf="!form_dems.controls.text_test.valid  && submit_failed" class="error_label">Please enter a valid text.</span></ion-label>
-        <ion-input [(ngModel)]="true_name" formControlName="text_test" type="text" [class.invalid]="!form_dems.controls.text_test.valid  && submit_failed"></ion-input>
+
+      <span style="padding-left: 16px;float: left;">
+        Your forename:
+    </span>
+
+      <ion-item style="padding-bottom:8vw;">
+        <ion-label class="stackedlabels" *ngIf="!form_dems.controls.name_inp.valid  && submit_failed" stacked>Please enter a valid name.</ion-label>
+        <ion-input [(ngModel)]="true_name" formControlName="name_inp" type="text" [class.invalid]="!form_dems.controls.name_inp.valid  && submit_failed"></ion-input>
+      </ion-item>
+      <span style="padding-left: 16px;float: left;">
+        Your gender:
+    </span>
+          <ion-item style="padding-bottom:8vw;">
+        <ion-label class="stackedlabels" stacked  *ngIf="!form_dems.controls.gender.valid  && submit_failed">Please choose gender.</ion-label>
+        <ion-select interface='popover' formControlName="gender" [class.invalid]="!form_dems.controls.gender.valid  && submit_failed">
+            <ion-option value="">- select -</ion-option>
+          <ion-option value="1">Male</ion-option>
+          <ion-option value="2">Female</ion-option>
+        </ion-select>
+      </ion-item>
+      <span style="padding-left: 16px;float: left;">
+        Your favorite animal (among the options):
+    </span>
+
+          <ion-item style="padding-bottom:8vw;">
+        <ion-label class="stackedlabels"  *ngIf="!form_dems.controls.animal_inp.valid  && submit_failed" stacked> Please select an animal.</ion-label>
+        <ion-select interface='popover' formControlName="animal_inp" [class.invalid]="!form_dems.controls.animal_inp.valid  && submit_failed">
+          <ion-option value="1">xxxx</ion-option>
+          <ion-option value="2">ccccc</ion-option>
+        </ion-select>
       </ion-item>
 
 
-      <ion-item>
-        <ion-label class="stackedlabels" stacked>Text item<span *ngIf="!form_dems.controls.text_test.valid  && submit_failed" class="error_label">Please enter a valid text.</span></ion-label>
-        <ion-input [(ngModel)]="true_anim" formControlName="text_test" type="text" [class.invalid]="!form_dems.controls.text_test.valid  && submit_failed"></ion-input>
-      </ion-item>
+      <p *ngIf="!form_dems.valid  && submit_failed" style="color: red;">Please fill out all details accurately.</p>
 
-
-      <p *ngIf="!form_dems.valid  && submit_failed" style="color: #ea6153;">Please fill out all details accurately.</p>
-
-      <button ion-button type="button" (click)="saving()">Save</button>
-      <button ion-button type="submit" block>Further</button>
+      <button ion-button type="submit" block>OK</button>
     </form>
   </div>
 

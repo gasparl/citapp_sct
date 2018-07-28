@@ -56,8 +56,7 @@
     </span>
           <ion-item style="padding-bottom:8vw;">
         <ion-label class="stackedlabels" stacked  *ngIf="!form_dems.controls.gender.valid  && submit_failed">Please choose gender.</ion-label>
-        <ion-select interface='popover' formControlName="gender" [class.invalid]="!form_dems.controls.gender.valid  && submit_failed">
-            <ion-option value="">- select -</ion-option>
+        <ion-select interface='popover' formControlName="gender" [class.invalid]="!form_dems.controls.gender.valid  && submit_failed" placeholder="- select -">
           <ion-option value="1">Male</ion-option>
           <ion-option value="2">Female</ion-option>
         </ion-select>
@@ -68,9 +67,9 @@
 
           <ion-item style="padding-bottom:8vw;">
         <ion-label class="stackedlabels"  *ngIf="!form_dems.controls.animal_inp.valid  && submit_failed" stacked> Please select an animal.</ion-label>
-        <ion-select interface='popover' formControlName="animal_inp" [class.invalid]="!form_dems.controls.animal_inp.valid  && submit_failed">
-          <ion-option value="1">xxxx</ion-option>
-          <ion-option value="2">ccccc</ion-option>
+        <ion-select interface='action-sheet' formControlName="animal_inp" [class.invalid]="!form_dems.controls.animal_inp.valid  && submit_failed" style="max-width:100%;" placeholder="- select -">
+    <ion-option *ngFor="let item of animls" value="{{item}}">{{item}}</ion-option>
+
         </ion-select>
       </ion-item>
 

@@ -1,5 +1,6 @@
 html {
   font-size: 4vw;
+  text-align: justify;
 }
 
 input {
@@ -10,21 +11,17 @@ h1 {
   font-size: 5vw;
 }
 $grid-padding-width: 15;
-
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
 page-home {
   #div_inputs {
     max-height: 100vh;
-  }
-
-  #div_cit_blockstart {
-    text-align: center;
-    font-size: 3vw;
-    position: fixed;
-    margin: 0;
-    top: 50%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
   }
 
   ion-input.invalid {

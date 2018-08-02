@@ -18,23 +18,24 @@ export class HomePage {
   isi_delay_minmax: number[] = [100, 300];
   end_url: string = "https://www.figure-eight.com/";
   all_conditions: number[] = [0, 1, 2, 3, 4, 5];
-  condition: number = 0;//9999;
+  condition: number = 0;
+  cat_order: number;
+  pre_cond: number = 9999;
   subj_id: string;
   response_deadline: number;
   response_deadline_main: number = 800;
   num_of_blocks: number = 7;
   bg_color: string = "#031116";
-  dems: string;
+  task_instruction: string;
   true_name: string;
   true_anim: string;
-  current_div: string;
+  current_div: string = "div_dems"; // default: "set_items"
   visib: boolean;
   email_addr: string;
   block_texts: string[] = [];
   form_items: FormGroup;
   form_dems: FormGroup;
   submit_failed: boolean = false;
-  age: number;
   gender: number;
   lastOf6filler: string = "none";
   lastOf6word: string = "none";
@@ -86,26 +87,23 @@ export class HomePage {
   the_targets: any[] = [];
   the_probes: any[] = [];
 
-  items_base1: any[];
   items_base2: any[];
   true_details: any[];
 
-  countC0: number = 0;
-  countC1: number = 0;
   words_to_filter: any[] = [[], []];
+    targ_check_inp: string[] = ["",""];
 
   categories_base: string[] = ["countries", "months", "days", "animals"];
   categories: string[] = ["countries", "animals"];
 
-  countrs: any[] = [
-    "Afghanistan", "Belgium", "Burundi", "Chad", "Comoros", "Denmark", "Kiribati", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macedonia", "Madagascar", "Malawi", "Moldova", "Nepal", "Palau", "Poland", "Portugal",
-    "Qatar", "Romania", "Sweden", "Tuvalu", "Uganda", "Vanuatu", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
-  ];
-  animls: any[] = ["Alligator",
-    "Badger", "Bison", "Chicken", "Chimpanzee", "Deer",
-    "Dog", "Dolphin", "Donkey", "Eagle", "Falcon", "Fox", "Frog", "Gazelle", "Giraffe", "Hamster", "Jackal", "Kangaroo", "Kiwi", "Koala", "Lemur", "Leopard", "Lion", "Monkey", "Oyster", "Panda",
-    "Pelican", "Penguin", "Rhinoceros", "Snake", "Spider", "Turkey", "Walrus", "Wombat", "Yak", "Zebra"
-  ];
+  countrs: any[];
+
+  male_names: any[] = ['Adam', 'Adrian', 'Alexander', 'Ali', 'Amir', 'Andre', 'Andreas', 'Andrej', 'Anton', 'Armin', 'Arthur', 'Ben', 'Benedikt', 'Benjamin', 'Berat', 'Bernd', 'Bernhard', 'Christian', 'Christoph', 'Christopher', 'Clemens', 'Constantin', 'Daniel', 'David', 'Dominik', 'Elias', 'Emanuel', 'Emil', 'Emir', 'Erik', 'Fabian', 'Fabio', 'Felix', 'Ferdinand', 'Finn', 'Florian', 'Franz', 'Gabriel', 'Georg', 'Gerald', 'Gerhard', 'Gernot', 'Gregor', 'Günther', 'Hamza', 'Hannes', 'Harald', 'Helmut', 'Herbert', 'Jakob', 'Jan', 'Johann', 'Johannes', 'Jonas', 'Jonathan', 'Josef', 'Julian', 'Justin', 'Jürgen', 'Karl', 'Kevin', 'Kilian', 'Klaus', 'Konstantin', 'Laurenz', 'Leo', 'Leon', 'Leonard', 'Leopold', 'Lorenz', 'Manfred', 'Manuel', 'Marcel', 'Marco', 'Mario', 'Markus', 'Martin', 'Marvin', 'Mathias', 'Matthias', 'Max', 'Maximilian', 'Michael', 'Moritz', 'Nico', 'Nicolas', 'Noah', 'Oliver', 'Oskar', 'Pascal', 'Patrik', 'Paul', 'Peter', 'Rafael', 'Reinhard', 'Rene', 'Richard', 'Robert', 'Roland', 'Roman', 'Samuel', 'Sandro', 'Sascha', 'Sebastian', 'Simon', 'Stefan', 'Theo', 'Theodor', 'Thomas', 'Tim', 'Tobias', 'Valentin', 'Viktor', 'Vincent', 'Werner', 'Wolfgang', 'Yusuf'];
+
+  fem_names: any[] = ['Alexandra', 'Alina', 'Alma', 'Amelie', 'Amina', 'Ana', 'Anastasia', 'Andrea', 'Angelika', 'Angelina', 'Anita', 'Anja', 'Anna', 'Annika', 'Antonia', 'Astrid', 'Azra', 'Barbara', 'Bernadette', 'Bettina', 'Bianca', 'Birgit', 'Carina', 'Carmen', 'Celine', 'Charlotte', 'Chiara', 'Christina', 'Clara', 'Claudia', 'Cornelia', 'Daniela', 'Denise', 'Doris', 'Ecrin', 'Ela', 'Elena', 'Elif', 'Elina', 'Elisa', 'Elisabeth', 'Ella', 'Emilia', 'Emma', 'Esila', 'Eva', 'Flora', 'Franziska', 'Hanna', 'Helena', 'Hira', 'Ines', 'Iris', 'Isabella', 'Jacqueline', 'Jana', 'Janine', 'Jasmin', 'Jennifer', 'Jessica', 'Johanna', 'Julia', 'Karin', 'Katharina', 'Kerstin', 'Klara', 'Kristina', 'Lara', 'Larissa', 'Laura', 'Lea', 'Lena', 'Leonie', 'Leonora', 'Lilly', 'Lina', 'Linda', 'Lisa', 'Magdalena', 'Maja', 'Manuela', 'Marie', 'Marina', 'Martina', 'Matilda', 'Maya', 'Melanie', 'Melina', 'Melissa', 'Mia', 'Michelle', 'Mila', 'Mira', 'Miriam', 'Monika', 'Nadine', 'Natalie', 'Natascha', 'Nicole', 'Nina', 'Nisa', 'Nora', 'Olivia', 'Patricia', 'Paula', 'Paulina', 'Petra', 'Pia', 'Rebecca', 'Romana', 'Rosa', 'Sabine', 'Sandra', 'Sara', 'Selina', 'Silke', 'Silvia', 'Simone', 'Sofia', 'Sonja', 'Sophie', 'Stefanie', 'Stella', 'Susanne', 'Tamara', 'Tanja', 'Teodora', 'Teresa', 'Theresa', 'Tina', 'Valentina', 'Valerie', 'Vanessa', 'Verena', 'Veronika', 'Viktoria', 'Yvonne', 'Zoe'];
+
+  animls: any[] = ["Alligator", "Alpaka", "Ameise", "Antilope", "Dachs", "Fledermaus", "Bär", "Biber", "Biene", "Bison", "Schmetterling", "Kamel", "Katze", "Raupe", "Gepard", "Huhn", "Schimpanse", "Kobra", "Krabbe", "Kranich", "Krokodil", "Krähe", "Hirsch", "Hund", "Delfin", "Esel", "Taube", "Ente", "Adler", "Elefant", "Emu", "Frettchen", "Flamingo", "Fliege", "Fuchs", "Frosch", "Gazelle", "Giraffe", "Gnu", "Ziege", "Gans", "Gorilla", "Heuschrecke", "Hamster", "Falke", "Igel", "Hering", "Nilpferd", "Pferd", "Kolibri", "Hyäne", "Schakal", "Jaguar", "Qualle", "Känguru", "Kiwi", "Koala", "Lemur", "Leopard", "Löwe", "Lama", "Hummer", "Elster", "Mammut", "Maulwurf", "Mungo", "Affe", "Elch", "Maus", "Mücke", "Oktopus", "Opossum", "Eule", "Auster", "Panther", "Papagei", "Panda", "Pelikan", "Pinguin", "Fasan", "Schwein", "Taube", "Stachelschwein", "Schweinswale", "Kaninchen", "Waschbär", "Widder", "Ratte", "Rabe", "Rentier", "Nashorn", "Salamander", "Lachs", "Siegel", "Hai", "Schaf", "Faultier", "Schnecke", "Schlange", "Spinne", "Schwan", "Tapir", "Tiger", "Kröte", "Truthahn", "Walross", "Wespe", "Wiesel", "Wal", "Wolf", "Wombat", "Zebra"];
+  stimulus_text: string = "";
 
   constructor(
     public navCtrl: NavController,
@@ -114,21 +112,14 @@ export class HomePage {
     public platform: Platform,
     public formBuilder: FormBuilder
   ) {
-    this.current_div = "dems"; // default: set_cond other: cit_main dems
     this.visib = true;
     this.email_addr = "lkcsgaspar@gmail.com";
     this.basic_times.loaded = Date();
     this.basic_times.blocks = "";
     this.nums = this.range(1, 32);
-    this.items_base1 = [
-      this.countrs.sort(),
-      ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"],
-      this.nums,
-      this.animls.sort()
-    ];
 
     this.form_dems = formBuilder.group({
-      gender: [
+      gender_inp: [
         "",
         Validators.compose([Validators.maxLength(30), Validators.required])
       ],
@@ -150,93 +141,52 @@ export class HomePage {
   }
 
   initials() {
-    this.condition = 1; // induced CIT
+    if (this.pre_cond < 2) {
+      this.condition = 0;
+    } else {
+      this.condition = 3;
+    }
+    if (this.pre_cond % 2 == 0) {
+      this.cat_order = 0;
+    } else {
+      this.cat_order = 1;
+    }
     this.basic_times.consented = Date();
-
-    this.categories_base.forEach(function(categ, index) {
-      //fills up the selection options for the categories
-      var dropChoices = "";
-      var catAll = this.items_base1[index];
-      catAll.forEach(function(word) {
-        dropChoices += '<option value="' + word + '">' + word + "</option>";
-      });
-      ["#", "#tcheck_", "#scheck_", "#fcheck_"].forEach(function(
-        pre_id,
-        index
-      ) {
-        var categ_id = pre_id + categ;
-        $(categ_id).append(dropChoices);
-      });
-    });
-    this.subj_id =
-      this.rchoice("CDFGHJKLMNPQRSTVWXYZ") +
-      this.rchoice("AEIOU") +
-      this.rchoice("CDFGHJKLMNPQRSTVWXYZ") +
-      "_" +
-      $("#cf_id").val();
-
-    this.dems =
-      this.subj_id +
-      "\t" +
-      this.condition +
-      "\t" +
-      $("#gender").val() +
-      "\t" +
-      $("#age").val() +
-      "\t" +
-      $("#handedness").val() +
-      "\t" +
-      $("#country").val()
   }
 
   touchstart(event) {
     console.log("start:");
     console.log(performance.now());
     console.log(event.timeStamp);
+    //timeout here - if no touchend event, then "Touched for too long!"
   }
   touchend(event) {
     console.log("end:");
     console.log(event.timeStamp);
     console.log(event);
   }
-
-  goback(event) {
-    console.log("tapped!");
-    console.log(performance.now());
-    console.log(event);
-    this.current_div = "set_items";
+  switch_divs(div_to_show) {
+    this.current_div = div_to_show;
   }
-
-  saving() {
-    console.log("saving!");
-    this.gender = this.form_dems.get("gender").value;
-    this.age = this.form_dems.get("age").value;
-  }
-
-  hide() {
-    console.log("hide!");
-    this.visib = false;
-  }
-
 
 
   // laterTODO: before start, check wifi off and airplane mode - if not, "please set"
   task_start() {
     if (!this.form_dems.valid) {
       this.submit_failed = true;
-      console.log("failed");
+
+      // for TESTING:
+      this.true_name = "Lükás";
+      this.gender = 1;
+      this.true_anim = "cat"
+      this.prune();
+      this.switch_divs("div_blockstart");
     } else {
-      this.current_div = "task_start";
-      this.storage.get("cititems").then(val => {
-        console.log("item listed:", val);
-      });
-      var t1 = performance.now();
-
-      setTimeout(function() {
-        console.log(performance.now() - t1);
-      }, 500);
-
-      console.log("RAN");
+      this.true_name = this.form_dems.get("name_inp").value;
+      this.gender = this.form_dems.get("gender_inp").value;
+      this.true_anim = this.form_dems.get("animal_inp").value;
+      this.prune();
+      this.switch_divs("div_instructions");
     }
   }
 
@@ -269,16 +219,16 @@ export class HomePage {
         this.stim_base[1][1].word.toUpperCase() +
         "</b>. ",
         "Again, your target that requires a different response is <b>" +
-        this.stim_base[2][1].word.toUpperCase() +
+        //this.stim_base[2][1].word.toUpperCase() +
         "</b>. ",
         "Again, your target that requires a different response is <b>" +
-        this.stim_base[3][1].word.toUpperCase() +
+        //this.stim_base[3][1].word.toUpperCase() +
         "</b>. "
       ];
     }
     this.block_texts[0] = "";
     this.block_texts[1] =
-      'There will be three short practice rounds. In this first practice round, we just want to see that you clearly understand the task. Therefore, you will have a lot of time to choose each of your responses, just make sure you choose accurately. Here, all items from the two categories (countries, animals) will be mixed together randomly. <b>You must respond to each item correctly.</b> If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice round.<br><br>Remember: press "<b>E</b>" or "<b>I</b>" keys depending on the category to which the given item belongs. If needed, click <b>show full instructions again</b> to reread the details.<br><br><p id="chances_id"></p>';
+      'There will be three short practice rounds. In this first practice round, we just want to see that you clearly understand the task. Therefore, you will have a lot of time to choose each of your responses, just make sure you choose accurately. Here, all items from the two categories (countries, animals) will be mixed together randomly. <b>You must respond to each item correctly.</b> If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice round.<br><br>If needed, tap <b>show instructions again</b> to reread the details.<br><br><p id="chances_id"></p>';
     this.block_texts[2] =
       '<span id="feedback_id2">Great, you passed the first practice round. In this second practice round, there will be a shorter deadline for the responses, but a certain rate of errors is allowed. (Items will be first country names, then animal names, then again countries, etc.) Try to be as accurate and as fast as possible.<br><br></span><p id="chances_id"></p>';
     this.block_texts[3] =
@@ -290,23 +240,11 @@ export class HomePage {
       target_reminder[0] +
       "<br><br>The minimum accuracy will now be much less strict than in the practice phase, but these blocks cannot be repeated, so you must keep paying attention in order to perform the test validly. <b>Again: try to be as accurate and as fast as possible.</b><br><br>When you are ready, click on <b>Start</b> to start the first block of the main test.";
     this.block_texts[5] =
-      "The first block is now done. The second block will test the category of " +
+      "The first block is now done. The second and last block will test the category of " +
       this.stim_base[1][0].cat +
       ". " +
       target_reminder[1] +
       "The task is otherwise the same. <b>Again: try to be as accurate and as fast as possible.</b>";
-    this.block_texts[6] =
-      "The second block is now done. This third block will again test the category of " +
-      this.stim_base[2][0].cat +
-      ". " +
-      target_reminder[2] +
-      " <b>Again: try to be as accurate and as fast as possible.</b>";
-    this.block_texts[7] =
-      "The third block is now done. This fourth and final block will again test the category of " +
-      this.stim_base[3][0].cat +
-      ". " +
-      target_reminder[3] +
-      " The task is otherwise still the same. <b>Again: try to be as accurate and as fast as possible.</b>";
   }
 
   capitalize(str1) {
@@ -629,61 +567,36 @@ export class HomePage {
     }
   }
 
-  set_guilty_vs_innocent() {
-    if (this.condition > 2) {
-      this.div_after_item_selection = "#div_story_disp";
-      $(".pre_detail").text("The criminal's ");
-      $("#final_check_id").html(
-        "This was the end of the lie detection test.<br><br>As a very important final check, please select below the details of the criminal as it was described in the beginning. This will confirm that you understood the instructions and remembered the crucial details."
-      );
-    } else {
-      this.div_after_item_selection = "#instructions";
-      $(".pre_detail").text("Your ");
-      $("#final_check_id").html(
-        "This is the end of the lie detection test.<br><br>As a very important final check, please select again the truly self-related details that you yourself gave in the very beginning. This will confirm that you understood the instructions and knew the crucial details."
-      );
-    }
-  }
   set_cit_conditions() {
     var inducers_instructions =
-      '<br><br>As continual reminders, there will also appear words that belong to one of the two categories (FAMILIAR or UNFAMILIAR). <br>Words belonging to the FAMILIAR category need the answer FAMILIAR ("I" key). These words are: <b>FAMILIAR</b>, <b>RECOGNIZED</b>, <b>MINE</b><br>Words belonging to the UNFAMILIAR category need the answer UNFAMILIAR ("E" key). These words are: <b>UNFAMILIAR</b>, <b>UNKNOWN</b>, <b>OTHER</b>, <b>THEIRS</b>, <b>THEM</b>, <b>FOREIGN</b></br></br>';
+      '<br><br>As continual reminders, there will also appear words that belong to one of the two categories (FAMILIAR or UNFAMILIAR). <br><br>Words belonging to the FAMILIAR category need the answer FAMILIAR (<i>right</i> button). These words are:<br> <b>FAMILIAR</b>, <b>RECOGNIZED</b>, <b>MINE</b><br><br>Words belonging to the UNFAMILIAR category need the answer UNFAMILIAR (<i>left</i> button). These words are:<br> <b>UNFAMILIAR</b>, <b>UNKNOWN</b>, <b>OTHER</b>, <b>THEIRS</b>, <b>THEM</b>, <b>FOREIGN</b></br></br>';
     if (this.condition == 0 || this.condition == 3) {
       // standard CIT
-      this.div_after_instr = "#div_target_check";
-      $("#task_instruction").html(
-        'Pressing the "I" key means "YES, I recognize this item as a relevant". Pressing the "E" key means "NO, I do not recognize this item as relevant". <br> You will see words (countries, animals) appearing in the middle of the screen. You have to recognize and say YES to the following target details: <b>' +
+      this.div_after_instr = "div_target_check";
+      this.task_instruction =
+        'Tapping the <i>right</i> button means "YES, I recognize this item as a relevant". Tapping the <i>left</i> button means "NO, I do not recognize this item as relevant". <br> You will see words (countries, animals) appearing in the middle of the screen. You have to recognize and say YES to the following target details: <br/><b>' +
         this.the_targets.join("</b>, <b>").toUpperCase() +
-        "</b><br>You have to say NO to all other details. Remember: you are denying that you recognize any of the other details as relevant to you, so you you have to say NO to all of them.<br><br>"
-      );
-      $("#label_top").html("recognize?");
-      $("#label_right").html('yes = "I"');
-      $("#label_left").html('no = "E"');
+        "</b><br/><br/>You have to say NO to all other details. Remember: you are denying that you recognize any of the other details as relevant to you, so you you have to say NO to all of them.<br/><br/>"
+        ;
       this.practice_stim = this.getPracticeTestStimuli_simple;
       this.main_stim = this.getAllTestStimuli_simple;
     } else if (this.condition == 1 || this.condition == 4) {
       // induced & target
-      this.div_after_instr = "#div_target_check";
-      $("#task_instruction").html(
-        'Pressing the "I" key means that the displayed item is "FAMILIAR" to you. Pressing the "E" key means that the item is "UNFAMILIAR" to you. You will see words (countries, animals) appearing in the middle of the screen. You have to say FAMILIAR to the following target details: <b>' +
+      this.div_after_instr = "div_target_check";
+      this.task_instruction =
+        'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (countries, animals) appearing in the middle of the screen. You have to say FAMILIAR to the following target details: <br><b>' +
         this.the_targets.join("</b>, <b>").toUpperCase() +
-        "</b><br>You have to say UNFAMILIAR to all other actual details (other countries, animals). Remember: you are denying that you recognize any of these other details as relevant to you, so you you have to say UNFAMILIAR to all of them. " +
+        "</b><br><br>You have to say UNFAMILIAR to all other actual details (other countries, animals). Remember: you are denying that you recognize any of these other details as relevant to you, so you you have to say UNFAMILIAR to all of them. " +
         inducers_instructions
-      );
-      $("#label_top").html("familiar to you?");
-      $("#label_right").html('familiar = "I"');
-      $("#label_left").html('unfamiliar = "E"');
+        ;
       this.practice_stim = this.getPracticeTestStimuli_induced;
       this.main_stim = this.getAllTestStimuli_induced;
     } else if (this.condition == 2 || this.condition == 5) {
       // induced - nontarget
       this.div_after_instr = "#div_cit_blockstart";
-      $("#task_instruction").html(
-        'Pressing the "I" key means that the displayed item is "FAMILIAR" to you. Pressing the "E" key means that the item is "UNFAMILIAR" to you. You will see words (countries, animals) appearing in the middle of the screen. You have to say UNFAMILIAR to all these details. Remember: you are denying that you recognize any of these details as relevant to you, so you you have to say UNFAMILIAR to all of them. ' +
-        inducers_instructions
-      );
-      $("#label_top").html("familiar to you?");
-      $("#label_right").html('familiar = "I"');
-      $("#label_left").html('unfamiliar = "E"');
+      this.task_instruction =
+        'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (countries, animals) appearing in the middle of the screen. You have to say UNFAMILIAR to all these details. Remember: you are denying that you recognize any of these details as relevant to you, so you you have to say UNFAMILIAR to all of them. ' +
+        inducers_instructions;
       this.practice_stim = this.getPracticeTestStimuli_induced;
       this.main_stim = this.getAllTestStimuli_induced;
     }
@@ -691,15 +604,15 @@ export class HomePage {
 
   item_display() {
     if (this.trial_stim.type == "target" || this.trial_stim.type == "selfrefitem") {
-      this.correct_resp = "i";
+      this.correct_resp = "resp_a";
     } else {
-      this.correct_resp = "e";
+      this.correct_resp = "resp_b";
     }
     //if (typeof key_press_sim === "function") {
     //                key_press_sim(); //remove
     //} //remove
     requestAnimationFrame(function() {
-      $("#stimulus").text(this.text_to_show);
+      this.stimulus_text = this.text_to_show;
       this.start = performance.now();
       this.listen = true;
       this.response_window = setTimeout(function() {
@@ -813,7 +726,7 @@ export class HomePage {
   }
 
   add_response() {
-    $("#stimulus").text("");
+    this.stimulus_text = "";
     var curr_type;
     if (
       ["selfrefitem", "otherrefitem", "target"].indexOf(this.trial_stim.type) >= 0
@@ -963,24 +876,35 @@ export class HomePage {
 
   prune() {
     //given the probe (in each of the categories), selects 8 additional items, 5 of which will later be irrelevants. None with same starting letter, and with length closest possible to the probe.
+    if (this.gender == 1) {
+      this.countrs = this.male_names;
+    } else {
+      this.countrs = this.fem_names;
+    }
+    this.countrs.forEach(function(item, index) {
+      this.countrs[index] = item.toLowerCase();
+    }, this);
     var true_details_base = [
-      $("#countries")
-        .val()
-        .toLowerCase(),
+      this.true_name.toLowerCase(),
       "may",
       11,
-      $("#animals")
-        .val()
-        .toLowerCase()
+      this.true_anim.toLowerCase()
     ];
     this.true_details = [
       true_details_base[0],
       [true_details_base[1], true_details_base[2]].join(" "),
       true_details_base[3]
     ];
+    var items_base1 = [
+      this.countrs.sort(),
+      ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"],
+      this.nums,
+      this.animls.sort()
+    ];
     var items_base2_temp = [];
     true_details_base.forEach(function(probe, index) {
-      var container = this.items_base1[index],
+
+      var container = items_base1[index],
         temps;
       var final8 = [probe];
       var maxdif = 0;
@@ -1010,7 +934,7 @@ export class HomePage {
             return Math.abs(probe.length - n.length) <= maxdif;
           });
           if (temps.length > 0) {
-            final8.push(this.rchoice(temps));
+            final8.push(temps[0]);
             container = container.filter(function(n) {
               return final8[final8.length - 1] !== n;
             });
@@ -1025,7 +949,7 @@ export class HomePage {
         }
       }
       items_base2_temp.push(final8);
-    });
+    }, this);
     var days = this.range(1, 32);
     var day;
     var days_to_filt1 = [true_details_base[2]];
@@ -1044,88 +968,17 @@ export class HomePage {
         var dys_temp = days.filter(function(a) {
           return days_to_filt2.indexOf(a) == -1;
         });
-        day = this.rchoice(dys_temp);
+        day = dys_temp[0];
       } else {
         day = items_base2_temp[2][0];
       }
       items_base2_temp[2][index] = [month, day].join(" ");
       days_to_filt1.push(day);
-    });
+    }, this);
     items_base2_temp.splice(1, 1);
     items_base2_temp.splice(1, 1); // skip dates
     this.items_base2 = items_base2_temp;
-  }
-
-  select_meaningful() {
-    this.set_guilty_vs_innocent(); // this sets instruction texts depending on guilt - unrelated to item selection
-    this.items_base2.forEach(function(categ, index1) {
-      var column = categ.slice(1, 9);
-      column.forEach(function(word, ind) {
-        column[ind] = word.toLowerCase();
-      });
-      column.sort();
-      column.splice(this.randomdigit(1, 6), 0, "None");
-      column.forEach(function(word, index2) {
-        var id_full = ["#wo", index1, index2].join("");
-        $(id_full).text(word);
-      });
-    });
-    $(".words0").click(function() {
-      var this_word = $(this).text();
-      if (this_word == "None") {
-        if ($(this).hasClass("turnedon")) {
-          $(this).removeClass("turnedon");
-          this.countC0 = 0;
-        } else {
-          if (this.countC0 === 0) {
-            $(this).addClass("turnedon");
-            this.countC0 = 9;
-          }
-        }
-      } else {
-        if ($(this).hasClass("turnedon")) {
-          $(this).removeClass("turnedon");
-          this.words_to_filter[0] = this.words_to_filter[0].filter(function(a) {
-            return a != this_word;
-          });
-          this.countC0--;
-        } else {
-          if (this.countC0 < 2) {
-            $(this).addClass("turnedon");
-            this.words_to_filter[0].push(this_word);
-            this.countC0++;
-          }
-        }
-      }
-    });
-    $(".words1").click(function() {
-      var this_word = $(this).text();
-      if (this_word == "None") {
-        if ($(this).hasClass("turnedon")) {
-          $(this).removeClass("turnedon");
-          this.countC1 = 0;
-        } else {
-          if (this.countC1 === 0) {
-            $(this).addClass("turnedon");
-            this.countC1 = 9;
-          }
-        }
-      } else {
-        if ($(this).hasClass("turnedon")) {
-          $(this).removeClass("turnedon");
-          this.words_to_filter[1] = this.words_to_filter[1].filter(function(a) {
-            return a != this_word;
-          });
-          this.countC1--;
-        } else {
-          if (this.countC1 < 2) {
-            $(this).addClass("turnedon");
-            this.words_to_filter[1].push(this_word);
-            this.countC1++;
-          }
-        }
-      }
-    });
+    this.create_stim_base();
   }
 
   create_stim_base() {
@@ -1134,7 +987,7 @@ export class HomePage {
     this.items_base2.forEach(function(categ, index) {
       var filtered_words = categ.filter(function(a) {
         return this.words_to_filter[index].indexOf(a) == -1;
-      });
+      }, this);
       var words_array = [];
       if (this.condition < 3) {
         words_array = [filtered_words[0]].concat(
@@ -1157,84 +1010,38 @@ export class HomePage {
         } else {
           stim_base_temp[index][num]["type"] = "irrelevant" + (num - 1);
         }
-      });
-    });
-    this.stim_base = [
-      stim_base_temp[0],
-      stim_base_temp[1],
-      stim_base_temp[0],
-      stim_base_temp[1]
-    ];
+      }, this);
+    }, this);
+    if (this.cat_order == 0) {
+      this.stim_base = [
+        stim_base_temp[0],
+        stim_base_temp[1]
+      ];
+    } else {
+      this.stim_base = [
+        stim_base_temp[1],
+        stim_base_temp[0]
+      ];
+    }
     this.set_block_texts();
     this.set_cit_conditions();
   }
 
   target_check() {
     if (
-      $("#tcheck_countries")
-        .val()
-        .toUpperCase() != this.the_targets[0].toUpperCase() ||
-      $("#tcheck_animals")
-        .val()
-        .toUpperCase() != this.the_targets[1].toUpperCase()
+      this.targ_check_inp[0].toUpperCase() != this.the_targets[0].toUpperCase() ||
+
+        this.targ_check_inp[1].toUpperCase() != this.the_targets[1].toUpperCase()
     ) {
       alert("Wrong! Please check the details more carefully!");
-      $("#div_target_check").hide();
-      $("#instructions").show();
-      $("#tcheck_countries").val("");
-      $("#tcheck_animals").val("");
-      $("#tcheck_months").val("");
-      $("#tcheck_days").val("");
-      return false;
+      this.current_div = "div_instructions";
+      this.targ_check_inp = ["",""];
     } else {
-      this.div_after_instr = "#div_cit_blockstart";
-      return true;
+      this.div_after_instr = "div_blockstart";
+      this.current_div = "div_blockstart";
     }
   }
 
-  final_probe_check() {
-    // if (all_filled) { // should validate form
-    var multip = 1 + 999 * this.failed_final;
-    if (
-      $("#fcheck_countries")
-        .val()
-        .toUpperCase() != this.the_probes[0].toUpperCase()
-    ) {
-      this.num_of_failed_fin += 100 * multip;
-    }
-    if (
-      $("#fcheck_animals")
-        .val()
-        .toUpperCase() != this.the_probes[1].toUpperCase()
-    ) {
-      this.num_of_failed_fin += 1 * multip;
-    }
-    if (
-      $("#fcheck_countries")
-        .val()
-        .toUpperCase() != this.the_probes[0].toUpperCase() ||
-      $("#fcheck_animals")
-        .val()
-        .toUpperCase() != this.the_probes[1].toUpperCase()
-    ) {
-      if (this.failed_final == 0) {
-        this.failed_final = 1;
-        alert("Wrong!");
-        $("#final_check_feedback").html(
-          "<b>Your selection was not correct! It is crucial that you select these details correctly. Please take your time and make sure you understand what you need to select. Then try to select all details correctly.</b><br>"
-        );
-        return false;
-      } else {
-        this.failed_final = 2;
-        return true;
-      }
-    } else {
-      return true;
-    }
-    //else {
-    //  return false;
-    //}
-  }
   end_task(full_validity = "") {
     var f_name =
       full_validity +

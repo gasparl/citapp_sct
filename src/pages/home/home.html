@@ -1,4 +1,4 @@
-<ion-content padding [ngSwitch]="current_div" text-wrap>
+<ion-content padding [ngSwitch]="current_div" [ngStyle]="{ 'background-color': bg_color }" text-wrap>
 
   <div *ngSwitchCase="'div_dummy'"></div>
 
@@ -54,7 +54,7 @@
 
     <form (ngSubmit)="task_start();" [formGroup]="form_dems">
 
-      <p style="border-bottom: 2px solid grey; padding-bottom:3vw">
+      <p style="border-bottom: 2px solid grey; padding-bottom:10px">
         Make sure to enter the <b>exact</b> same items both on the PC and on the phone. In your name, always use the exact same characters.
       </p>
 
@@ -62,14 +62,14 @@
         Your forename:
     </span>
 
-      <ion-item style="padding-bottom:8vw;">
+      <ion-item style="padding-bottom:30px;">
         <ion-label class="stackedlabels" *ngIf="!form_dems.controls.name_inp.valid  && submit_failed" stacked>Please enter a valid name.</ion-label>
         <ion-input formControlName="name_inp" type="text" [class.invalid]="!form_dems.controls.name_inp.valid  && submit_failed"></ion-input>
       </ion-item>
       <span style="padding-left: 16px;float: left;">
         Your gender:
     </span>
-      <ion-item style="padding-bottom:8vw;">
+      <ion-item style="padding-bottom:30px;">
         <ion-label class="stackedlabels" stacked *ngIf="!form_dems.controls.gender_inp.valid  && submit_failed">Please choose gender.</ion-label>
         <ion-select interface='popover' formControlName="gender_inp" [class.invalid]="!form_dems.controls.gender_inp.valid  && submit_failed" placeholder="- select -">
           <ion-option value="1">Male</ion-option>
@@ -79,7 +79,7 @@
       <span style="padding-left: 16px;float: left;">
         Your favorite animal (among the options):
     </span>
-      <ion-item style="padding-bottom:8vw;">
+      <ion-item style="padding-bottom:30px;">
         <ion-label class="stackedlabels" *ngIf="!form_dems.controls.animal_inp.valid  && submit_failed" stacked> Please select an animal.</ion-label>
         <ion-select interface='action-sheet' formControlName="animal_inp" [class.invalid]="!form_dems.controls.animal_inp.valid  && submit_failed" style="max-width:100%;" placeholder="- select -">
           <ion-option *ngFor="let item of animls" value="{{item}}">{{item}}</ion-option>
@@ -133,23 +133,25 @@
   <div *ngSwitchCase="'div_blockstart'">
     <p [innerHTML]="block_texts[blocknum]"></p>
     <div text-center>
-      <button ion-button (tap)="goback($event)">Start</button>
+      <button ion-button (tap)="switch_divs('div_cit_main')">Start</button>
       <hr/>
-      <button ion-button style="text-transform: none;background-color:#5e749d;" (tap)="switch_divs('div_cit_main');">show instructions again</button>
+      <button ion-button style="text-transform: none;background-color:#5e749d;" (tap)="switch_divs('div_instructions');">show instructions again</button>
     </div>
   </div>
 
 
-  <div id="div_cit_main" *ngSwitchCase="'cit_main'">
+  <div id="div_cit_main" *ngSwitchCase="'div_cit_main'">
     <p id="tooslow"><b>TOO SLOW</b></p>
     <p id="false"><b>WRONG</b></p>
-    <p id="label_top">FAMILIAR?</p>
-    <p (touchstart)="touchstart($event);" (touchend)="touchend($event);" id="label_left">NO: e</p>
-    <p (touchstart)="touchstart($event);" (touchend)="touchend($event);" id="label_right">YES: i</p>
-    <p id="stimulus">{{stimulus_text}}</p>
-    <p id="start_text">To begin, tap NO and YES at once.</p>
+    <p id="label_top" *ngIf="visib.labels">FAMILIAR?</p>
 
-    <button ion-button large primary (touchstart)="touchstart($event);" (touchend)="touchend($event);">touchstartend</button>
+    <p (touchstart)="touchstart($event);" (touchend)="touchend($event);" id="label_left" class="resp_buttons">NO: e</p>
+
+    <p (touchstart)="touchstart($event);" (touchend)="touchend($event);" id="label_right" class="resp_buttons">YES: i</p>
+
+    <p id="stimulus">{{stimulus_text}}</p>
+
+    <p id="start_text" (tap)="visib.start_text = false; next_trial();" *ngIf="visib.start_text">Tap this to begin.</p>
 
 
   </div>

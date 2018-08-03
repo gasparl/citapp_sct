@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
 import { NavController } from "ionic-angular";
-//import * as $ from 'jquery'
 import { Storage } from "@ionic/storage";
 import { EmailComposer } from "@ionic-native/email-composer";
 import { Platform } from "ionic-angular";
@@ -29,8 +28,8 @@ export class HomePage {
   task_instruction: string;
   true_name: string;
   true_anim: string;
-  current_div: string = "div_dems"; // default: "set_items"
-  visib: boolean;
+  current_div: string = "div_cit_main"; // ddd default: "set_items", div_dems, div_cit_main
+  visib: any = {};
   email_addr: string;
   block_texts: string[] = [];
   form_items: FormGroup;
@@ -112,11 +111,12 @@ export class HomePage {
     public platform: Platform,
     public formBuilder: FormBuilder
   ) {
-    this.visib = true;
     this.email_addr = "lkcsgaspar@gmail.com";
     this.basic_times.loaded = Date();
     this.basic_times.blocks = "";
     this.nums = this.range(1, 32);
+    this.visib.start_text = true;
+    this.visib.labels = true;
 
     this.form_dems = formBuilder.group({
       gender_inp: [
@@ -154,16 +154,15 @@ export class HomePage {
     this.basic_times.consented = Date();
   }
 
-  touchstart(event) {
-    console.log("start:");
-    console.log(performance.now());
-    console.log(event.timeStamp);
+  start_count: number;
+  touchstart(ev) {
+
+    console.log(ev.timeStamp);
     //timeout here - if no touchend event, then "Touched for too long!"
   }
-  touchend(event) {
-    console.log("end:");
-    console.log(event.timeStamp);
-    console.log(event);
+  touchend(ev) {
+    console.log(ev.timeStamp);
+    console.log(ev);
   }
   switch_divs(div_to_show) {
     this.current_div = div_to_show;
@@ -574,7 +573,7 @@ export class HomePage {
       // standard CIT
       this.div_after_instr = "div_target_check";
       this.task_instruction =
-        'Tapping the <i>right</i> button means "YES, I recognize this item as a relevant". Tapping the <i>left</i> button means "NO, I do not recognize this item as relevant". <br> You will see words (countries, animals) appearing in the middle of the screen. You have to recognize and say YES to the following target details: <br/><b>' +
+        'Tapping the <i>right</i> button means "YES, I recognize this item as a relevant". Tapping the <i>left</i> button means "NO, I do not recognize this item as relevant". <br> You will see words (countries, animals) appearing in the middle of the screen. You have to recognize and say YES to the following target details: <b>' +
         this.the_targets.join("</b>, <b>").toUpperCase() +
         "</b><br/><br/>You have to say NO to all other details. Remember: you are denying that you recognize any of the other details as relevant to you, so you you have to say NO to all of them.<br/><br/>"
         ;
@@ -584,7 +583,7 @@ export class HomePage {
       // induced & target
       this.div_after_instr = "div_target_check";
       this.task_instruction =
-        'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (countries, animals) appearing in the middle of the screen. You have to say FAMILIAR to the following target details: <br><b>' +
+        'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (countries, animals) appearing in the middle of the screen. You have to say FAMILIAR to the following target details: <b>' +
         this.the_targets.join("</b>, <b>").toUpperCase() +
         "</b><br><br>You have to say UNFAMILIAR to all other actual details (other countries, animals). Remember: you are denying that you recognize any of these other details as relevant to you, so you you have to say UNFAMILIAR to all of them. " +
         inducers_instructions
@@ -661,7 +660,7 @@ export class HomePage {
         "You will have to repeat this practice round, because of too few correct responses.<br><br>You need at least 60% accuracy on each item type, but you did not have enough correct responses for the following one(s):" +
         types_failed.join(",") +
         ".<br><br>Try to make responses both accurately and in time.<br><br>";
-      $("#feedback_id" + this.blocknum).html(feedback_text);
+      //$("#feedback_id" + this.blocknum).html(feedback_text);
 
     }
     return is_valid;
@@ -785,7 +784,6 @@ export class HomePage {
     this.practice_num++;
   }
   nextblock() {
-    $("*").css("cursor", "auto");
     if (this.blocknum <= this.num_of_blocks) {
       this.block_trialnum = 0;
       if (this.blocknum == 1) {
@@ -802,59 +800,17 @@ export class HomePage {
         this.main_stim();
       }
       this.rt_data_dict = {};
-      this.show_blockstart();
+      this.current_div = 'div_blockstart';
     } else {
       this.basic_times.blocks += "\nBlock " + this.blocknum + " end_last " + Date();
-      $("#div_cit_main").hide();
-      $("#div_outro_check").show();
-    }
-  }
-  show_blockstart() {
-    if (this.practice_repeated["block" + this.blocknum] == 0 || this.blocknum > 3) {
-      $("#infotext").html(this.block_texts[this.blocknum]);
-    }
-    if (this.practice_chances == 1) {
-      $("#chances_id").html(
-        "<b>Now you only have 1 single chance left to complete this practice round correctly!</b> Our minimum requirements are very low. If you understand the instructions clearly, and follow them carefully, you must be able to complete the task. Otherwise you will not be able to continue with this experiment."
-      );
-    } else {
-      if (this.blocknum == 3) {
-        $("#chances_id").html(
-          "You have only <b>" +
-          this.practice_chances +
-          " chances</b> to complete this last practice round."
-        );
-      } else {
-        $("#chances_id").html(
-          "Please make sure you clearly understand the instructions before continuing with the task! You have only <b>" +
-          this.practice_chances +
-          " chances</b> to complete this practice round."
-        );
-      }
-    }
-    $("#div_cit_main").hide();
-    if (this.first_blockstart == true) {
-      this.first_blockstart = false;
-    } else {
-      $("#div_cit_blockstart").show();
     }
   }
   runblock() {
     this.basic_times.blocks += "\nBlock " + this.blocknum + " start " + Date();
-    $("*").css("cursor", "none");
-    $("#div_cit_blockstart").hide();
-    $("#start_text").show();
-    $("#div_cit_main").show();
+    this.visib.start_text = true;
     this.can_start = true;
   }
-  start_trials() {
-    if (this.can_start === true) {
-      this.can_start = false;
-      $("#start_text").hide();
-      this.next_trial();
 
-    }
-  }
 
   process_resp(response_side) {
     if (this.listen === true) {
@@ -903,7 +859,6 @@ export class HomePage {
     ];
     var items_base2_temp = [];
     true_details_base.forEach(function(probe, index) {
-
       var container = items_base1[index],
         temps;
       var final8 = [probe];
@@ -919,7 +874,7 @@ export class HomePage {
           return probe[0] != n[0];
         });
         if (index === 0 || index === 3) {
-          if (/\s/.test(probe)) {
+          if (/\s/.test(probe.toString())) {
             container = container.filter(function(n) {
               return /\s/.test(n);
             });
@@ -931,7 +886,7 @@ export class HomePage {
         }
         while (final8.length < 9 && maxdif < 99) {
           temps = container.filter(function(n) {
-            return Math.abs(probe.length - n.length) <= maxdif;
+            return Math.abs(probe.toString().length - n.length) <= maxdif;
           });
           if (temps.length > 0) {
             final8.push(temps[0]);
@@ -1076,19 +1031,5 @@ export class HomePage {
       this.practice_repeated.block1 +
       this.practice_repeated.block2 +
       this.practice_repeated.block3;
-    this.dems +=
-      "\t" +
-      practice_all_reps +
-      "\t" +
-      duration_full +
-      "\t" +
-      this.failed_final +
-      "\t" +
-      this.num_of_failed_fin +
-      "\t" +
-      $("#sal_country").val() +
-      "\t" +
-      $("#sal_animal").val() +
-      "\n";
   }
 }

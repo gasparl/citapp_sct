@@ -108,22 +108,20 @@
   <div *ngSwitchCase="'div_target_check'">
 
     <p><b>To make sure you correctly memorized the target details, please fill them in below.</b>
-        </p>
-<br/><br/>
-    Target country:
+    </p>
+    <br/><br/> Target country:
     <ion-item text-uppercase>
       <ion-input [(ngModel)]="targ_check_inp[0]" type="text" text-uppercase>
       </ion-input>
-  </ion-item>
-  <br/>
-    Target animal:
-    <ion-item >
+    </ion-item>
+    <br/> Target animal:
+    <ion-item>
       <ion-input [(ngModel)]="targ_check_inp[1]" type="text" text-uppercase>
       </ion-input>
     </ion-item>
 
-<p><br/>
-        </p>
+    <p><br/>
+    </p>
     <div text-center>
       <button ion-button (tap)="target_check();">OK</button>
     </div>
@@ -145,9 +143,13 @@
     <p id="false"><b>WRONG</b></p>
     <p id="label_top" *ngIf="visib.labels">FAMILIAR?</p>
 
-    <p (touchstart)="touchstart($event);" (touchend)="touchend($event);" id="label_left" class="resp_buttons">NO: e</p>
+    <p (touchstart)="touchstart($event);" (touchend)="touchend($event);" id="resp_left" class="resp_buttons"></p>
 
-    <p (touchstart)="touchstart($event);" (touchend)="touchend($event);" id="label_right" class="resp_buttons">YES: i</p>
+    <p (touchstart)="touchstart($event);" (touchend)="touchend($event);" id="resp_right" class="resp_buttons"></p>
+
+    <p id="label_left" class="labels">NO</p>
+
+    <p id="label_right" class="labels">YES</p>
 
     <p id="stimulus">{{stimulus_text}}</p>
 

@@ -1,17 +1,11 @@
 <ion-content padding [ngSwitch]="current_div" [ngStyle]="{ 'background-color': bg_color }" text-wrap>
 
-  <div *ngSwitchCase="'div_dummy'"></div>
 
+    <ion-input (keypress)="onChange($event)"
+     [(ngModel)]="to_exec" type="text" style="color:red"></ion-input>
 
   <div *ngSwitchDefault>
 
-    <header>
-      <ion-navbar>
-        <ion-title>
-          CIT App
-        </ion-title>
-      </ion-navbar>
-    </header><br/>
     <p>
       Subject number:
     </p>
@@ -101,7 +95,7 @@
     </ion-title>
     <p>During the task, there will be two buttons at the bottom of the screen: one on the <i>left-hand side</i> and one on the <i>right-hand side</i>. <span [innerHTML]="task_instruction"></span></p>
     <div text-center>
-      <button ion-button (tap)="switch_divs(div_after_instr);">OK</button>
+      <button ion-button (tap)="nextblock();">OK</button>
     </div>
   </div>
 
@@ -131,7 +125,7 @@
   <div *ngSwitchCase="'div_blockstart'">
     <p [innerHTML]="block_texts[blocknum]"></p>
     <div text-center>
-      <button ion-button (tap)="switch_divs('div_cit_main')">Start</button>
+      <button ion-button (tap)="runblock();">Start</button>
       <hr/>
       <button ion-button style="text-transform: none;background-color:#5e749d;" (tap)="switch_divs('div_instructions');">show instructions again</button>
     </div>
@@ -139,32 +133,27 @@
 
 
   <div id="div_cit_main" *ngSwitchCase="'div_cit_main'">
-    <p id="tooslow"><b>TOO SLOW</b></p>
-    <p id="false"><b>WRONG</b></p>
-    <p id="label_top" *ngIf="visib.labels">FAMILIAR?</p>
+    <p id="feed_id"><b>{{feed_text}}</b></p>
+    <p id="label_top" *ngIf="visib.labels">Recognize?</p>
 
-    <p (touchstart)="touchstart($event);" (touchend)="touchend($event);" id="resp_left" class="resp_buttons"></p>
+    <p (touchstart)="touchstart($event, 'resp_a');" (touchend)="touchend($event, 'resp_a');" id="resp_left" class="resp_buttons"></p>
 
-    <p (touchstart)="touchstart($event);" (touchend)="touchend($event);" id="resp_right" class="resp_buttons"></p>
+    <p (touchstart)="touchstart($event, 'resp_b');" (touchend)="touchend($event, 'resp_b');" id="resp_right" class="resp_buttons"></p>
 
-    <p id="label_left" class="labels">NO</p>
+    <p id="label_left" class="labels" *ngIf="visib.labels">No</p>
 
-    <p id="label_right" class="labels">YES</p>
+    <p id="label_right" class="labels" *ngIf="visib.labels">Yes</p>
 
     <p id="stimulus">{{stimulus_text}}</p>
 
-    <p id="start_text" (tap)="visib.start_text = false; next_trial();" *ngIf="visib.start_text">Tap this to begin.</p>
+    <p id="start_text" (tap)="visib.start_text = false; start_trials();" *ngIf="visib.start_text">Tap this to begin.</p>
 
 
   </div>
 
 
-  <div id="div_end" *ngSwitchCase="'ending'">
+  <div *ngSwitchCase="'div_end'">
     This is the end!
-    <ion-item>
-      <ion-label>Email address</ion-label>
-      <ion-input [(ngModel)]="email_addr" name="email" type="email"></ion-input>
-    </ion-item>
     <button ion-button type="button" (tap)="send_email()">Send data</button>
   </div>
 

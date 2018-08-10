@@ -11,10 +11,53 @@ import { AgeValidator } from "./home_validation";
   templateUrl: "home.html"
 })
 export class HomePage {
+  to_exec: any;
+  onChange(ee) {
+    if (ee.keyCode === 13) {
+      console.log(eval(this.to_exec))
+    }
+  }
+  touchsim() {
+    var info = this.trial_stim.type + " (" + this.trial_stim.word + ")";
+    var rt_sim = this.randomdigit(500, 830);
+    var correct_chance1 = 1;
+    var correct_chance2 = 0.95;
+    var correct_chance, sim_key, corr_code, incor_code, chosen_response;
+    var simTimeout = setTimeout(function() {
+      if (this.blocknum == 1) {
+        correct_chance = correct_chance1;
+      } else {
+        correct_chance = correct_chance2;
+      }
+      if (this.correct_resp == "resp_a") {
+        corr_code = "resp_a";
+        incor_code = "resp_b";
+      } else {
+        corr_code = "resp_b";
+        incor_code = "resp_a";
+      }
+      if (Math.random() < correct_chance) { // e.g. 95% correctly right key
+        sim_key = corr_code;
+      } else {
+        sim_key = incor_code;
+      }
+      if (sim_key == "resp_a") {
+        chosen_response = "Response: resp_a (LEFT)";
+      } else {
+        chosen_response = "Response: resp_b (RIGHT)";
+      }
+      info += "\n--len(stims): " + this.teststim.length + ", trialnum: " + this.block_trialnum + "\n";
+      this.touchstart("", sim_key);
+      info += chosen_response + " preset " + rt_sim + ", actual " + Math.round(performance.now() - this.start) + "\n";
+      console.log(info);
+  }.bind(this), rt_sim);
+  }
+
   experiment_title: string = "ECIT_Mobile";
   false_delay: number = 400;
   tooslow_delay: number = 400;
-  isi_delay_minmax: number[] = [100, 300];
+  isi_delay_minmax: number[] = [300, 600];
+  isi_delay: number = 99999;
   end_url: string = "https://www.figure-eight.com/";
   all_conditions: number[] = [0, 1, 2, 3, 4, 5];
   condition: number = 0;
@@ -23,12 +66,12 @@ export class HomePage {
   subj_id: string;
   response_deadline: number;
   response_deadline_main: number = 800;
-  num_of_blocks: number = 7;
-  bg_color: string = "#031116";
+  bg_color: string = "#fff";
+  feed_text: string = "";
   task_instruction: string;
   true_name: string;
   true_anim: string;
-  current_div: string = "div_cit_main"; // ddd default: "set_items", div_dems, div_cit_main
+  current_div: string = "div_dems"; // ddd default: "set_conds", div_dems, div_cit_main
   visib: any = {};
   email_addr: string;
   block_texts: string[] = [];
@@ -59,16 +102,18 @@ export class HomePage {
     block3: 0
   };
   cit_data: string =
-    "subject_id\tlabel_status\tblock_number\ttrial_number\tstimulus_shown\tcategory\tstim_type\tresponse_key\trt\tincorrect\ttoo_slow\tdate_in_ms\n";
+    "subject_id\tcondition\tcateg_order\tblock_number\ttrial_number\tstimulus_shown\tcategory\tstim_type\tresponse_key\trt_start\trt_end\tincorrect\ttoo_slow\tisi\tdate_in_ms\n";
   correct_resp: string = "none";
   blocknum: number = 1;
-  rt: number = 99999;
+  rt_start: number = 99999;
+  rt_end: number = 99999;
   start: any = 0;
   listen: boolean = false;
+  listn_end: boolean = false;
   it_type_feed_dict: any = {
     selfrefitem: "familiarity-related items",
     otherrefitem: "unfamiliarity-related items",
-    main_item: "actual details (countries or animals)",
+    main_item: "actual details (forenames or animals)",
     target: "target items"
   };
   practice_chances: number = 5;
@@ -90,10 +135,10 @@ export class HomePage {
   true_details: any[];
 
   words_to_filter: any[] = [[], []];
-    targ_check_inp: string[] = ["",""];
+  targ_check_inp: string[] = ["", ""];
 
-  categories_base: string[] = ["countries", "months", "days", "animals"];
-  categories: string[] = ["countries", "animals"];
+  categories_base: string[] = ["forenames", "months", "days", "animals"];
+  categories: string[] = ["forenames", "animals"];
 
   countrs: any[];
 
@@ -154,16 +199,6 @@ export class HomePage {
     this.basic_times.consented = Date();
   }
 
-  start_count: number;
-  touchstart(ev) {
-
-    console.log(ev.timeStamp);
-    //timeout here - if no touchend event, then "Touched for too long!"
-  }
-  touchend(ev) {
-    console.log(ev.timeStamp);
-    console.log(ev);
-  }
   switch_divs(div_to_show) {
     this.current_div = div_to_show;
   }
@@ -179,7 +214,9 @@ export class HomePage {
       this.gender = 1;
       this.true_anim = "cat"
       this.prune();
-      this.switch_divs("div_blockstart");
+      console.log(this.stim_base);
+      this.div_after_instr = "div_blockstart";
+      this.nextblock(); //TODO %%%%%% HERE THIS CORRECT
     } else {
       this.true_name = this.form_dems.get("name_inp").value;
       this.gender = this.form_dems.get("gender_inp").value;
@@ -205,7 +242,7 @@ export class HomePage {
   // texts to display before blocks
 
   set_block_texts() {
-    var country_for_disp = this.capitalize(this.the_probes[0]);
+    var forename_for_disp = this.capitalize(this.the_probes[0]);
     var target_reminder;
     if (this.condition == 2 || this.condition == 5) {
       target_reminder = ["", "", "", ""];
@@ -227,17 +264,17 @@ export class HomePage {
     }
     this.block_texts[0] = "";
     this.block_texts[1] =
-      'There will be three short practice rounds. In this first practice round, we just want to see that you clearly understand the task. Therefore, you will have a lot of time to choose each of your responses, just make sure you choose accurately. Here, all items from the two categories (countries, animals) will be mixed together randomly. <b>You must respond to each item correctly.</b> If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice round.<br><br>If needed, tap <b>show instructions again</b> to reread the details.<br><br><p id="chances_id"></p>';
+      'There will be three short practice rounds. In this first practice round, we just want to see that you clearly understand the task. Therefore, you will have a lot of time to choose each of your responses, just make sure you choose accurately. Here, all items from the two categories (forenames, animals) will be mixed together randomly. <b>You must respond to each item correctly.</b> If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice round.<br><br>If needed, tap <b>show instructions again</b> to reread the details.<br><br>';
     this.block_texts[2] =
-      '<span id="feedback_id2">Great, you passed the first practice round. In this second practice round, there will be a shorter deadline for the responses, but a certain rate of errors is allowed. (Items will be first country names, then animal names, then again countries, etc.) Try to be as accurate and as fast as possible.<br><br></span><p id="chances_id"></p>';
+      'Great, you passed the first practice round. In this second practice round, there will be a shorter deadline for the responses, but a certain rate of errors is allowed. (Items will be first forename names, then animal names, then again forenames, etc.) Try to be as accurate and as fast as possible.<br>';
     this.block_texts[3] =
-      "<span id='feedback_id3'>You passed the second practice round. This will be the third and last practice round. The response deadline is again shorter.<br><br>The task is designed to be difficult, so don't be surprised if you make mistakes, but do your best: <b>try to be as accurate and as fast as possible</b>.<br></span><p id='chances_id'></p>";
+      "You passed the second practice round. This will be the third and last practice round. The response deadline is again shorter.<br><br>The task is designed to be difficult, so don't be surprised if you make mistakes, but do your best: <b>try to be as accurate and as fast as possible</b>.<br>";
     this.block_texts[4] =
       "Good job. Now begins the actual test. The task is the same. There will be four blocks, with pauses between them. This first block tests the category of " +
       this.stim_base[0][0].cat +
       ", so you will be shown only the related items. " +
       target_reminder[0] +
-      "<br><br>The minimum accuracy will now be much less strict than in the practice phase, but these blocks cannot be repeated, so you must keep paying attention in order to perform the test validly. <b>Again: try to be as accurate and as fast as possible.</b><br><br>When you are ready, click on <b>Start</b> to start the first block of the main test.";
+      "<br><br><b>Again: try to be as accurate and as fast as possible.</b><br><br>When you are ready, click on <b>Start</b> to start the first block of the main test.";
     this.block_texts[5] =
       "The first block is now done. The second and last block will test the category of " +
       this.stim_base[1][0].cat +
@@ -318,7 +355,7 @@ export class HomePage {
           stim_words.push(stim_dict.word);
           this.teststim.push(stim_dict);
         }
-      });
+      }, this);
     }
   }
 
@@ -328,7 +365,7 @@ export class HomePage {
     this.stim_base.slice(0, 2).forEach(function(groupOf6) {
       var blocksOf108 = this.randomDegradePlus(groupOf6);
       this.prac_teststim.push.apply(this.prac_teststim, blocksOf108.slice(0, 6));
-    });
+    }, this);
   }
   getAllTestStimuli_simple() {
     //same as above, but for the full test: 3x36=108 stimuli from each of the 3 categories
@@ -340,7 +377,7 @@ export class HomePage {
     this.stim_base.slice(0, 2).forEach(function(groupOf6) {
       var blocksOf162 = this.inducersAdded(groupOf6);
       this.prac_teststim.push.apply(this.prac_teststim, blocksOf162.slice(0, 9));
-    });
+    }, this);
   }
   getAllTestStimuli_induced() {
     //same as above, but one block of the full test: 162 stimuli from each of the 3 categories
@@ -417,7 +454,7 @@ export class HomePage {
         stim_108[index].filler =
           currentFiller + orders[currentFiller][wordIndex].splice(0, 1);
       }
-    });
+    }, this);
     return stim_108;
   }
   randomDegrade(arrayOf6dicts) {
@@ -528,32 +565,33 @@ export class HomePage {
           break;
         }
       }
-    });
+    }, this);
     var stim_36 = stimuli_36.map(function(n) {
       return n;
     });
+    stim_36 = [].concat.apply([], stim_36);
     return stim_36;
   }
 
   flash_too_slow() {
-    //$("#tooslow").show();
+    this.feed_text = "Zu langsam!";
     setTimeout(function() {
-      //$("#tooslow").hide();
+      this.feed_text = "";
       this.tooslow = 1;
       this.rspns = "x";
       this.first_prac_wrong();
-      this.add_response();
-    }, this.tooslow_delay);
+      this.post_resp_hold();
+    }.bind(this), this.tooslow_delay);
   }
 
   flash_false() {
-    //$("#false").show();
+    this.feed_text = "Falsch!";
     setTimeout(function() {
-      //$("#false").hide();
+      this.feed_text = "";
       this.incorrect = 1;
       this.first_prac_wrong();
-      this.add_response();
-    }, this.false_delay);
+      this.post_resp_hold();
+    }.bind(this), this.false_delay);
   }
 
   first_prac_wrong() {
@@ -573,7 +611,7 @@ export class HomePage {
       // standard CIT
       this.div_after_instr = "div_target_check";
       this.task_instruction =
-        'Tapping the <i>right</i> button means "YES, I recognize this item as a relevant". Tapping the <i>left</i> button means "NO, I do not recognize this item as relevant". <br> You will see words (countries, animals) appearing in the middle of the screen. You have to recognize and say YES to the following target details: <b>' +
+        'Tapping the <i>right</i> button means "YES, I recognize this item as a relevant". Tapping the <i>left</i> button means "NO, I do not recognize this item as relevant". <br> You will see words (forenames, animals) appearing in the middle of the screen. You have to recognize and say YES to the following target details: <b>' +
         this.the_targets.join("</b>, <b>").toUpperCase() +
         "</b><br/><br/>You have to say NO to all other details. Remember: you are denying that you recognize any of the other details as relevant to you, so you you have to say NO to all of them.<br/><br/>"
         ;
@@ -583,18 +621,18 @@ export class HomePage {
       // induced & target
       this.div_after_instr = "div_target_check";
       this.task_instruction =
-        'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (countries, animals) appearing in the middle of the screen. You have to say FAMILIAR to the following target details: <b>' +
+        'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (forenames, animals) appearing in the middle of the screen. You have to say FAMILIAR to the following target details: <b>' +
         this.the_targets.join("</b>, <b>").toUpperCase() +
-        "</b><br><br>You have to say UNFAMILIAR to all other actual details (other countries, animals). Remember: you are denying that you recognize any of these other details as relevant to you, so you you have to say UNFAMILIAR to all of them. " +
+        "</b><br><br>You have to say UNFAMILIAR to all other actual details (other forenames, animals). Remember: you are denying that you recognize any of these other details as relevant to you, so you you have to say UNFAMILIAR to all of them. " +
         inducers_instructions
         ;
       this.practice_stim = this.getPracticeTestStimuli_induced;
       this.main_stim = this.getAllTestStimuli_induced;
     } else if (this.condition == 2 || this.condition == 5) {
       // induced - nontarget
-      this.div_after_instr = "#div_cit_blockstart";
+      this.div_after_instr = "div_cit_blockstart";
       this.task_instruction =
-        'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (countries, animals) appearing in the middle of the screen. You have to say UNFAMILIAR to all these details. Remember: you are denying that you recognize any of these details as relevant to you, so you you have to say UNFAMILIAR to all of them. ' +
+        'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (forenames, animals) appearing in the middle of the screen. You have to say UNFAMILIAR to all these details. Remember: you are denying that you recognize any of these details as relevant to you, so you you have to say UNFAMILIAR to all of them. ' +
         inducers_instructions;
       this.practice_stim = this.getPracticeTestStimuli_induced;
       this.main_stim = this.getAllTestStimuli_induced;
@@ -603,29 +641,27 @@ export class HomePage {
 
   item_display() {
     if (this.trial_stim.type == "target" || this.trial_stim.type == "selfrefitem") {
-      this.correct_resp = "resp_a";
-    } else {
       this.correct_resp = "resp_b";
+    } else {
+      this.correct_resp = "resp_a";
     }
-    //if (typeof key_press_sim === "function") {
-    //                key_press_sim(); //remove
-    //} //remove
-    requestAnimationFrame(function() {
+    this.touchsim(); // for testing -- REMOVE
+    requestAnimationFrame(() => {
       this.stimulus_text = this.text_to_show;
       this.start = performance.now();
       this.listen = true;
       this.response_window = setTimeout(function() {
-        this.rt = performance.now() - this.start;
+        this.rt_start = performance.now() - this.start;
         this.listen = false;
         this.flash_too_slow();
-      }, this.response_deadline);
+      }.bind(this), this.response_deadline);
     });
   }
   isi() {
-    var isi_delay = this.randomdigit(this.isi_delay_minmax[0], this.isi_delay_minmax[1]);
+    this.isi_delay = this.randomdigit(1, this.isi_delay_minmax[1] - this.isi_delay_minmax[0]);
     setTimeout(function() {
       this.item_display();
-    }, isi_delay);
+    }.bind(this), this.isi_delay);
   }
 
   practice_eval() {
@@ -653,15 +689,11 @@ export class HomePage {
         }
       }
     }
-    if (is_valid == false) {
-      this.practice_chances--;
-
-      var feedback_text =
+    if (is_valid == false && this.blocknum != 1) {
+      this.block_texts[this.blocknum] =
         "You will have to repeat this practice round, because of too few correct responses.<br><br>You need at least 60% accuracy on each item type, but you did not have enough correct responses for the following one(s):" +
         types_failed.join(",") +
         ".<br><br>Try to make responses both accurately and in time.<br><br>";
-      //$("#feedback_id" + this.blocknum).html(feedback_text);
-
     }
     return is_valid;
   }
@@ -693,10 +725,18 @@ export class HomePage {
       alert(feedback_text);
     }
   }
+
+  start_trials() {
+    setTimeout(function() {
+      this.next_trial()
+    }.bind(this), this.isi_delay_minmax[0]);
+  }
   next_trial() {
     if (this.teststim.length > 0) {
       this.tooslow = 0;
       this.incorrect = 0;
+      this.rt_start = 99999;
+      this.rt_end = 99999;
       this.rspns = "";
       this.trial_stim = this.teststim[0];
       this.block_trialnum++;
@@ -708,8 +748,10 @@ export class HomePage {
         if (this.blocknum == 4 || this.blocknum == 5) {
           this.main_eval();
         }
-        this.practice_chances = 3; // give 3 chances for 2nd & 3rd practice blocks
         this.blocknum++;
+        if (this.blocknum == 3) {
+            this.visib.labels = false;
+        }
         this.nextblock();
       } else {
         if (this.blocknum == 1) {
@@ -724,8 +766,15 @@ export class HomePage {
     }
   }
 
-  add_response() {
+  post_resp_hold() {
     this.stimulus_text = "";
+    setTimeout(function() {
+      this.listn_end = false;
+      this.add_response();
+    }.bind(this), this.isi_delay_minmax[0]);
+  }
+
+  add_response() {
     var curr_type;
     if (
       ["selfrefitem", "otherrefitem", "target"].indexOf(this.trial_stim.type) >= 0
@@ -740,10 +789,14 @@ export class HomePage {
     if (this.incorrect == 1 || this.tooslow == 1) {
       this.rt_data_dict[curr_type].push(-1);
     } else {
-      this.rt_data_dict[curr_type].push(this.rt);
+      this.rt_data_dict[curr_type].push(this.rt_start);
     }
     this.cit_data +=
       this.subj_id +
+      "\t" +
+      this.condition +
+      "\t" +
+      this.cat_order +
       "\t" +
       this.blocknum +
       "\t" +
@@ -757,11 +810,15 @@ export class HomePage {
       "\t" +
       this.rspns +
       "\t" +
-      this.rt +
+      this.rt_start +
+      "\t" +
+      this.rt_end +
       "\t" +
       this.incorrect +
       "\t" +
       this.tooslow +
+      "\t" +
+      (this.isi_delay + this.isi_delay_minmax[0]) +
       "\t" +
       String(new Date().getTime()) +
       "\n";
@@ -784,7 +841,8 @@ export class HomePage {
     this.practice_num++;
   }
   nextblock() {
-    if (this.blocknum <= this.num_of_blocks) {
+    this.bg_color = "#fff";
+    if (this.blocknum <= (this.stim_base.length + 3) ) {
       this.block_trialnum = 0;
       if (this.blocknum == 1) {
         this.response_deadline = 10500;
@@ -800,33 +858,48 @@ export class HomePage {
         this.main_stim();
       }
       this.rt_data_dict = {};
-      this.current_div = 'div_blockstart';
+      this.switch_divs(this.div_after_instr)
     } else {
       this.basic_times.blocks += "\nBlock " + this.blocknum + " end_last " + Date();
+      this.switch_divs("div_end")
     }
   }
   runblock() {
     this.basic_times.blocks += "\nBlock " + this.blocknum + " start " + Date();
+    this.bg_color = "#031116";
+    this.switch_divs('div_cit_main')
     this.visib.start_text = true;
     this.can_start = true;
   }
 
 
-  process_resp(response_side) {
+
+  touchstart(ev, response_side) {
     if (this.listen === true) {
-      this.rt = performance.now() - this.start;
-      if (this.rt < this.response_deadline) {
-        this.listen = false;
-        this.rspns = response_side;
-        clearTimeout(this.response_window);
+      this.rt_start = performance.now() - this.start;
+      clearTimeout(this.response_window);
+      this.listen = false;
+      this.rspns = response_side;
+      this.listn_end == true;
+      if (this.rt_start < this.response_deadline) {
         if (this.rspns == this.correct_resp) {
-          this.add_response();
+          this.post_resp_hold();
         } else {
           this.flash_false();
         }
+
       }
+
     }
   }
+  touchend(ev, end_resp_side) {
+    if (this.listn_end == true && end_resp_side == this.rspns) {
+      var rt_end_temp = performance.now() - this.start - this.rt_start;
+      this.listn_end = false;
+      this.rt_end = rt_end_temp;
+    }
+  }
+
 
   // ITEM GENERATION
 
@@ -946,10 +1019,10 @@ export class HomePage {
       var words_array = [];
       if (this.condition < 3) {
         words_array = [filtered_words[0]].concat(
-          this.shuffle(filtered_words.slice(1, 6))
+          filtered_words.slice(1, 6)
         ); // for GUILTY
       } else {
-        words_array = this.shuffle(filtered_words.slice(1, 7)); // for INNOCENT
+        words_array = filtered_words.slice(1, 7); // for INNOCENT
       }
       words_array.forEach(function(word, num) {
         stim_base_temp[index].push({
@@ -986,11 +1059,11 @@ export class HomePage {
     if (
       this.targ_check_inp[0].toUpperCase() != this.the_targets[0].toUpperCase() ||
 
-        this.targ_check_inp[1].toUpperCase() != this.the_targets[1].toUpperCase()
+      this.targ_check_inp[1].toUpperCase() != this.the_targets[1].toUpperCase()
     ) {
       alert("Wrong! Please check the details more carefully!");
       this.current_div = "div_instructions";
-      this.targ_check_inp = ["",""];
+      this.targ_check_inp = ["", ""];
     } else {
       this.div_after_instr = "div_blockstart";
       this.current_div = "div_blockstart";

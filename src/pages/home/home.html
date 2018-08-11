@@ -74,7 +74,7 @@
       <ion-item style="padding-bottom:30px;">
         <ion-label class="stackedlabels" *ngIf="!form_dems.controls.animal_inp.valid  && submit_failed" stacked> Please select an animal.</ion-label>
         <ion-select interface='action-sheet' formControlName="animal_inp" [class.invalid]="!form_dems.controls.animal_inp.valid  && submit_failed" style="max-width:100%;" placeholder="- select -">
-          <ion-option *ngFor="let item of animls" value="{{item}}">{{item}}</ion-option>
+          <ion-option *ngFor="let item of animals_sorted" value="{{item}}">{{item}}</ion-option>
 
         </ion-select>
       </ion-item>
@@ -101,7 +101,7 @@
 
     <p><b>To make sure you correctly memorized the target details, please fill them in below.</b>
     </p>
-    <br/><br/> Target country:
+    <br/><br/> Target forename:
     <ion-item text-uppercase>
       <ion-input [(ngModel)]="targ_check_inp[0]" type="text" text-uppercase>
       </ion-input>

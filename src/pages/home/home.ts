@@ -71,7 +71,7 @@ export class HomePage {
   task_instruction: string;
   true_name: string;
   true_anim: string;
-  current_div: string = "div_end"; // ddd default: "set_conds", div_dems, div_cit_main
+  current_div: string = "set_conds"; // ddd default: "set_conds", div_dems, div_cit_main
   visib: any = {};
   block_texts: string[] = [];
   form_items: FormGroup;
@@ -146,6 +146,7 @@ export class HomePage {
   fem_names: any[] = ['Alexandra', 'Alina', 'Alma', 'Amelie', 'Amina', 'Ana', 'Anastasia', 'Andrea', 'Angelika', 'Angelina', 'Anita', 'Anja', 'Anna', 'Annika', 'Antonia', 'Astrid', 'Azra', 'Barbara', 'Bernadette', 'Bettina', 'Bianca', 'Birgit', 'Carina', 'Carmen', 'Celine', 'Charlotte', 'Chiara', 'Christina', 'Clara', 'Claudia', 'Cornelia', 'Daniela', 'Denise', 'Doris', 'Ecrin', 'Ela', 'Elena', 'Elif', 'Elina', 'Elisa', 'Elisabeth', 'Ella', 'Emilia', 'Emma', 'Esila', 'Eva', 'Flora', 'Franziska', 'Hanna', 'Helena', 'Hira', 'Ines', 'Iris', 'Isabella', 'Jacqueline', 'Jana', 'Janine', 'Jasmin', 'Jennifer', 'Jessica', 'Johanna', 'Julia', 'Karin', 'Katharina', 'Kerstin', 'Klara', 'Kristina', 'Lara', 'Larissa', 'Laura', 'Lea', 'Lena', 'Leonie', 'Leonora', 'Lilly', 'Lina', 'Linda', 'Lisa', 'Magdalena', 'Maja', 'Manuela', 'Marie', 'Marina', 'Martina', 'Matilda', 'Maya', 'Melanie', 'Melina', 'Melissa', 'Mia', 'Michelle', 'Mila', 'Mira', 'Miriam', 'Monika', 'Nadine', 'Natalie', 'Natascha', 'Nicole', 'Nina', 'Nisa', 'Nora', 'Olivia', 'Patricia', 'Paula', 'Paulina', 'Petra', 'Pia', 'Rebecca', 'Romana', 'Rosa', 'Sabine', 'Sandra', 'Sara', 'Selina', 'Silke', 'Silvia', 'Simone', 'Sofia', 'Sonja', 'Sophie', 'Stefanie', 'Stella', 'Susanne', 'Tamara', 'Tanja', 'Teodora', 'Teresa', 'Theresa', 'Tina', 'Valentina', 'Valerie', 'Vanessa', 'Verena', 'Veronika', 'Viktoria', 'Yvonne', 'Zoe'];
 
   animls: any[] = ["Alligator", "Alpaka", "Ameise", "Antilope", "Dachs", "Fledermaus", "Bär", "Biber", "Biene", "Bison", "Schmetterling", "Kamel", "Katze", "Raupe", "Gepard", "Huhn", "Schimpanse", "Kobra", "Krabbe", "Kranich", "Krokodil", "Krähe", "Hirsch", "Hund", "Delfin", "Esel", "Taube", "Ente", "Adler", "Elefant", "Emu", "Frettchen", "Flamingo", "Fliege", "Fuchs", "Frosch", "Gazelle", "Giraffe", "Gnu", "Ziege", "Gans", "Gorilla", "Heuschrecke", "Hamster", "Falke", "Igel", "Hering", "Nilpferd", "Pferd", "Kolibri", "Hyäne", "Schakal", "Jaguar", "Qualle", "Känguru", "Kiwi", "Koala", "Lemur", "Leopard", "Löwe", "Lama", "Hummer", "Elster", "Mammut", "Maulwurf", "Mungo", "Affe", "Elch", "Maus", "Mücke", "Oktopus", "Opossum", "Eule", "Auster", "Panther", "Papagei", "Panda", "Pelikan", "Pinguin", "Fasan", "Schwein", "Taube", "Stachelschwein", "Schweinswale", "Kaninchen", "Waschbär", "Widder", "Ratte", "Rabe", "Rentier", "Nashorn", "Salamander", "Lachs", "Siegel", "Hai", "Schaf", "Faultier", "Schnecke", "Schlange", "Spinne", "Schwan", "Tapir", "Tiger", "Kröte", "Truthahn", "Walross", "Wespe", "Wiesel", "Wal", "Wolf", "Wombat", "Zebra"];
+  animals_sorted = JSON.parse(JSON.stringify(this.animls)).sort;
   stimulus_text: string = "";
 
   constructor(
@@ -898,6 +899,9 @@ export class HomePage {
     this.countrs.forEach(function(item, index) {
       this.countrs[index] = item.toLowerCase();
     }, this);
+    this.animls.forEach(function(item, index) {
+      this.animls[index] = item.toLowerCase();
+    }, this);
     var true_details_base = [
       this.true_name.toLowerCase(),
       "may",
@@ -910,10 +914,10 @@ export class HomePage {
       true_details_base[3]
     ];
     var items_base1 = [
-      this.countrs.sort(),
+      this.countrs,
       ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"],
       this.nums,
-      this.animls.sort()
+      this.animls
     ];
     var items_base2_temp = [];
     true_details_base.forEach(function(probe, index) {
@@ -1055,11 +1059,13 @@ export class HomePage {
     }
   }
 
-  end_task() {
+  store_data() {
     var f_name =
       this.experiment_title +
       "_" +
       this.subj_id +
+      "_" +
+      Date.now() +
       ".txt";
     this.basic_times.finished = Date();
     this.cit_data +=
@@ -1080,11 +1086,8 @@ export class HomePage {
       "\t" +
       this.practice_repeated.block3 +
       "\t";
-  }
 
-  store_data() {
     var path = this.file.externalDataDirectory;
-    var f_name = "saveddata.txt";
 
     if (this.platform.is("cordova")) {
         this.file.writeFile(path, f_name, this.cit_data);

@@ -1,10 +1,10 @@
 import { Component } from "@angular/core";
 import { NavController } from "ionic-angular";
 import { Storage } from "@ionic/storage";
+import { File } from '@ionic-native/file';
 import { EmailComposer } from "@ionic-native/email-composer";
 import { Platform } from "ionic-angular";
-import { Validators, FormBuilder, FormGroup } from "@angular/forms"; // TODO
-import { AgeValidator } from "./home_validation";
+import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 
 @Component({
   selector: "page-home",
@@ -23,7 +23,7 @@ export class HomePage {
     var correct_chance1 = 1;
     var correct_chance2 = 0.95;
     var correct_chance, sim_key, corr_code, incor_code, chosen_response;
-    var simTimeout = setTimeout(function() {
+    setTimeout(function() {
       if (this.blocknum == 1) {
         correct_chance = correct_chance1;
       } else {
@@ -50,7 +50,7 @@ export class HomePage {
       this.touchstart("", sim_key);
       info += chosen_response + " preset " + rt_sim + ", actual " + Math.round(performance.now() - this.start) + "\n";
       console.log(info);
-  }.bind(this), rt_sim);
+    }.bind(this), rt_sim);
   }
 
   experiment_title: string = "ECIT_Mobile";
@@ -71,9 +71,8 @@ export class HomePage {
   task_instruction: string;
   true_name: string;
   true_anim: string;
-  current_div: string = "div_dems"; // ddd default: "set_conds", div_dems, div_cit_main
+  current_div: string = "div_end"; // ddd default: "set_conds", div_dems, div_cit_main
   visib: any = {};
-  email_addr: string;
   block_texts: string[] = [];
   form_items: FormGroup;
   form_dems: FormGroup;
@@ -154,14 +153,15 @@ export class HomePage {
     private storage: Storage,
     private emailComposer: EmailComposer,
     public platform: Platform,
-    public formBuilder: FormBuilder
+    public formBuilder: FormBuilder,
+    private file: File
   ) {
-    this.email_addr = "lkcsgaspar@gmail.com";
     this.basic_times.loaded = Date();
     this.basic_times.blocks = "";
     this.nums = this.range(1, 32);
     this.visib.start_text = true;
     this.visib.labels = true;
+    this.visib.sending = false;
 
     this.form_dems = formBuilder.group({
       gender_inp: [
@@ -226,23 +226,8 @@ export class HomePage {
     }
   }
 
-  send_email() {
-    console.log("send mail!");
-    if (this.platform.is("cordova")) {
-      let email = {
-        to: this.email_addr,
-        subject: "CITapp data",
-        body: "Testing"
-      };
-      this.emailComposer.open(email);
-    } else {
-      alert("This is a native plugin - only works on the phone.");
-    }
-  }
-  // texts to display before blocks
 
   set_block_texts() {
-    var forename_for_disp = this.capitalize(this.the_probes[0]);
     var target_reminder;
     if (this.condition == 2 || this.condition == 5) {
       target_reminder = ["", "", "", ""];
@@ -750,7 +735,7 @@ export class HomePage {
         }
         this.blocknum++;
         if (this.blocknum == 3) {
-            this.visib.labels = false;
+          this.visib.labels = false;
         }
         this.nextblock();
       } else {
@@ -842,7 +827,7 @@ export class HomePage {
   }
   nextblock() {
     this.bg_color = "#fff";
-    if (this.blocknum <= (this.stim_base.length + 3) ) {
+    if (this.blocknum <= (this.stim_base.length + 3)) {
       this.block_trialnum = 0;
       if (this.blocknum == 1) {
         this.response_deadline = 10500;
@@ -1070,18 +1055,13 @@ export class HomePage {
     }
   }
 
-  end_task(full_validity = "") {
+  end_task() {
     var f_name =
-      full_validity +
       this.experiment_title +
       "_" +
       this.subj_id +
       ".txt";
     this.basic_times.finished = Date();
-    var duration_full = this.seconds_between_dates(
-      this.basic_times.consented,
-      this.basic_times.finished
-    );
     this.cit_data +=
       "Loaded " +
       this.basic_times.loaded +
@@ -1100,9 +1080,26 @@ export class HomePage {
       "\t" +
       this.practice_repeated.block3 +
       "\t";
-    var practice_all_reps =
-      this.practice_repeated.block1 +
-      this.practice_repeated.block2 +
-      this.practice_repeated.block3;
+  }
+
+  store_data() {
+    var path = this.file.externalDataDirectory;
+    var f_name = "saveddata.txt";
+
+    if (this.platform.is("cordova")) {
+        this.file.writeFile(path, f_name, this.cit_data);
+      let email = {
+        to: "lkcsgaspar@gmail.com",
+        subject: "CITapp data" + this.subj_id,
+        body: "",
+        attachments: [
+          path + f_name
+        ]
+      };
+      console.log(email)
+      this.emailComposer.open(email);
+    } else {
+      console.log("These are native plugins - only works on the phone.");
+    }
   }
 }

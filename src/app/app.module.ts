@@ -9,6 +9,7 @@ import { HomePage } from '../pages/home/home';
 
 import { IonicStorageModule } from '@ionic/storage';
 import { EmailComposer } from '@ionic-native/email-composer';
+import { File } from '@ionic-native/file';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { EmailComposer } from '@ionic-native/email-composer';
     StatusBar,
     SplashScreen,
     EmailComposer,
+    File,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

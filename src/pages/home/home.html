@@ -1,8 +1,6 @@
 <ion-content padding [ngSwitch]="current_div" [ngStyle]="{ 'background-color': bg_color }" text-wrap>
 
 
-    <ion-input (keypress)="onChange($event)"
-     [(ngModel)]="to_exec" type="text" style="color:red"></ion-input>
 
   <div *ngSwitchDefault>
 
@@ -147,14 +145,34 @@
     <p id="stimulus">{{stimulus_text}}</p>
 
     <p id="start_text" (tap)="visib.start_text = false; start_trials();" *ngIf="visib.start_text">Tap this to begin.</p>
+  </div>
+
+  <div  *ngSwitchCase="'div_end'">
 
 
+    <header>
+      <ion-navbar (swipeleft)="visib.sending = true">
+        <ion-title>
+          The End
+        </ion-title>
+      </ion-navbar>
+    </header>
+    <br/>
+    <b>
+    <br/>This is the end of this test.
+    <br/>
+    <br/>Let the experiment leader know.
+    </b>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <div text-center>
+      <button ion-button type="button" (tap)="store_data()" *ngIf="visib.sending || true" style="text-transform: none;">*data*</button>
+    </div>
   </div>
 
 
-  <div *ngSwitchCase="'div_end'">
-    This is the end!
-    <button ion-button type="button" (tap)="send_email()">Send data</button>
-  </div>
+    <ion-input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;"></ion-input>
 
 </ion-content>

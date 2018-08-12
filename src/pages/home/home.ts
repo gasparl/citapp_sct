@@ -2,6 +2,8 @@ import { Component } from "@angular/core";
 import { NavController } from "ionic-angular";
 import { Storage } from "@ionic/storage";
 import { File } from '@ionic-native/file';
+import { StatusBar } from '@ionic-native/status-bar';
+import { Network } from '@ionic-native/network';
 import { EmailComposer } from "@ionic-native/email-composer";
 import { Platform } from "ionic-angular";
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
@@ -77,6 +79,7 @@ export class HomePage {
   form_items: FormGroup;
   form_dems: FormGroup;
   submit_failed: boolean = false;
+  on_device: boolean;
   gender: number;
   lastOf6filler: string = "none";
   lastOf6word: string = "none";
@@ -141,12 +144,12 @@ export class HomePage {
 
   countrs: any[];
 
-  male_names: any[] = ['Adam', 'Adrian', 'Alexander', 'Ali', 'Amir', 'Andre', 'Andreas', 'Andrej', 'Anton', 'Armin', 'Arthur', 'Ben', 'Benedikt', 'Benjamin', 'Berat', 'Bernd', 'Bernhard', 'Christian', 'Christoph', 'Christopher', 'Clemens', 'Constantin', 'Daniel', 'David', 'Dominik', 'Elias', 'Emanuel', 'Emil', 'Emir', 'Erik', 'Fabian', 'Fabio', 'Felix', 'Ferdinand', 'Finn', 'Florian', 'Franz', 'Gabriel', 'Georg', 'Gerald', 'Gerhard', 'Gernot', 'Gregor', 'Günther', 'Hamza', 'Hannes', 'Harald', 'Helmut', 'Herbert', 'Jakob', 'Jan', 'Johann', 'Johannes', 'Jonas', 'Jonathan', 'Josef', 'Julian', 'Justin', 'Jürgen', 'Karl', 'Kevin', 'Kilian', 'Klaus', 'Konstantin', 'Laurenz', 'Leo', 'Leon', 'Leonard', 'Leopold', 'Lorenz', 'Manfred', 'Manuel', 'Marcel', 'Marco', 'Mario', 'Markus', 'Martin', 'Marvin', 'Mathias', 'Matthias', 'Max', 'Maximilian', 'Michael', 'Moritz', 'Nico', 'Nicolas', 'Noah', 'Oliver', 'Oskar', 'Pascal', 'Patrik', 'Paul', 'Peter', 'Rafael', 'Reinhard', 'Rene', 'Richard', 'Robert', 'Roland', 'Roman', 'Samuel', 'Sandro', 'Sascha', 'Sebastian', 'Simon', 'Stefan', 'Theo', 'Theodor', 'Thomas', 'Tim', 'Tobias', 'Valentin', 'Viktor', 'Vincent', 'Werner', 'Wolfgang', 'Yusuf'];
+  male_names: any[] = [ "Nico",  "Justin",  "Jakob",  "Gerald",  "Max",  "Mario",  "Jürgen",  "Ferdinand",  "Simon",  "Harald",  "Andre",  "Gregor",  "Martin",  "Julian",  "Berat",  "Robert",  "Leonard",  "Theodor",  "Arthur",  "Emir",  "Theo",  "Marcel",  "Lorenz",  "Moritz",  "Samuel",  "Stefan",  "Anton",  "Felix",  "Herbert",  "Clemens",  "Gerhard",  "Peter",  "Sascha",  "Richard",  "Günther",  "Ali",  "Johann",  "Nicolas",  "Leo",  "Alexander",  "Emanuel",  "Manfred",  "Klaus",  "Roland",  "Laurenz",  "Valentin",  "Dominik",  "Marvin",  "Helmut",  "Hamza",  "Viktor",  "Jonathan",  "Josef",  "Christoph",  "Markus",  "Pascal",  "Maximilian",  "Finn",  "Mathias",  "Rafael",  "Roman",  "Yusuf",  "Manuel",  "Oliver",  "Rene",  "Karl",  "Adam",  "Christopher",  "Jan",  "Kilian",  "Michael",  "Jonas",  "Werner",  "Kevin",  "David",  "Emil",  "Constantin",  "Noah",  "Bernhard",  "Bernd",  "Georg",  "Marco",  "Florian",  "Franz",  "Fabio",  "Wolfgang",  "Thomas",  "Vincent",  "Christian",  "Andreas",  "Erik",  "Johannes",  "Tobias",  "Benjamin",  "Ben",  "Sandro",  "Armin",  "Daniel",  "Reinhard",  "Benedikt",  "Amir",  "Gernot",  "Elias",  "Gabriel",  "Patrik",  "Andrej",  "Konstantin",  "Oskar",  "Sebastian",  "Matthias",  "Fabian",  "Hannes",  "Paul",  "Leon",  "Tim",  "Leopold",  "Adrian" ];
 
-  fem_names: any[] = ['Alexandra', 'Alina', 'Alma', 'Amelie', 'Amina', 'Ana', 'Anastasia', 'Andrea', 'Angelika', 'Angelina', 'Anita', 'Anja', 'Anna', 'Annika', 'Antonia', 'Astrid', 'Azra', 'Barbara', 'Bernadette', 'Bettina', 'Bianca', 'Birgit', 'Carina', 'Carmen', 'Celine', 'Charlotte', 'Chiara', 'Christina', 'Clara', 'Claudia', 'Cornelia', 'Daniela', 'Denise', 'Doris', 'Ecrin', 'Ela', 'Elena', 'Elif', 'Elina', 'Elisa', 'Elisabeth', 'Ella', 'Emilia', 'Emma', 'Esila', 'Eva', 'Flora', 'Franziska', 'Hanna', 'Helena', 'Hira', 'Ines', 'Iris', 'Isabella', 'Jacqueline', 'Jana', 'Janine', 'Jasmin', 'Jennifer', 'Jessica', 'Johanna', 'Julia', 'Karin', 'Katharina', 'Kerstin', 'Klara', 'Kristina', 'Lara', 'Larissa', 'Laura', 'Lea', 'Lena', 'Leonie', 'Leonora', 'Lilly', 'Lina', 'Linda', 'Lisa', 'Magdalena', 'Maja', 'Manuela', 'Marie', 'Marina', 'Martina', 'Matilda', 'Maya', 'Melanie', 'Melina', 'Melissa', 'Mia', 'Michelle', 'Mila', 'Mira', 'Miriam', 'Monika', 'Nadine', 'Natalie', 'Natascha', 'Nicole', 'Nina', 'Nisa', 'Nora', 'Olivia', 'Patricia', 'Paula', 'Paulina', 'Petra', 'Pia', 'Rebecca', 'Romana', 'Rosa', 'Sabine', 'Sandra', 'Sara', 'Selina', 'Silke', 'Silvia', 'Simone', 'Sofia', 'Sonja', 'Sophie', 'Stefanie', 'Stella', 'Susanne', 'Tamara', 'Tanja', 'Teodora', 'Teresa', 'Theresa', 'Tina', 'Valentina', 'Valerie', 'Vanessa', 'Verena', 'Veronika', 'Viktoria', 'Yvonne', 'Zoe'];
+  fem_names: any[] = [ "Sandra",  "Jacqueline",  "Johanna",  "Celine",  "Silvia",  "Ecrin",  "Verena",  "Sofia",  "Sophie",  "Hira",  "Cornelia",  "Valerie",  "Angelina",  "Lina",  "Miriam",  "Petra",  "Natalie",  "Simone",  "Isabella",  "Hanna",  "Emilia",  "Melina",  "Maja",  "Larissa",  "Anja",  "Angelika",  "Patricia",  "Claudia",  "Mia",  "Birgit",  "Astrid",  "Bettina",  "Antonia",  "Jessica",  "Klara",  "Nina",  "Elisabeth",  "Janine",  "Manuela",  "Charlotte",  "Olivia",  "Christina",  "Leonie",  "Katharina",  "Amina",  "Anastasia",  "Bernadette",  "Mila",  "Pia",  "Magdalena",  "Romana",  "Paula",  "Amelie",  "Kerstin",  "Ela",  "Jana",  "Jennifer",  "Lea",  "Susanne",  "Sara",  "Nadine",  "Lara",  "Jasmin",  "Mira",  "Ella",  "Yvonne",  "Marie",  "Theresa",  "Melanie",  "Alma",  "Tanja",  "Alina",  "Martina",  "Denise",  "Rebecca",  "Paulina",  "Franziska",  "Karin",  "Lena",  "Ines",  "Nicole",  "Michelle",  "Viktoria",  "Chiara",  "Bianca",  "Stefanie",  "Carina",  "Linda",  "Azra",  "Stella",  "Nora",  "Flora",  "Vanessa",  "Teresa",  "Sonja",  "Tamara",  "Anna",  "Ana",  "Andrea",  "Melissa",  "Lilly",  "Elif",  "Lisa",  "Clara",  "Teodora",  "Kristina",  "Anita",  "Leonora",  "Silke",  "Emma",  "Esila",  "Daniela",  "Veronika",  "Elena",  "Marina",  "Helena",  "Natascha",  "Elina",  "Carmen",  "Alexandra",  "Eva",  "Barbara",  "Maya",  "Tina",  "Valentina",  "Elisa",  "Sabine",  "Matilda",  "Doris",  "Julia",  "Rosa",  "Laura",  "Annika",  "Nisa",  "Iris",  "Zoe",  "Monika",  "Selina" ];
 
-  animls: any[] = ["Alligator", "Alpaka", "Ameise", "Antilope", "Dachs", "Fledermaus", "Bär", "Biber", "Biene", "Bison", "Schmetterling", "Kamel", "Katze", "Raupe", "Gepard", "Huhn", "Schimpanse", "Kobra", "Krabbe", "Kranich", "Krokodil", "Krähe", "Hirsch", "Hund", "Delfin", "Esel", "Taube", "Ente", "Adler", "Elefant", "Emu", "Frettchen", "Flamingo", "Fliege", "Fuchs", "Frosch", "Gazelle", "Giraffe", "Gnu", "Ziege", "Gans", "Gorilla", "Heuschrecke", "Hamster", "Falke", "Igel", "Hering", "Nilpferd", "Pferd", "Kolibri", "Hyäne", "Schakal", "Jaguar", "Qualle", "Känguru", "Kiwi", "Koala", "Lemur", "Leopard", "Löwe", "Lama", "Hummer", "Elster", "Mammut", "Maulwurf", "Mungo", "Affe", "Elch", "Maus", "Mücke", "Oktopus", "Opossum", "Eule", "Auster", "Panther", "Papagei", "Panda", "Pelikan", "Pinguin", "Fasan", "Schwein", "Taube", "Stachelschwein", "Schweinswale", "Kaninchen", "Waschbär", "Widder", "Ratte", "Rabe", "Rentier", "Nashorn", "Salamander", "Lachs", "Siegel", "Hai", "Schaf", "Faultier", "Schnecke", "Schlange", "Spinne", "Schwan", "Tapir", "Tiger", "Kröte", "Truthahn", "Walross", "Wespe", "Wiesel", "Wal", "Wolf", "Wombat", "Zebra"];
-  animals_sorted = JSON.parse(JSON.stringify(this.animls)).sort;
+  animls: any[] = [ "Nilpferd",  "Falke",  "Ratte",  "Spinne",  "Heuschrecke",  "Huhn",  "Schnecke",  "Biene",  "Schaf",  "Fuchs",  "Nashorn",  "Tiger",  "Maus",  "Flamingo",  "Ameise",  "Schlange",  "Pferd",  "Gnu",  "Biber",  "Truthahn",  "Zebra",  "Elefant",  "Krähe",  "Hirsch",  "Krokodil",  "Oktopus",  "Frettchen",  "Lachs",  "Schmetterling",  "Walross",  "Schwan",  "Ente",  "Raupe",  "Gepard",  "Mungo",  "Bär",  "Taube",  "Frosch",  "Hamster",  "Alpaka",  "Kobra",  "Elch",  "Hering",  "Fliege",  "Qualle",  "Wolf",  "Auster",  "Gorilla",  "Tapir",  "Wal",  "Jaguar",  "Wombat",  "Rabe",  "Lama",  "Taube",  "Koala",  "Dachs",  "Salamander",  "Pinguin",  "Lemur",  "Delfin",  "Igel",  "Opossum",  "Affe",  "Esel",  "Gazelle",  "Kröte",  "Mücke",  "Leopard",  "Emu",  "Panda",  "Schwein",  "Panther",  "Hund",  "Katze",  "Wespe",  "Hummer",  "Eule",  "Kranich",  "Pelikan",  "Fasan",  "Faultier",  "Wiesel",  "Rentier",  "Maulwurf",  "Elster",  "Adler",  "Kiwi",  "Bison",  "Giraffe",  "Papagei",  "Ziege",  "Schweinswale",  "Siegel",  "Schimpanse",  "Waschbär",  "Gans",  "Hyäne",  "Kolibri",  "Mammut",  "Alligator",  "Stachelschwein",  "Kamel",  "Widder",  "Fledermaus",  "Antilope",  "Kaninchen",  "Löwe",  "Känguru",  "Schakal",  "Krabbe",  "Hai" ];
+  animals_sorted: any[] = JSON.parse(JSON.stringify(this.animls)).sort();
   stimulus_text: string = "";
 
   constructor(
@@ -155,9 +158,12 @@ export class HomePage {
     private emailComposer: EmailComposer,
     public platform: Platform,
     public formBuilder: FormBuilder,
-    private file: File
+    private file: File,
+    private statusBar: StatusBar,
+    private network: Network
   ) {
     this.basic_times.loaded = Date();
+    this.on_device = this.platform.is("cordova");
     this.basic_times.blocks = "";
     this.nums = this.range(1, 32);
     this.visib.start_text = true;
@@ -219,6 +225,13 @@ export class HomePage {
       this.div_after_instr = "div_blockstart";
       this.nextblock(); //TODO %%%%%% HERE THIS CORRECT
     } else {
+        if (this.on_device && this.network.type) {
+          if (this.network.type != "none") {
+              alert("Warning: it seems you are connected to the internet. We advise to turn it off to avoid interferences.")
+          }
+        } else {
+          console.log("Network check - only works on the phone.");
+        }
       this.true_name = this.form_dems.get("name_inp").value;
       this.gender = this.form_dems.get("gender_inp").value;
       this.true_anim = this.form_dems.get("animal_inp").value;
@@ -828,6 +841,7 @@ export class HomePage {
   }
   nextblock() {
     this.bg_color = "#fff";
+    this.statusBar.show();
     if (this.blocknum <= (this.stim_base.length + 3)) {
       this.block_trialnum = 0;
       if (this.blocknum == 1) {
@@ -853,6 +867,7 @@ export class HomePage {
   runblock() {
     this.basic_times.blocks += "\nBlock " + this.blocknum + " start " + Date();
     this.bg_color = "#031116";
+    this.statusBar.hide();
     this.switch_divs('div_cit_main')
     this.visib.start_text = true;
     this.can_start = true;
@@ -1089,7 +1104,7 @@ export class HomePage {
 
     var path = this.file.externalDataDirectory;
 
-    if (this.platform.is("cordova")) {
+    if (this.on_device) {
         this.file.writeFile(path, f_name, this.cit_data);
       let email = {
         to: "lkcsgaspar@gmail.com",

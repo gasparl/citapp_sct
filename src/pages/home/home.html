@@ -29,7 +29,7 @@
     <br/>
     <br/>
     <div text-center>
-      <button ion-button type="button" style="text-transform: none;" (tap)="initials();switch_divs('div_dems');" *ngIf="pre_cond != 9999 && subj_id > 0 && subj_id < 109 "><b> condition {{pre_cond}} - subject num {{subj_id}} </b> </button>
+      <button ion-button type="button" style="text-transform: none;" (tap)="initials();switch_divs('div_dems');" *ngIf="pre_cond != 9999 && subj_id > 0 && subj_id < 109"><b> condition {{pre_cond}} - subject num {{subj_id}} </b> </button>
     </div>
 
   </div>
@@ -147,11 +147,9 @@
     <p id="start_text" (tap)="visib.start_text = false; start_trials();" *ngIf="visib.start_text">Tap this to begin.</p>
   </div>
 
-  <div  *ngSwitchCase="'div_end'">
-
-
+  <div *ngSwitchCase="'div_end'">
     <header>
-      <ion-navbar (swipeleft)="visib.sending = true">
+      <ion-navbar (swipeleft)="visib.end_data = true">
         <ion-title>
           The End
         </ion-title>
@@ -166,13 +164,17 @@
     <br/>
     <br/>
     <br/>
-    <br/>
-    <div text-center>
-      <button ion-button type="button" (tap)="store_data()" *ngIf="visib.sending || true" style="text-transform: none;">*data*</button>
+    <div *ngIf="visib.end_data">
+      <div text-center>
+        <button ion-button type="button" (tap)="send_mail()" style="text-transform: none;">*send data*</button>
+      </div>
+      <br/>
+      <p style="user-select: text;" [innerHTML]="to_display">
+      </p>
     </div>
   </div>
 
 
-    <ion-input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;"></ion-input>
+  <ion-input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;"></ion-input>
 
 </ion-content>

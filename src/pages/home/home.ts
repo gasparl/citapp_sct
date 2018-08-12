@@ -4,6 +4,7 @@ import { Storage } from "@ionic/storage";
 import { File } from '@ionic-native/file';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Network } from '@ionic-native/network';
+import { Clipboard } from '@ionic-native/clipboard';
 import { EmailComposer } from "@ionic-native/email-composer";
 import { Platform } from "ionic-angular";
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
@@ -73,7 +74,7 @@ export class HomePage {
   task_instruction: string;
   true_name: string;
   true_anim: string;
-  current_div: string = "set_conds"; // ddd default: "set_conds", div_dems, div_cit_main
+  current_div: string = "set_conds"; // ddd default: "set_conds", div_dems, div_cit_main, div_end
   visib: any = {};
   block_texts: string[] = [];
   form_items: FormGroup;
@@ -144,13 +145,16 @@ export class HomePage {
 
   countrs: any[];
 
-  male_names: any[] = [ "Nico",  "Justin",  "Jakob",  "Gerald",  "Max",  "Mario",  "Jürgen",  "Ferdinand",  "Simon",  "Harald",  "Andre",  "Gregor",  "Martin",  "Julian",  "Berat",  "Robert",  "Leonard",  "Theodor",  "Arthur",  "Emir",  "Theo",  "Marcel",  "Lorenz",  "Moritz",  "Samuel",  "Stefan",  "Anton",  "Felix",  "Herbert",  "Clemens",  "Gerhard",  "Peter",  "Sascha",  "Richard",  "Günther",  "Ali",  "Johann",  "Nicolas",  "Leo",  "Alexander",  "Emanuel",  "Manfred",  "Klaus",  "Roland",  "Laurenz",  "Valentin",  "Dominik",  "Marvin",  "Helmut",  "Hamza",  "Viktor",  "Jonathan",  "Josef",  "Christoph",  "Markus",  "Pascal",  "Maximilian",  "Finn",  "Mathias",  "Rafael",  "Roman",  "Yusuf",  "Manuel",  "Oliver",  "Rene",  "Karl",  "Adam",  "Christopher",  "Jan",  "Kilian",  "Michael",  "Jonas",  "Werner",  "Kevin",  "David",  "Emil",  "Constantin",  "Noah",  "Bernhard",  "Bernd",  "Georg",  "Marco",  "Florian",  "Franz",  "Fabio",  "Wolfgang",  "Thomas",  "Vincent",  "Christian",  "Andreas",  "Erik",  "Johannes",  "Tobias",  "Benjamin",  "Ben",  "Sandro",  "Armin",  "Daniel",  "Reinhard",  "Benedikt",  "Amir",  "Gernot",  "Elias",  "Gabriel",  "Patrik",  "Andrej",  "Konstantin",  "Oskar",  "Sebastian",  "Matthias",  "Fabian",  "Hannes",  "Paul",  "Leon",  "Tim",  "Leopold",  "Adrian" ];
+  male_names: any[] = ["Nico", "Justin", "Jakob", "Gerald", "Max", "Mario", "Jürgen", "Ferdinand", "Simon", "Harald", "Andre", "Gregor", "Martin", "Julian", "Berat", "Robert", "Leonard", "Theodor", "Arthur", "Emir", "Theo", "Marcel", "Lorenz", "Moritz", "Samuel", "Stefan", "Anton", "Felix", "Herbert", "Clemens", "Gerhard", "Peter", "Sascha", "Richard", "Günther", "Ali", "Johann", "Nicolas", "Leo", "Alexander", "Emanuel", "Manfred", "Klaus", "Roland", "Laurenz", "Valentin", "Dominik", "Marvin", "Helmut", "Hamza", "Viktor", "Jonathan", "Josef", "Christoph", "Markus", "Pascal", "Maximilian", "Finn", "Mathias", "Rafael", "Roman", "Yusuf", "Manuel", "Oliver", "Rene", "Karl", "Adam", "Christopher", "Jan", "Kilian", "Michael", "Jonas", "Werner", "Kevin", "David", "Emil", "Constantin", "Noah", "Bernhard", "Bernd", "Georg", "Marco", "Florian", "Franz", "Fabio", "Wolfgang", "Thomas", "Vincent", "Christian", "Andreas", "Erik", "Johannes", "Tobias", "Benjamin", "Ben", "Sandro", "Armin", "Daniel", "Reinhard", "Benedikt", "Amir", "Gernot", "Elias", "Gabriel", "Patrik", "Andrej", "Konstantin", "Oskar", "Sebastian", "Matthias", "Fabian", "Hannes", "Paul", "Leon", "Tim", "Leopold", "Adrian"];
 
-  fem_names: any[] = [ "Sandra",  "Jacqueline",  "Johanna",  "Celine",  "Silvia",  "Ecrin",  "Verena",  "Sofia",  "Sophie",  "Hira",  "Cornelia",  "Valerie",  "Angelina",  "Lina",  "Miriam",  "Petra",  "Natalie",  "Simone",  "Isabella",  "Hanna",  "Emilia",  "Melina",  "Maja",  "Larissa",  "Anja",  "Angelika",  "Patricia",  "Claudia",  "Mia",  "Birgit",  "Astrid",  "Bettina",  "Antonia",  "Jessica",  "Klara",  "Nina",  "Elisabeth",  "Janine",  "Manuela",  "Charlotte",  "Olivia",  "Christina",  "Leonie",  "Katharina",  "Amina",  "Anastasia",  "Bernadette",  "Mila",  "Pia",  "Magdalena",  "Romana",  "Paula",  "Amelie",  "Kerstin",  "Ela",  "Jana",  "Jennifer",  "Lea",  "Susanne",  "Sara",  "Nadine",  "Lara",  "Jasmin",  "Mira",  "Ella",  "Yvonne",  "Marie",  "Theresa",  "Melanie",  "Alma",  "Tanja",  "Alina",  "Martina",  "Denise",  "Rebecca",  "Paulina",  "Franziska",  "Karin",  "Lena",  "Ines",  "Nicole",  "Michelle",  "Viktoria",  "Chiara",  "Bianca",  "Stefanie",  "Carina",  "Linda",  "Azra",  "Stella",  "Nora",  "Flora",  "Vanessa",  "Teresa",  "Sonja",  "Tamara",  "Anna",  "Ana",  "Andrea",  "Melissa",  "Lilly",  "Elif",  "Lisa",  "Clara",  "Teodora",  "Kristina",  "Anita",  "Leonora",  "Silke",  "Emma",  "Esila",  "Daniela",  "Veronika",  "Elena",  "Marina",  "Helena",  "Natascha",  "Elina",  "Carmen",  "Alexandra",  "Eva",  "Barbara",  "Maya",  "Tina",  "Valentina",  "Elisa",  "Sabine",  "Matilda",  "Doris",  "Julia",  "Rosa",  "Laura",  "Annika",  "Nisa",  "Iris",  "Zoe",  "Monika",  "Selina" ];
+  fem_names: any[] = ["Sandra", "Jacqueline", "Johanna", "Celine", "Silvia", "Ecrin", "Verena", "Sofia", "Sophie", "Hira", "Cornelia", "Valerie", "Angelina", "Lina", "Miriam", "Petra", "Natalie", "Simone", "Isabella", "Hanna", "Emilia", "Melina", "Maja", "Larissa", "Anja", "Angelika", "Patricia", "Claudia", "Mia", "Birgit", "Astrid", "Bettina", "Antonia", "Jessica", "Klara", "Nina", "Elisabeth", "Janine", "Manuela", "Charlotte", "Olivia", "Christina", "Leonie", "Katharina", "Amina", "Anastasia", "Bernadette", "Mila", "Pia", "Magdalena", "Romana", "Paula", "Amelie", "Kerstin", "Ela", "Jana", "Jennifer", "Lea", "Susanne", "Sara", "Nadine", "Lara", "Jasmin", "Mira", "Ella", "Yvonne", "Marie", "Theresa", "Melanie", "Alma", "Tanja", "Alina", "Martina", "Denise", "Rebecca", "Paulina", "Franziska", "Karin", "Lena", "Ines", "Nicole", "Michelle", "Viktoria", "Chiara", "Bianca", "Stefanie", "Carina", "Linda", "Azra", "Stella", "Nora", "Flora", "Vanessa", "Teresa", "Sonja", "Tamara", "Anna", "Ana", "Andrea", "Melissa", "Lilly", "Elif", "Lisa", "Clara", "Teodora", "Kristina", "Anita", "Leonora", "Silke", "Emma", "Esila", "Daniela", "Veronika", "Elena", "Marina", "Helena", "Natascha", "Elina", "Carmen", "Alexandra", "Eva", "Barbara", "Maya", "Tina", "Valentina", "Elisa", "Sabine", "Matilda", "Doris", "Julia", "Rosa", "Laura", "Annika", "Nisa", "Iris", "Zoe", "Monika", "Selina"];
 
-  animls: any[] = [ "Nilpferd",  "Falke",  "Ratte",  "Spinne",  "Heuschrecke",  "Huhn",  "Schnecke",  "Biene",  "Schaf",  "Fuchs",  "Nashorn",  "Tiger",  "Maus",  "Flamingo",  "Ameise",  "Schlange",  "Pferd",  "Gnu",  "Biber",  "Truthahn",  "Zebra",  "Elefant",  "Krähe",  "Hirsch",  "Krokodil",  "Oktopus",  "Frettchen",  "Lachs",  "Schmetterling",  "Walross",  "Schwan",  "Ente",  "Raupe",  "Gepard",  "Mungo",  "Bär",  "Taube",  "Frosch",  "Hamster",  "Alpaka",  "Kobra",  "Elch",  "Hering",  "Fliege",  "Qualle",  "Wolf",  "Auster",  "Gorilla",  "Tapir",  "Wal",  "Jaguar",  "Wombat",  "Rabe",  "Lama",  "Taube",  "Koala",  "Dachs",  "Salamander",  "Pinguin",  "Lemur",  "Delfin",  "Igel",  "Opossum",  "Affe",  "Esel",  "Gazelle",  "Kröte",  "Mücke",  "Leopard",  "Emu",  "Panda",  "Schwein",  "Panther",  "Hund",  "Katze",  "Wespe",  "Hummer",  "Eule",  "Kranich",  "Pelikan",  "Fasan",  "Faultier",  "Wiesel",  "Rentier",  "Maulwurf",  "Elster",  "Adler",  "Kiwi",  "Bison",  "Giraffe",  "Papagei",  "Ziege",  "Schweinswale",  "Siegel",  "Schimpanse",  "Waschbär",  "Gans",  "Hyäne",  "Kolibri",  "Mammut",  "Alligator",  "Stachelschwein",  "Kamel",  "Widder",  "Fledermaus",  "Antilope",  "Kaninchen",  "Löwe",  "Känguru",  "Schakal",  "Krabbe",  "Hai" ];
+  animls: any[] = ["Nilpferd", "Falke", "Ratte", "Spinne", "Heuschrecke", "Huhn", "Schnecke", "Biene", "Schaf", "Fuchs", "Nashorn", "Tiger", "Maus", "Flamingo", "Ameise", "Schlange", "Pferd", "Gnu", "Biber", "Truthahn", "Zebra", "Elefant", "Krähe", "Hirsch", "Krokodil", "Oktopus", "Frettchen", "Lachs", "Schmetterling", "Walross", "Schwan", "Ente", "Raupe", "Gepard", "Mungo", "Bär", "Taube", "Frosch", "Hamster", "Alpaka", "Kobra", "Elch", "Hering", "Fliege", "Qualle", "Wolf", "Auster", "Gorilla", "Tapir", "Wal", "Jaguar", "Wombat", "Rabe", "Lama", "Taube", "Koala", "Dachs", "Salamander", "Pinguin", "Lemur", "Delfin", "Igel", "Opossum", "Affe", "Esel", "Gazelle", "Kröte", "Mücke", "Leopard", "Emu", "Panda", "Schwein", "Panther", "Hund", "Katze", "Wespe", "Hummer", "Eule", "Kranich", "Pelikan", "Fasan", "Faultier", "Wiesel", "Rentier", "Maulwurf", "Elster", "Adler", "Kiwi", "Bison", "Giraffe", "Papagei", "Ziege", "Schweinswale", "Siegel", "Schimpanse", "Waschbär", "Gans", "Hyäne", "Kolibri", "Mammut", "Alligator", "Stachelschwein", "Kamel", "Widder", "Fledermaus", "Antilope", "Kaninchen", "Löwe", "Känguru", "Schakal", "Krabbe", "Hai"];
   animals_sorted: any[] = JSON.parse(JSON.stringify(this.animls)).sort();
   stimulus_text: string = "";
+  path: any = "";
+  f_name: string;
+  to_display: string = "";
 
   constructor(
     public navCtrl: NavController,
@@ -160,15 +164,17 @@ export class HomePage {
     public formBuilder: FormBuilder,
     private file: File,
     private statusBar: StatusBar,
-    private network: Network
+    private network: Network,
+    private clipboard: Clipboard
   ) {
     this.basic_times.loaded = Date();
     this.on_device = this.platform.is("cordova");
+    this.path = this.file.externalDataDirectory;
     this.basic_times.blocks = "";
     this.nums = this.range(1, 32);
     this.visib.start_text = true;
     this.visib.labels = true;
-    this.visib.sending = false;
+    this.visib.end_data = false;
 
     this.form_dems = formBuilder.group({
       gender_inp: [
@@ -211,7 +217,6 @@ export class HomePage {
   }
 
 
-  // laterTODO: before start, check wifi off and airplane mode - if not, "please set"
   task_start() {
     if (!this.form_dems.valid) {
       this.submit_failed = true;
@@ -223,15 +228,15 @@ export class HomePage {
       this.prune();
       console.log(this.stim_base);
       this.div_after_instr = "div_blockstart";
-      this.nextblock(); //TODO %%%%%% HERE THIS CORRECT
+      this.nextblock(); //TODOREMOVE %%%%%% HERE THIS CORRECT
     } else {
-        if (this.on_device && this.network.type) {
-          if (this.network.type != "none") {
-              alert("Warning: it seems you are connected to the internet. We advise to turn it off to avoid interferences.")
-          }
-        } else {
-          console.log("Network check - only works on the phone.");
+      if (this.on_device && this.network.type) {
+        if (this.network.type != "none") {
+          alert("Warning: it seems you are connected to the internet. We recommend to turn it off to avoid interferences.")
         }
+      } else {
+        console.log("Network check - only works on the phone.");
+      }
       this.true_name = this.form_dems.get("name_inp").value;
       this.gender = this.form_dems.get("gender_inp").value;
       this.true_anim = this.form_dems.get("animal_inp").value;
@@ -644,7 +649,7 @@ export class HomePage {
     } else {
       this.correct_resp = "resp_a";
     }
-    this.touchsim(); // for testing -- REMOVE
+    //this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       this.stimulus_text = this.text_to_show;
       this.start = performance.now();
@@ -825,8 +830,12 @@ export class HomePage {
     this.next_trial();
   }
   call_practice_stim() {
+    this.practice_stim();
+    this.teststim = this.prac_teststim;
+    // do not halve stims in this experiment's practice
+
     //takes halves of the practice stims generated
-    if (this.practice_num % 2 == 1) {
+    /*if (this.practice_num % 2 == 1) {
       // generate and take first half
       this.practice_stim();
       this.teststim = this.prac_teststim.slice(0, Math.floor(this.prac_teststim.length / 2));
@@ -837,6 +846,7 @@ export class HomePage {
         this.prac_teststim.length
       );
     }
+    */
     this.practice_num++;
   }
   nextblock() {
@@ -862,6 +872,7 @@ export class HomePage {
     } else {
       this.basic_times.blocks += "\nBlock " + this.blocknum + " end_last " + Date();
       this.switch_divs("div_end")
+      this.store_data();
     }
   }
   runblock() {
@@ -881,23 +892,20 @@ export class HomePage {
       clearTimeout(this.response_window);
       this.listen = false;
       this.rspns = response_side;
-      this.listn_end == true;
+      this.listn_end = true;
       if (this.rt_start < this.response_deadline) {
         if (this.rspns == this.correct_resp) {
           this.post_resp_hold();
         } else {
           this.flash_false();
         }
-
       }
-
     }
   }
   touchend(ev, end_resp_side) {
     if (this.listn_end == true && end_resp_side == this.rspns) {
-      var rt_end_temp = performance.now() - this.start - this.rt_start;
+      this.rt_end = performance.now() - this.start;
       this.listn_end = false;
-      this.rt_end = rt_end_temp;
     }
   }
 
@@ -1075,7 +1083,7 @@ export class HomePage {
   }
 
   store_data() {
-    var f_name =
+    this.f_name =
       this.experiment_title +
       "_" +
       this.subj_id +
@@ -1093,28 +1101,29 @@ export class HomePage {
       " Finished " +
       this.basic_times.finished +
       this.basic_times.blocks +
-      "\nRepetitions: " +
+      "\nRepetitions" +
       "\t" +
       this.practice_repeated.block1 +
       "\t" +
       this.practice_repeated.block2 +
       "\t" +
       this.practice_repeated.block3 +
-      "\t";
-
-    var path = this.file.externalDataDirectory;
-
+      "\n";
+    this.clipboard.copy(this.cit_data);
+    this.file.writeFile(this.path, this.f_name, this.cit_data);
+    this.to_display = "Path to saved file: " + this.path + "<br/>" + "File name: " + this.f_name + "<br/><br/>Full data:<br/> "
+    this.to_display += this.cit_data;
+  }
+  send_mail() {
     if (this.on_device) {
-        this.file.writeFile(path, f_name, this.cit_data);
       let email = {
         to: "lkcsgaspar@gmail.com",
-        subject: "CITapp data" + this.subj_id,
+        subject: "CITapp data " + this.subj_id + " " + this.experiment_title,
         body: "",
         attachments: [
-          path + f_name
+          this.path + this.f_name
         ]
       };
-      console.log(email)
       this.emailComposer.open(email);
     } else {
       console.log("These are native plugins - only works on the phone.");

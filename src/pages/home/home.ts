@@ -5,6 +5,7 @@ import { File } from '@ionic-native/file';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Network } from '@ionic-native/network';
 import { Clipboard } from '@ionic-native/clipboard';
+import { BackgroundMode } from '@ionic-native/background-mode';
 import { EmailComposer } from "@ionic-native/email-composer";
 import { Platform } from "ionic-angular";
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
@@ -165,10 +166,13 @@ export class HomePage {
     private file: File,
     private statusBar: StatusBar,
     private network: Network,
-    private clipboard: Clipboard
+    private clipboard: Clipboard,
+    private backgroundMode: BackgroundMode
   ) {
     this.basic_times.loaded = Date();
     this.on_device = this.platform.is("cordova");
+    this.statusBar.hide();
+    this.backgroundMode.enable();
     this.path = this.file.externalDataDirectory;
     this.basic_times.blocks = "";
     this.nums = this.range(1, 32);
@@ -222,14 +226,15 @@ export class HomePage {
       this.submit_failed = true;
 
       // for TESTING:
-      this.true_name = "Lükás";
+      this.true_name = "Testname";
       this.gender = 1;
-      this.true_anim = "cat"
+      this.true_anim = "Testtier"
       this.prune();
       console.log(this.stim_base);
       this.div_after_instr = "div_blockstart";
       this.nextblock(); //TODOREMOVE %%%%%% HERE THIS CORRECT
     } else {
+    // todo - this may not be working?
       if (this.on_device && this.network.type) {
         if (this.network.type != "none") {
           alert("Warning: it seems you are connected to the internet. We recommend to turn it off to avoid interferences.")
@@ -649,7 +654,7 @@ export class HomePage {
     } else {
       this.correct_resp = "resp_a";
     }
-    //this.touchsim(); // for testing -- TODOREMOVE
+    this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       this.stimulus_text = this.text_to_show;
       this.start = performance.now();
@@ -851,7 +856,6 @@ export class HomePage {
   }
   nextblock() {
     this.bg_color = "#fff";
-    this.statusBar.show();
     if (this.blocknum <= (this.stim_base.length + 3)) {
       this.block_trialnum = 0;
       if (this.blocknum == 1) {
@@ -878,7 +882,6 @@ export class HomePage {
   runblock() {
     this.basic_times.blocks += "\nBlock " + this.blocknum + " start " + Date();
     this.bg_color = "#031116";
-    this.statusBar.hide();
     this.switch_divs('div_cit_main')
     this.visib.start_text = true;
     this.can_start = true;
@@ -1111,7 +1114,7 @@ export class HomePage {
       "\n";
     this.clipboard.copy(this.cit_data);
     this.file.writeFile(this.path, this.f_name, this.cit_data);
-    this.to_display = "Path to saved file: " + this.path + "<br/>" + "File name: " + this.f_name + "<br/><br/>Full data:<br/> "
+    this.to_display = "Path to saved file:<br/>" + this.path + "<br/>" + "File name:" + this.f_name + "<br/><br/>Full data:<br/> "
     this.to_display += this.cit_data;
   }
   send_mail() {

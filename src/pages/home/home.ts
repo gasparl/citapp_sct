@@ -1,4 +1,5 @@
-import { Component } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
+import { Content } from 'ionic-angular';
 import { NavController } from "ionic-angular";
 import { Storage } from "@ionic/storage";
 import { File } from '@ionic-native/file';
@@ -15,6 +16,7 @@ import { Validators, FormBuilder, FormGroup } from "@angular/forms";
   templateUrl: "home.html"
 })
 export class HomePage {
+  @ViewChild(Content) content: Content;
   to_exec: any;
   onChange(ee) {
     if (ee.keyCode === 13) {
@@ -75,7 +77,7 @@ export class HomePage {
   task_instruction: string;
   true_name: string;
   true_anim: string;
-  current_div: string = "set_conds"; // ddd default: "set_conds", div_dems, div_cit_main, div_end
+  current_div: string = "div_dems"; // ddd default: "set_conds", div_dems, div_cit_main, div_end
   visib: any = {};
   block_texts: string[] = [];
   form_items: FormGroup;
@@ -173,6 +175,11 @@ export class HomePage {
     this.on_device = this.platform.is("cordova");
     this.statusBar.hide();
     this.backgroundMode.enable();
+    this.backgroundMode.setDefaults({
+        title: "CITapp",
+        text: "",
+        silent: true
+    });
     this.path = this.file.externalDataDirectory;
     this.basic_times.blocks = "";
     this.nums = this.range(1, 32);
@@ -214,10 +221,15 @@ export class HomePage {
       this.cat_order = 1;
     }
     this.basic_times.consented = Date();
+    this.backgroundMode.setDefaults({
+        text: "Testing in progress!",
+        silent: false
+    })
   }
 
   switch_divs(div_to_show) {
     this.current_div = div_to_show;
+    this.content.scrollToTop(0);
   }
 
 
@@ -1116,6 +1128,9 @@ export class HomePage {
     this.file.writeFile(this.path, this.f_name, this.cit_data);
     this.to_display = "Path to saved file:<br/>" + this.path + "<br/>" + "File name:" + this.f_name + "<br/><br/>Full data:<br/> "
     this.to_display += this.cit_data;
+    this.backgroundMode.setDefaults({
+        text: "Data saved but not yet sent."
+    })
   }
   send_mail() {
     if (this.on_device) {
@@ -1128,6 +1143,9 @@ export class HomePage {
         ]
       };
       this.emailComposer.open(email);
+      this.backgroundMode.setDefaults({
+          silent: true
+      })
     } else {
       console.log("These are native plugins - only works on the phone.");
     }

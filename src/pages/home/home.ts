@@ -95,6 +95,7 @@ export class HomePage {
   incorrect: number;
   block_trialnum: number;
   rt_data_dict: any;
+  all_main_rts: any = { "probs": [], "irrs": [] };
   trial_stim: any;
   rspns: string;
   can_start: boolean;
@@ -176,9 +177,9 @@ export class HomePage {
     this.statusBar.hide();
     this.backgroundMode.enable();
     this.backgroundMode.setDefaults({
-        title: "CITapp",
-        text: "",
-        silent: true
+      title: "CITapp",
+      text: "",
+      silent: true
     });
     this.path = this.file.externalDataDirectory;
     this.basic_times.blocks = "";
@@ -222,8 +223,8 @@ export class HomePage {
     }
     this.basic_times.consented = Date();
     this.backgroundMode.setDefaults({
-        text: "Testing in progress!",
-        silent: false
+      text: "Testing in progress!",
+      silent: false
     })
   }
 
@@ -246,7 +247,7 @@ export class HomePage {
       this.div_after_instr = "div_blockstart";
       this.nextblock(); //TODOREMOVE %%%%%% HERE THIS CORRECT
     } else {
-    // todo - this may not be working?
+      // todo - this may not be working?
       if (this.on_device && this.network.type) {
         if (this.network.type != "none") {
           alert("Warning: it seems you are connected to the internet. We recommend to turn it off to avoid interferences.")
@@ -320,6 +321,14 @@ export class HomePage {
     var mean = this.sum(array_to_avg) / array_to_avg.length;
     return mean;
   }
+
+  //calculate sd
+  sd(array_for_sd) {
+    var m = this.mean(array_for_sd);
+    return Math.sqrt(array_for_sd.reduce(function(sq, n) {
+      return sq + Math.pow(n - m, 2);
+    }, 0) / (array_for_sd.length - 1));
+  };
 
   seconds_between_dates(startDate, endDate) {
     return Math.abs(+new Date(startDate) - +new Date(endDate)) / 1000;
@@ -797,12 +806,20 @@ export class HomePage {
 
   add_response() {
     var curr_type;
+    var act_type = this.trial_stim.type;
     if (
-      ["selfrefitem", "otherrefitem", "target"].indexOf(this.trial_stim.type) >= 0
+      ["selfrefitem", "otherrefitem", "target"].indexOf(act_type) >= 0
     ) {
-      curr_type = this.trial_stim.type;
+      curr_type = act_type;
     } else {
       curr_type = "main_item";
+      if (this.blocknum > 3 && this.incorrect != 1 && this.tooslow != 1 && this.rt_start > 150 && this.rt_start < 800) {
+        if (act_type == "probe") {
+          this.all_main_rts.probs.push(this.rt_start);
+        } else {
+          this.all_main_rts.irrs.push(this.rt_start);
+        }
+      }
     }
     if (!(curr_type in this.rt_data_dict)) {
       this.rt_data_dict[curr_type] = [];
@@ -1085,7 +1102,6 @@ export class HomePage {
   target_check() {
     if (
       this.targ_check_inp[0].toUpperCase() != this.the_targets[0].toUpperCase() ||
-
       this.targ_check_inp[1].toUpperCase() != this.the_targets[1].toUpperCase()
     ) {
       alert("Wrong! Please check the details more carefully!");
@@ -1095,6 +1111,11 @@ export class HomePage {
       this.div_after_instr = "div_blockstart";
       this.current_div = "div_blockstart";
     }
+  }
+
+
+  calc_d() {
+    (this.mean(this.all_main_rts.probs) - this.mean(this.all_main_rts.irrs)) / this.sd(this.all_main_rts.irrs);
   }
 
   store_data() {
@@ -1128,8 +1149,9 @@ export class HomePage {
     this.file.writeFile(this.path, this.f_name, this.cit_data);
     this.to_display = "Path to saved file:<br/>" + this.path + "<br/>" + "File name:" + this.f_name + "<br/><br/>Full data:<br/> "
     this.to_display += this.cit_data;
+    this.to_display = this.to_display.replace(/\\n/g, "<br/>");
     this.backgroundMode.setDefaults({
-        text: "Data saved but not yet sent."
+      text: "Data stored on phone but not sent."
     })
   }
   send_mail() {
@@ -1144,7 +1166,7 @@ export class HomePage {
       };
       this.emailComposer.open(email);
       this.backgroundMode.setDefaults({
-          silent: true
+        silent: true
       })
     } else {
       console.log("These are native plugins - only works on the phone.");

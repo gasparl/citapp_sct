@@ -1105,20 +1105,17 @@ export class HomePage {
       this.targ_check_inp[1].toUpperCase() != this.the_targets[1].toUpperCase()
     ) {
       alert("Wrong! Please check the details more carefully!");
-      this.current_div = "div_instructions";
+      this.switch_divs("div_instructions");
       this.targ_check_inp = ["", ""];
     } else {
       this.div_after_instr = "div_blockstart";
-      this.current_div = "div_blockstart";
+      this.switch_divs("div_blockstart");
     }
   }
 
 
-  calc_d() {
-    (this.mean(this.all_main_rts.probs) - this.mean(this.all_main_rts.irrs)) / this.sd(this.all_main_rts.irrs);
-  }
-
   store_data() {
+    var dcit = (this.mean(this.all_main_rts.probs) - this.mean(this.all_main_rts.irrs)) / this.sd(this.all_main_rts.irrs);
     this.f_name =
       this.experiment_title +
       "_" +
@@ -1144,10 +1141,17 @@ export class HomePage {
       this.practice_repeated.block2 +
       "\t" +
       this.practice_repeated.block3 +
+      "\t" +
+      dcit +
       "\n";
     this.clipboard.copy(this.cit_data);
     this.file.writeFile(this.path, this.f_name, this.cit_data);
-    this.to_display = "Path to saved file:<br/>" + this.path + "<br/>" + "File name:" + this.f_name + "<br/><br/>Full data:<br/> "
+    if (dcit > 0.1) {
+        var outcome = " => found GUILTY (<i>d</i><sub>CIT</sub> > 0.1)";
+    } else {
+        var outcome = " => found INNOCENT (<i>d</i><sub>CIT</sub> <= 0.1)";
+    }
+    this.to_display = "<i>d</i><sub>CIT</sub> = " + dcit + outcome + "<br/><br/>Path to saved file:<br/>" + this.path + "<br/>" + "File name:" + this.f_name + "<br/><br/>Full data:<br/> "
     this.to_display += this.cit_data;
     this.to_display = this.to_display.replace(/\\n/g, "<br/>");
     this.backgroundMode.setDefaults({

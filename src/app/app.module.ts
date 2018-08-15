@@ -11,6 +11,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { EmailComposer } from '@ionic-native/email-composer';
 import { File } from '@ionic-native/file';
 import { Network } from '@ionic-native/network';
+import { Keyboard } from '@ionic-native/keyboard';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { Network } from '@ionic-native/network';
     Clipboard,
     BackgroundMode,
     EmailComposer,
+    Keyboard,
     File,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]

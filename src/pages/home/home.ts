@@ -9,6 +9,7 @@ import { Clipboard } from '@ionic-native/clipboard';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import { EmailComposer } from "@ionic-native/email-composer";
 import { Platform } from "ionic-angular";
+import { Keyboard } from '@ionic-native/keyboard';
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 
 @Component({
@@ -27,7 +28,7 @@ export class HomePage {
     var info = this.trial_stim.type + " (" + this.trial_stim.word + ")";
     var rt_sim = this.randomdigit(600, 830);
     if (this.trial_stim.type == "probe") {
-        rt_sim = rt_sim + 10;
+      rt_sim = rt_sim + 10;
     }
     var correct_chance1 = 1;
     var correct_chance2 = 0.95;
@@ -173,7 +174,8 @@ export class HomePage {
     private statusBar: StatusBar,
     private network: Network,
     private clipboard: Clipboard,
-    private backgroundMode: BackgroundMode
+    private backgroundMode: BackgroundMode,
+    private keyboard: Keyboard
   ) {
     this.basic_times.loaded = Date();
     this.on_device = this.platform.is("cordova");
@@ -233,6 +235,7 @@ export class HomePage {
 
   switch_divs(div_to_show) {
     this.current_div = div_to_show;
+    this.keyboard.close();
     this.content.scrollToTop(0);
   }
 
@@ -919,8 +922,6 @@ export class HomePage {
     this.can_start = true;
   }
 
-
-
   touchstart(ev, response_side) {
     if (this.listen === true) {
       this.rt_start = performance.now() - this.start;
@@ -928,12 +929,10 @@ export class HomePage {
       this.listen = false;
       this.rspns = response_side;
       this.listn_end = true;
-      if (this.rt_start < this.response_deadline) {
-        if (this.rspns == this.correct_resp) {
-          this.post_resp_hold();
-        } else {
-          this.flash_false();
-        }
+      if (this.rspns == this.correct_resp) {
+        this.post_resp_hold();
+      } else {
+        this.flash_false();
       }
     }
   }
@@ -1151,12 +1150,12 @@ export class HomePage {
     this.file.writeFile(this.path, this.f_name, this.cit_data);
     var outcome;
     if (dcit > 0.1) {
-        outcome = " => found GUILTY (<i>d</i><sub>CIT</sub> > 0.1";
+      outcome = " => found GUILTY (<i>d</i><sub>CIT</sub> > 0.1";
     } else {
-        outcome = " => found INNOCENT (<i>d</i><sub>CIT</sub> <= 0.1";
+      outcome = " => found INNOCENT (<i>d</i><sub>CIT</sub> <= 0.1";
     }
     outcome += "; Pr-Irr diff ~" + Math.round(this.mean(this.all_main_rts.probs) - this.mean(this.all_main_rts.irrs)) + " ms)"
-    this.to_display = "<i>d</i><sub>CIT</sub> = " + (Math.ceil(dcit*1000)/1000).toFixed(3) + outcome + "<br/><br/>Path to saved file:<br/>" + this.path + "<br/>" + "File name: " + this.f_name + "<br/><br/>Full data:<br/>"
+    this.to_display = "<i>d</i><sub>CIT</sub> = " + (Math.ceil(dcit * 1000) / 1000).toFixed(3) + outcome + "<br/><br/>Path to saved file:<br/>" + this.path + "<br/>" + "File name: " + this.f_name + "<br/><br/>Full data:<br/>"
     this.to_display += this.cit_data;
     this.to_display = this.to_display.replace(/\\n/g, "<br/>");
     this.backgroundMode.setDefaults({

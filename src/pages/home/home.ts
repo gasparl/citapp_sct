@@ -25,7 +25,10 @@ export class HomePage {
   }
   touchsim() {
     var info = this.trial_stim.type + " (" + this.trial_stim.word + ")";
-    var rt_sim = this.randomdigit(500, 830);
+    var rt_sim = this.randomdigit(600, 830);
+    if (this.trial_stim.type == "probe") {
+        rt_sim = rt_sim + 10;
+    }
     var correct_chance1 = 1;
     var correct_chance2 = 0.95;
     var correct_chance, sim_key, corr_code, incor_code, chosen_response;
@@ -77,7 +80,7 @@ export class HomePage {
   task_instruction: string;
   true_name: string;
   true_anim: string;
-  current_div: string = "div_dems"; // ddd default: "set_conds", div_dems, div_cit_main, div_end
+  current_div: string = "set_conds"; // ddd default: "set_conds", div_dems, div_cit_main, div_end
   visib: any = {};
   block_texts: string[] = [];
   form_items: FormGroup;
@@ -177,7 +180,7 @@ export class HomePage {
     this.statusBar.hide();
     this.backgroundMode.enable();
     this.backgroundMode.setDefaults({
-      title: "CITapp",
+      title: "Concealed Information Test App active",
       text: "",
       silent: true
     });
@@ -223,7 +226,7 @@ export class HomePage {
     }
     this.basic_times.consented = Date();
     this.backgroundMode.setDefaults({
-      text: "Testing in progress!",
+      text: "Test in progress!",
       silent: false
     })
   }
@@ -290,7 +293,7 @@ export class HomePage {
     this.block_texts[2] =
       'Great, you passed the first practice round. In this second practice round, there will be a shorter deadline for the responses, but a certain rate of errors is allowed. (Items will be first forename names, then animal names, then again forenames, etc.) Try to be as accurate and as fast as possible.<br>';
     this.block_texts[3] =
-      "You passed the second practice round. This will be the third and last practice round. The response deadline is again shorter.<br><br>The task is designed to be difficult, so don't be surprised if you make mistakes, but do your best: <b>try to be as accurate and as fast as possible</b>.<br>";
+      "You passed the second practice round. This will be the third and last practice round. The response deadline is again shorter. Also, the reminder labels will not be displayed anymore, but the task is just the same.<br><br> <b>Try to be as accurate and as fast as possible</b>.<br>";
     this.block_texts[4] =
       "Good job. Now begins the actual test. The task is the same. There will be four blocks, with pauses between them. This first block tests the category of " +
       this.stim_base[0][0].cat +
@@ -1146,12 +1149,14 @@ export class HomePage {
       "\n";
     this.clipboard.copy(this.cit_data);
     this.file.writeFile(this.path, this.f_name, this.cit_data);
+    var outcome;
     if (dcit > 0.1) {
-        var outcome = " => found GUILTY (<i>d</i><sub>CIT</sub> > 0.1)";
+        outcome = " => found GUILTY (<i>d</i><sub>CIT</sub> > 0.1";
     } else {
-        var outcome = " => found INNOCENT (<i>d</i><sub>CIT</sub> <= 0.1)";
+        outcome = " => found INNOCENT (<i>d</i><sub>CIT</sub> <= 0.1";
     }
-    this.to_display = "<i>d</i><sub>CIT</sub> = " + dcit + outcome + "<br/><br/>Path to saved file:<br/>" + this.path + "<br/>" + "File name:" + this.f_name + "<br/><br/>Full data:<br/> "
+    outcome += "; Pr-Irr diff ~" + Math.round(this.mean(this.all_main_rts.probs) - this.mean(this.all_main_rts.irrs)) + " ms)"
+    this.to_display = "<i>d</i><sub>CIT</sub> = " + (Math.ceil(dcit*1000)/1000).toFixed(3) + outcome + "<br/><br/>Path to saved file:<br/>" + this.path + "<br/>" + "File name: " + this.f_name + "<br/><br/>Full data:<br/>"
     this.to_display += this.cit_data;
     this.to_display = this.to_display.replace(/\\n/g, "<br/>");
     this.backgroundMode.setDefaults({

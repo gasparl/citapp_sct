@@ -18,10 +18,10 @@
     </p>
     <ion-item>
       <ion-select [(ngModel)]="pre_cond" interface="popover" style="max-width:100%;" placeholder="- select -">
-        <ion-option value="0">0 (i - name first)</ion-option>
-        <ion-option value="1">1 (i - anim first)</ion-option>
-        <ion-option value="2">2 (g - name first)</ion-option>
-        <ion-option value="3">3 (g - anim first)</ion-option>
+        <ion-option value="0">0 (g - name first)</ion-option>
+        <ion-option value="1">1 (g - anim first)</ion-option>
+        <ion-option value="2">2 (i - name first)</ion-option>
+        <ion-option value="3">3 (i - anim first)</ion-option>
       </ion-select>
     </ion-item>
     <br/>
@@ -169,7 +169,7 @@
         <button ion-button type="button" (tap)="send_mail()" style="text-transform: none;">send</button>
       </div>
       <br/>
-      <p style="user-select: text;" [innerHTML]="to_display">
+      <p style="user-select: text;white-space:pre;" [innerHTML]="to_display">
       </p>
     </div>
   </div>

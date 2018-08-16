@@ -4,26 +4,31 @@
 
   <div *ngSwitchDefault>
 
-    <p>
-      Subject number:
-    </p>
-    <ion-item>
-      <ion-input [(ngModel)]="subj_id" type="number">
-      </ion-input>
-    </ion-item>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
 
-    <br/>
-    <p>
-      Select condition:
-    </p>
-    <ion-item>
-      <ion-select [(ngModel)]="pre_cond" interface="popover" style="max-width:100%;" placeholder="- select -">
-        <ion-option value="0">0 (g - name first)</ion-option>
-        <ion-option value="1">1 (g - anim first)</ion-option>
-        <ion-option value="2">2 (i - name first)</ion-option>
-        <ion-option value="3">3 (i - anim first)</ion-option>
-      </ion-select>
-    </ion-item>
+          <ion-item>
+            <ion-label class="ionslabel" stacked>Subject number</ion-label>
+            <ion-input [(ngModel)]="subj_id" type="number">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item>
+            <ion-label class="ionslabel" stacked>Condition</ion-label>
+            <ion-select [(ngModel)]="pre_cond" interface="popover" style="max-width:100%;" placeholder="- select -">
+              <ion-option value="0">0 (g - name first)</ion-option>
+              <ion-option value="1">1 (g - anim first)</ion-option>
+              <ion-option value="2">2 (i - name first)</ion-option>
+              <ion-option value="3">3 (i - anim first)</ion-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+
+      </ion-row>
+    </ion-grid>
+
     <br/>
     <br/>
     <br/>
@@ -34,7 +39,7 @@
   </div>
 
 
-  <div *ngSwitchCase="'div_dems'">
+  <div *ngSwitchCase="'div_dems'" [ngStyle]="{'pointer-events': pointev.div_dems || 'none' }">
     <header>
       <ion-navbar>
         <ion-title>
@@ -48,36 +53,48 @@
       <p style="border-bottom: 2px solid grey; padding-bottom:10px">
         Make sure to enter the <b>exact</b> same items both on the PC and on the phone. In your name, always use the exact same characters.
       </p>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <span style="padding-left: 16px;float: left;">
+                Your forename:
+                </span>
+            <ion-item style="padding-bottom:30px;">
+              <ion-label class="stackedlabels" *ngIf="!form_dems.controls.name_inp.valid  && submit_failed" stacked>Please enter a valid name.</ion-label>
+              <ion-input formControlName="name_inp" type="text" [class.invalid]="!form_dems.controls.name_inp.valid  && submit_failed"></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col>
 
-      <span style="padding-left: 16px;float: left;">
-        Your forename:
-    </span>
+            <span style="padding-left: 16px;float: left;">
+                Your gender:</span>
+            <ion-item style="padding-bottom:30px;">
+              <ion-label class="stackedlabels" stacked *ngIf="!form_dems.controls.gender_inp.valid  && submit_failed">Please choose gender.</ion-label>
+              <ion-select interface='popover' formControlName="gender_inp" [class.invalid]="!form_dems.controls.gender_inp.valid  && submit_failed" style="max-width:100%;" placeholder="- select -">
+                <ion-option value="1">Male</ion-option>
+                <ion-option value="2">Female</ion-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+        </ion-row>
 
-      <ion-item style="padding-bottom:30px;">
-        <ion-label class="stackedlabels" *ngIf="!form_dems.controls.name_inp.valid  && submit_failed" stacked>Please enter a valid name.</ion-label>
-        <ion-input formControlName="name_inp" type="text" [class.invalid]="!form_dems.controls.name_inp.valid  && submit_failed"></ion-input>
-      </ion-item>
-      <span style="padding-left: 16px;float: left;">
-        Your gender:
-    </span>
-      <ion-item style="padding-bottom:30px;">
-        <ion-label class="stackedlabels" stacked *ngIf="!form_dems.controls.gender_inp.valid  && submit_failed">Please choose gender.</ion-label>
-        <ion-select interface='popover' formControlName="gender_inp" [class.invalid]="!form_dems.controls.gender_inp.valid  && submit_failed" placeholder="- select -">
-          <ion-option value="1">Male</ion-option>
-          <ion-option value="2">Female</ion-option>
-        </ion-select>
-      </ion-item>
-      <span style="padding-left: 16px;float: left;">
+
+        <ion-row>
+          <ion-col>
+            <span style="padding-left: 16px;float: left;">
         Your favorite animal (among the options):
     </span>
-      <ion-item style="padding-bottom:30px;">
-        <ion-label class="stackedlabels" *ngIf="!form_dems.controls.animal_inp.valid  && submit_failed" stacked> Please select an animal.</ion-label>
-        <ion-select interface='action-sheet' formControlName="animal_inp" [class.invalid]="!form_dems.controls.animal_inp.valid  && submit_failed" style="max-width:100%;" placeholder="- select -">
-          <ion-option *ngFor="let item of animals_sorted" value="{{item}}">{{item}}</ion-option>
+            <ion-item style="padding-bottom:30px;">
+              <ion-label class="stackedlabels" *ngIf="!form_dems.controls.animal_inp.valid  && submit_failed" stacked> Please select an animal.</ion-label>
+              <ion-select interface='action-sheet' formControlName="animal_inp" [class.invalid]="!form_dems.controls.animal_inp.valid  && submit_failed" style="max-width:100%;" placeholder="- select -">
+                <ion-option *ngFor="let item of animals_sorted" value="{{item}}">{{item}}</ion-option>
 
-        </ion-select>
-      </ion-item>
+              </ion-select>
+            </ion-item>
 
+          </ion-col>
+        </ion-row>
+      </ion-grid>
 
       <p *ngIf="!form_dems.valid  && submit_failed" style="color: red;">Please fill out all details accurately.</p>
 
@@ -96,23 +113,32 @@
     </div>
   </div>
 
-  <div *ngSwitchCase="'div_target_check'">
+  <div *ngSwitchCase="'div_target_check'" [ngStyle]="{'pointer-events': pointev.div_target_check || 'none' }">
 
     <p><b>To make sure you correctly memorized the target details, please fill them in below.</b>
     </p>
-    <br/><br/> Target forename:
-    <ion-item text-uppercase>
-      <ion-input [(ngModel)]="targ_check_inp[0]" type="text" text-uppercase>
-      </ion-input>
-    </ion-item>
-    <br/> Target animal:
-    <ion-item>
-      <ion-input [(ngModel)]="targ_check_inp[1]" type="text" text-uppercase>
-      </ion-input>
-    </ion-item>
 
-    <p><br/>
-    </p>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <br/><span style="padding-left: 16px;">Target forename:</span>
+          <ion-item text-uppercase>
+            <ion-input [(ngModel)]="targ_check_inp[0]" type="text" text-uppercase>
+            </ion-input>
+          </ion-item>
+        </ion-col>
+
+        <ion-col>
+          <br/><span style="padding-left: 16px;">Target animal:</span>
+          <ion-item>
+            <ion-input [(ngModel)]="targ_check_inp[1]" type="text" text-uppercase>
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <br/>
     <div text-center>
       <button ion-button (tap)="target_check();">OK</button>
     </div>
@@ -123,6 +149,7 @@
     <p [innerHTML]="block_texts[blocknum]"></p>
     <div text-center>
       <button ion-button (tap)="runblock();">Start</button>
+      <br/><br/>
       <hr/>
       <button ion-button style="text-transform: none;background-color:#5e749d;" (tap)="switch_divs('div_instructions');">show instructions again</button>
     </div>

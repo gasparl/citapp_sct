@@ -9,7 +9,6 @@ import { Clipboard } from '@ionic-native/clipboard';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import { EmailComposer } from "@ionic-native/email-composer";
 import { Platform } from "ionic-angular";
-import { Keyboard } from '@ionic-native/keyboard';
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 
 @Component({
@@ -163,6 +162,7 @@ export class HomePage {
   path: any = "";
   f_name: string;
   to_display: string = "";
+  pointev: any = {};
 
   constructor(
     public navCtrl: NavController,
@@ -174,8 +174,7 @@ export class HomePage {
     private statusBar: StatusBar,
     private network: Network,
     private clipboard: Clipboard,
-    private backgroundMode: BackgroundMode,
-    private keyboard: Keyboard
+    private backgroundMode: BackgroundMode
   ) {
     this.basic_times.loaded = Date();
     this.on_device = this.platform.is("cordova");
@@ -235,10 +234,12 @@ export class HomePage {
 
   switch_divs(div_to_show) {
     this.current_div = div_to_show;
-    this.keyboard.close();
+    Object.keys(this.pointev).forEach(ky => this.pointev[ky] = "none");
+    setTimeout(function() {
+        this.pointev[div_to_show] = "auto";
+    }.bind(this), 300);
     this.content.scrollToTop(0);
   }
-
 
   task_start() {
     if (!this.form_dems.valid) {

@@ -22,7 +22,10 @@ page-home {
   ion-input.invalid {
     border: 2px solid #ea6153 !important;
   }
-
+  .ionslabel {
+    font-size: 3.6vw !important;
+    color: black !important;
+  }
   .item-inner {
     border-bottom-color: grey !important;
     box-shadow: none !important;

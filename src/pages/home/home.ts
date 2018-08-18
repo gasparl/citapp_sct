@@ -230,13 +230,20 @@ export class HomePage {
       text: "Test in progress!",
       silent: false
     })
+    if (this.on_device && this.network.type) {
+      if (this.network.type != "none") {
+        alert("Warning: it seems you are connected to the internet. We recommend to turn it off to avoid interferences.")
+      }
+    } else {
+      console.log("Network check - only works on the phone.");
+    }
   }
 
   switch_divs(div_to_show) {
     this.current_div = div_to_show;
     Object.keys(this.pointev).forEach(ky => this.pointev[ky] = "none");
     setTimeout(function() {
-        this.pointev[div_to_show] = "auto";
+      this.pointev[div_to_show] = "auto";
     }.bind(this), 300);
     this.content.scrollToTop(0);
   }
@@ -254,14 +261,6 @@ export class HomePage {
       this.div_after_instr = "div_blockstart";
       this.nextblock(); //TODOREMOVE %%%%%% HERE THIS CORRECT
     } else {
-      // todo - this may not be working?
-      if (this.on_device && this.network.type) {
-        if (this.network.type != "none") {
-          alert("Warning: it seems you are connected to the internet. We recommend to turn it off to avoid interferences.")
-        }
-      } else {
-        console.log("Network check - only works on the phone.");
-      }
       this.true_name = this.form_dems.get("name_inp").value;
       this.gender = this.form_dems.get("gender_inp").value;
       this.true_anim = this.form_dems.get("animal_inp").value;
@@ -303,7 +302,7 @@ export class HomePage {
       this.stim_base[0][0].cat +
       ", so you will be shown only the related items. " +
       target_reminder[0] +
-      "<br><br><b>Again: try to be as accurate and as fast as possible.</b><br><br>When you are ready, click on <b>Start</b> to start the first block of the main test.";
+      "<br><br><b>Again: try to be as accurate and as fast as possible.</b><br>";
     this.block_texts[5] =
       "The first block is now done. The second and last block will test the category of " +
       this.stim_base[1][0].cat +
@@ -682,7 +681,7 @@ export class HomePage {
     } else {
       this.correct_resp = "resp_a";
     }
-    this.touchsim(); // for testing -- TODOREMOVE
+    //this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       this.stimulus_text = this.text_to_show;
       this.start = performance.now();

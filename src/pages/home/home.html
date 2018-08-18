@@ -61,7 +61,7 @@
                 </span>
             <ion-item style="padding-bottom:30px;">
               <ion-label class="stackedlabels" *ngIf="!form_dems.controls.name_inp.valid  && submit_failed" stacked>Please enter a valid name.</ion-label>
-              <ion-input formControlName="name_inp" type="text" [class.invalid]="!form_dems.controls.name_inp.valid  && submit_failed"></ion-input>
+              <ion-input formControlName="name_inp" type="text" [class.invalid]="!form_dems.controls.name_inp.valid  && submit_failed" text-uppercase></ion-input>
             </ion-item>
           </ion-col>
           <ion-col>

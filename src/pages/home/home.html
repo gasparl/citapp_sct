@@ -18,8 +18,8 @@
           <ion-item>
             <ion-label class="ionslabel" stacked>Condition</ion-label>
             <ion-select [(ngModel)]="pre_cond" interface="popover" style="max-width:100%;" placeholder="- select -">
-              <ion-option value="0">0 (g - name first)</ion-option>
-              <ion-option value="1">1 (g - anim first)</ion-option>
+              <ion-option value="0">0 (glty - name first)</ion-option>
+              <ion-option value="1">1 (glty - anim first)</ion-option>
               <ion-option value="2">2 (i - name first)</ion-option>
               <ion-option value="3">3 (i - anim first)</ion-option>
             </ion-select>
@@ -33,7 +33,7 @@
     <br/>
     <br/>
     <div text-center>
-      <button ion-button type="button" style="text-transform: none;" (tap)="initials();switch_divs('div_dems');" *ngIf="pre_cond != 9999 && subj_id > 0 && subj_id < 109"><b> condition {{pre_cond}} - subject num {{subj_id}} </b> </button>
+      <button ion-button type="button" style="text-transform: none;" (tap)="initials();switch_divs('div_dems');" *ngIf="pre_cond != 9999 && subj_id > 0 && subj_id < 109 && subj_id[0] != 0"><b> condition {{pre_cond}} - subject num {{subj_id}} </b> </button>
     </div>
 
   </div>
@@ -60,8 +60,8 @@
                 Your forename:
                 </span>
             <ion-item style="padding-bottom:30px;">
-              <ion-label class="stackedlabels" *ngIf="!form_dems.controls.name_inp.valid  && submit_failed" stacked>Please enter a valid name.</ion-label>
-              <ion-input formControlName="name_inp" type="text" [class.invalid]="!form_dems.controls.name_inp.valid  && submit_failed" text-uppercase></ion-input>
+              <ion-label class="stackedlabels" *ngIf="!form_dems.controls.forename_inp.valid  && submit_failed" stacked>Please enter a valid name.</ion-label>
+              <ion-input formControlName="forename_inp" type="text" [class.invalid]="!form_dems.controls.forename_inp.valid  && submit_failed" text-uppercase></ion-input>
             </ion-item>
           </ion-col>
           <ion-col>
@@ -82,14 +82,11 @@
         <ion-row>
           <ion-col>
             <span style="padding-left: 16px;float: left;">
-        Your favorite animal (among the options):
+        Your surname:
     </span>
             <ion-item style="padding-bottom:30px;">
-              <ion-label class="stackedlabels" *ngIf="!form_dems.controls.animal_inp.valid  && submit_failed" stacked> Please select an animal.</ion-label>
-              <ion-select interface='action-sheet' formControlName="animal_inp" [class.invalid]="!form_dems.controls.animal_inp.valid  && submit_failed" style="max-width:100%;" placeholder="- select -">
-                <ion-option *ngFor="let item of animals_sorted" value="{{item}}">{{item}}</ion-option>
-
-              </ion-select>
+              <ion-label class="stackedlabels" *ngIf="!form_dems.controls.surname_inp.valid  && submit_failed" stacked>Please enter a valid name.</ion-label>
+              <ion-input formControlName="surname_inp" type="text" [class.invalid]="!form_dems.controls.surname_inp.valid  && submit_failed" text-uppercase></ion-input>
             </ion-item>
 
           </ion-col>
@@ -115,8 +112,8 @@
 
   <div *ngSwitchCase="'div_target_check'" [ngStyle]="{'pointer-events': pointev.div_target_check || 'none' }">
 
-    <p><b>To make sure you correctly memorized the target details, please fill them in below.</b>
-    </p>
+    <span><b>To make sure you correctly memorized the target details, please fill them in below.</b>
+    </span>
 
     <ion-grid>
       <ion-row>
@@ -129,7 +126,7 @@
         </ion-col>
 
         <ion-col>
-          <br/><span style="padding-left: 16px;">Target animal:</span>
+          <br/><span style="padding-left: 16px;">Target surname:</span>
           <ion-item>
             <ion-input [(ngModel)]="targ_check_inp[1]" type="text" text-uppercase>
             </ion-input>
@@ -177,7 +174,7 @@
     <header>
       <ion-navbar (swipeleft)="visib.end_data = true">
         <ion-title>
-          The End
+          The End (@Melissa: swipe *this* left)
         </ion-title>
       </ion-navbar>
     </header>
@@ -201,6 +198,6 @@
   </div>
 
 
-  <ion-input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;"></ion-input>
+    <ion-input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;"></ion-input>
 
 </ion-content>

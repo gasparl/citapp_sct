@@ -78,8 +78,8 @@ export class HomePage {
   bg_color: string = "#fff";
   feed_text: string = "";
   task_instruction: string;
-  true_name: string;
-  true_anim: string;
+  true_forename: string;
+  true_surname: string;
   current_div: string = "set_conds"; // ddd default: "set_conds", div_dems, div_cit_main, div_end
   visib: any = {};
   block_texts: string[] = [];
@@ -123,7 +123,7 @@ export class HomePage {
   it_type_feed_dict: any = {
     selfrefitem: "familiarity-related items",
     otherrefitem: "unfamiliarity-related items",
-    main_item: "actual details (forenames or animals)",
+    main_item: "actual details (forenames or surnames)",
     target: "target items"
   };
   practice_chances: number = 5;
@@ -147,17 +147,17 @@ export class HomePage {
   words_to_filter: any[] = [[], []];
   targ_check_inp: string[] = ["", ""];
 
-  categories_base: string[] = ["forenames", "months", "days", "animals"];
-  categories: string[] = ["forenames", "animals"];
+  categories_base: string[] = ["forenames", "months", "days", "surnames"];
+  categories: string[] = ["forenames", "surnames"];
 
   countrs: any[];
 
-  male_names: any[] = ["Nico", "Justin", "Jakob", "Gerald", "Max", "Mario", "Jürgen", "Ferdinand", "Simon", "Harald", "Andre", "Gregor", "Martin", "Julian", "Berat", "Robert", "Leonard", "Theodor", "Arthur", "Emir", "Theo", "Marcel", "Lorenz", "Moritz", "Samuel", "Stefan", "Anton", "Felix", "Herbert", "Clemens", "Gerhard", "Peter", "Sascha", "Richard", "Günther", "Ali", "Johann", "Nicolas", "Leo", "Alexander", "Emanuel", "Manfred", "Klaus", "Roland", "Laurenz", "Valentin", "Dominik", "Marvin", "Helmut", "Hamza", "Viktor", "Jonathan", "Josef", "Christoph", "Markus", "Pascal", "Maximilian", "Finn", "Mathias", "Rafael", "Roman", "Yusuf", "Manuel", "Oliver", "Rene", "Karl", "Adam", "Christopher", "Jan", "Kilian", "Michael", "Jonas", "Werner", "Kevin", "David", "Emil", "Constantin", "Noah", "Bernhard", "Bernd", "Georg", "Marco", "Florian", "Franz", "Fabio", "Wolfgang", "Thomas", "Vincent", "Christian", "Andreas", "Erik", "Johannes", "Tobias", "Benjamin", "Ben", "Sandro", "Armin", "Daniel", "Reinhard", "Benedikt", "Amir", "Gernot", "Elias", "Gabriel", "Patrik", "Andrej", "Konstantin", "Oskar", "Sebastian", "Matthias", "Fabian", "Hannes", "Paul", "Leon", "Tim", "Leopold", "Adrian"];
+  male_forenames: any[] = ["Nico", "Justin", "Jakob", "Gerald", "Max", "Mario", "Jürgen", "Ferdinand", "Simon", "Harald", "Andre", "Gregor", "Martin", "Julian", "Berat", "Robert", "Leonard", "Theodor", "Arthur", "Emir", "Theo", "Marcel", "Lorenz", "Moritz", "Samuel", "Stefan", "Anton", "Felix", "Herbert", "Clemens", "Gerhard", "Peter", "Sascha", "Richard", "Günther", "Ali", "Johann", "Nicolas", "Leo", "Alexander", "Emanuel", "Manfred", "Klaus", "Roland", "Laurenz", "Valentin", "Dominik", "Marvin", "Helmut", "Hamza", "Viktor", "Jonathan", "Josef", "Christoph", "Markus", "Pascal", "Maximilian", "Finn", "Mathias", "Rafael", "Roman", "Yusuf", "Manuel", "Oliver", "Rene", "Karl", "Adam", "Christopher", "Jan", "Kilian", "Michael", "Jonas", "Werner", "Kevin", "David", "Emil", "Constantin", "Noah", "Bernhard", "Bernd", "Georg", "Marco", "Florian", "Franz", "Fabio", "Wolfgang", "Thomas", "Vincent", "Christian", "Andreas", "Erik", "Johannes", "Tobias", "Benjamin", "Ben", "Sandro", "Armin", "Daniel", "Reinhard", "Benedikt", "Amir", "Gernot", "Elias", "Gabriel", "Patrik", "Andrej", "Konstantin", "Oskar", "Sebastian", "Matthias", "Fabian", "Hannes", "Paul", "Leon", "Tim", "Leopold", "Adrian"];
 
-  fem_names: any[] = ["Sandra", "Jacqueline", "Johanna", "Celine", "Silvia", "Ecrin", "Verena", "Sofia", "Sophie", "Hira", "Cornelia", "Valerie", "Angelina", "Lina", "Miriam", "Petra", "Natalie", "Simone", "Isabella", "Hanna", "Emilia", "Melina", "Maja", "Larissa", "Anja", "Angelika", "Patricia", "Claudia", "Mia", "Birgit", "Astrid", "Bettina", "Antonia", "Jessica", "Klara", "Nina", "Elisabeth", "Janine", "Manuela", "Charlotte", "Olivia", "Christina", "Leonie", "Katharina", "Amina", "Anastasia", "Bernadette", "Mila", "Pia", "Magdalena", "Romana", "Paula", "Amelie", "Kerstin", "Ela", "Jana", "Jennifer", "Lea", "Susanne", "Sara", "Nadine", "Lara", "Jasmin", "Mira", "Ella", "Yvonne", "Marie", "Theresa", "Melanie", "Alma", "Tanja", "Alina", "Martina", "Denise", "Rebecca", "Paulina", "Franziska", "Karin", "Lena", "Ines", "Nicole", "Michelle", "Viktoria", "Chiara", "Bianca", "Stefanie", "Carina", "Linda", "Azra", "Stella", "Nora", "Flora", "Vanessa", "Teresa", "Sonja", "Tamara", "Anna", "Ana", "Andrea", "Melissa", "Lilly", "Elif", "Lisa", "Clara", "Teodora", "Kristina", "Anita", "Leonora", "Silke", "Emma", "Esila", "Daniela", "Veronika", "Elena", "Marina", "Helena", "Natascha", "Elina", "Carmen", "Alexandra", "Eva", "Barbara", "Maya", "Tina", "Valentina", "Elisa", "Sabine", "Matilda", "Doris", "Julia", "Rosa", "Laura", "Annika", "Nisa", "Iris", "Zoe", "Monika", "Selina"];
+  fem_forenames: any[] = ["Sandra", "Jacqueline", "Johanna", "Celine", "Silvia", "Ecrin", "Verena", "Sofia", "Sophie", "Hira", "Cornelia", "Valerie", "Angelina", "Lina", "Miriam", "Petra", "Natalie", "Simone", "Isabella", "Hanna", "Emilia", "Melina", "Maja", "Larissa", "Anja", "Angelika", "Patricia", "Claudia", "Mia", "Birgit", "Astrid", "Bettina", "Antonia", "Jessica", "Klara", "Nina", "Elisabeth", "Janine", "Manuela", "Charlotte", "Olivia", "Christina", "Leonie", "Katharina", "Amina", "Anastasia", "Bernadette", "Mila", "Pia", "Magdalena", "Romana", "Paula", "Amelie", "Kerstin", "Ela", "Jana", "Jennifer", "Lea", "Susanne", "Sara", "Nadine", "Lara", "Jasmin", "Mira", "Ella", "Yvonne", "Marie", "Theresa", "Melanie", "Alma", "Tanja", "Alina", "Martina", "Denise", "Rebecca", "Paulina", "Franziska", "Karin", "Lena", "Ines", "Nicole", "Michelle", "Viktoria", "Chiara", "Bianca", "Stefanie", "Carina", "Linda", "Azra", "Stella", "Nora", "Flora", "Vanessa", "Teresa", "Sonja", "Tamara", "Anna", "Ana", "Andrea", "Melissa", "Lilly", "Elif", "Lisa", "Clara", "Teodora", "Kristina", "Anita", "Leonora", "Silke", "Emma", "Esila", "Daniela", "Veronika", "Elena", "Marina", "Helena", "Natascha", "Elina", "Carmen", "Alexandra", "Eva", "Barbara", "Maya", "Tina", "Valentina", "Elisa", "Sabine", "Matilda", "Doris", "Julia", "Rosa", "Laura", "Annika", "Nisa", "Iris", "Zoe", "Monika", "Selina"];
 
-  animls: any[] = ["Nilpferd", "Falke", "Ratte", "Spinne", "Heuschrecke", "Huhn", "Schnecke", "Biene", "Schaf", "Fuchs", "Nashorn", "Tiger", "Maus", "Flamingo", "Ameise", "Schlange", "Pferd", "Gnu", "Biber", "Truthahn", "Zebra", "Elefant", "Krähe", "Hirsch", "Krokodil", "Oktopus", "Frettchen", "Lachs", "Schmetterling", "Walross", "Schwan", "Ente", "Raupe", "Gepard", "Mungo", "Bär", "Taube", "Frosch", "Hamster", "Alpaka", "Kobra", "Elch", "Hering", "Fliege", "Qualle", "Wolf", "Auster", "Gorilla", "Tapir", "Wal", "Jaguar", "Wombat", "Rabe", "Lama", "Taube", "Koala", "Dachs", "Salamander", "Pinguin", "Lemur", "Delfin", "Igel", "Opossum", "Affe", "Esel", "Gazelle", "Kröte", "Mücke", "Leopard", "Emu", "Panda", "Schwein", "Panther", "Hund", "Katze", "Wespe", "Hummer", "Eule", "Kranich", "Pelikan", "Fasan", "Faultier", "Wiesel", "Rentier", "Maulwurf", "Elster", "Adler", "Kiwi", "Bison", "Giraffe", "Papagei", "Ziege", "Schweinswale", "Siegel", "Schimpanse", "Waschbär", "Gans", "Hyäne", "Kolibri", "Mammut", "Alligator", "Stachelschwein", "Kamel", "Widder", "Fledermaus", "Antilope", "Kaninchen", "Löwe", "Känguru", "Schakal", "Krabbe", "Hai"];
-  animals_sorted: any[] = JSON.parse(JSON.stringify(this.animls)).sort();
+  surnms: any[] = ["Bauer", "Müllner", "Langer", "Petrovic", "Huber", "Mayer", "Lehner", "Brunner", "Gruber", "Pfeiffer", "Nowak", "Steiner", "Tichy", "Weiß", "Swoboda", "Traxler", "Schmid", "Urban", "Holzer", "Kainz", "Stadler", "Auer", "Wieser", "Hahn", "Moser", "Varga", "Schuster", "Leitner", "Eder", "Ziegler", "Wimmer", "Winkler", "Schindler", "Graf", "Nikolic", "Reiter", "Hofer", "Berger", "Koch", "Yilmaz", "Schwarz", "Bayer", "Baumgartner", "Schmidt", "Haider", "Kaufmann", "Horvath", "Djordjevic", "Lechner", "Maier", "Todorovic", "Weiss", "Lang", "Bruckner", "Neumann", "Wolf", "Schober", "Fuchs", "König", "Hofbauer", "Pichler", "Neubauer", "Fischer", "Toth", "Strobl", "Wagner", "Schneider", "Kraus", "Vasic", "Kern", "Winter", "Klein", "Schubert", "Weber", "Frank", "Braun", "Werner", "Kaiser", "Haas", "Zimmermann", "Jovanovic", "Koller", "Novak", "Hofmann", "Richter", "Binder", "Seidl", "Wittmann", "Böhm", "Walter", "Unger", "Aigner", "Markovic", "Wiesinger", "Windisch", "Wallner", "Zach", "Müller", "Hoffmann", "Riedl"];
+
   stimulus_text: string = "";
   path: any = "";
   f_name: string;
@@ -178,6 +178,7 @@ export class HomePage {
   ) {
     this.basic_times.loaded = Date();
     this.on_device = this.platform.is("cordova");
+
     this.statusBar.hide();
     this.backgroundMode.enable();
     this.backgroundMode.setDefaults({
@@ -197,7 +198,7 @@ export class HomePage {
         "",
         Validators.compose([Validators.maxLength(30), Validators.required])
       ],
-      name_inp: [
+      forename_inp: [
         "",
         Validators.compose([
           Validators.maxLength(30),
@@ -205,9 +206,11 @@ export class HomePage {
           Validators.required
         ])
       ],
-      animal_inp: [
+      surname_inp: [
         "",
         Validators.compose([
+          Validators.maxLength(30),
+          Validators.pattern("[a-zA-ZÖöÜüÉéÁáÄäß]*"),
           Validators.required
         ])
       ]
@@ -253,17 +256,17 @@ export class HomePage {
       this.submit_failed = true;
 
       // for TESTING:
-      this.true_name = "Testname";
+      /*this.true_forename = "Testname";
       this.gender = 1;
-      this.true_anim = "Testtier"
+      this.true_surname = "Testtier"
       this.prune();
       console.log(this.stim_base);
       this.div_after_instr = "div_blockstart";
-      this.nextblock(); //TODOREMOVE %%%%%% HERE THIS CORRECT
+      this.nextblock(); //TODOREMOVE %%%%%% HERE THIS CORRECT */
     } else {
-      this.true_name = this.form_dems.get("name_inp").value;
+      this.true_forename = this.form_dems.get("forename_inp").value;
       this.gender = this.form_dems.get("gender_inp").value;
-      this.true_anim = this.form_dems.get("animal_inp").value;
+      this.true_surname = this.form_dems.get("surname_inp").value;
       this.prune();
       this.switch_divs("div_instructions");
     }
@@ -292,9 +295,9 @@ export class HomePage {
     }
     this.block_texts[0] = "";
     this.block_texts[1] =
-      'There will be three short practice rounds. In this first practice round, we just want to see that you clearly understand the task. Therefore, you will have a lot of time to choose each of your responses, just make sure you choose accurately. Here, all items from the two categories (forenames, animals) will be mixed together randomly. <b>You must respond to each item correctly.</b> If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice round.<br><br>If needed, tap <b>show instructions again</b> to reread the details.<br><br>';
+      'There will be three short practice rounds. In this first practice round, we just want to see that you clearly understand the task. Therefore, you will have a lot of time to choose each of your responses, just make sure you choose accurately. Here, all items from the two categories (forenames, surnames) will be mixed together randomly. <b>You must respond to each item correctly.</b> If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice round.<br><br>If needed, tap <b>show instructions again</b> to reread the details.<br><br>';
     this.block_texts[2] =
-      'Great, you passed the first practice round. In this second practice round, there will be a shorter deadline for the responses, but a certain rate of errors is allowed. (Items will be first forename names, then animal names, then again forenames, etc.) Try to be as accurate and as fast as possible.<br>';
+      'Great, you passed the first practice round. In this second practice round, there will be a shorter deadline for the responses, but a certain rate of errors is allowed. (Items will be first forename names, then surname names, then again forenames, etc.) Try to be as accurate and as fast as possible.<br>';
     this.block_texts[3] =
       "You passed the second practice round. This will be the third and last practice round. The response deadline is again shorter. Also, the reminder labels will not be displayed anymore, but the task is just the same.<br><br> <b>Try to be as accurate and as fast as possible</b>.<br>";
     this.block_texts[4] =
@@ -647,7 +650,7 @@ export class HomePage {
       // standard CIT
       this.div_after_instr = "div_target_check";
       this.task_instruction =
-        'Tapping the <i>right</i> button means "YES, I recognize this item as a relevant". Tapping the <i>left</i> button means "NO, I do not recognize this item as relevant". <br> You will see words (forenames, animals) appearing in the middle of the screen. You have to recognize and say YES to the following target details: <b>' +
+        'Tapping the <i>right</i> button means "YES, I recognize this item as a relevant". Tapping the <i>left</i> button means "NO, I do not recognize this item as relevant". <br> You will see words (forenames, surnames) appearing in the middle of the screen. You have to recognize and say YES to the following target details: <b>' +
         this.the_targets.join("</b>, <b>").toUpperCase() +
         "</b><br/><br/>You have to say NO to all other details. Remember: you are denying that you recognize any of the other details as relevant to you, so you you have to say NO to all of them.<br/><br/>"
         ;
@@ -657,9 +660,9 @@ export class HomePage {
       // induced & target
       this.div_after_instr = "div_target_check";
       this.task_instruction =
-        'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (forenames, animals) appearing in the middle of the screen. You have to say FAMILIAR to the following target details: <b>' +
+        'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (forenames, surnames) appearing in the middle of the screen. You have to say FAMILIAR to the following target details: <b>' +
         this.the_targets.join("</b>, <b>").toUpperCase() +
-        "</b><br><br>You have to say UNFAMILIAR to all other actual details (other forenames, animals). Remember: you are denying that you recognize any of these other details as relevant to you, so you you have to say UNFAMILIAR to all of them. " +
+        "</b><br><br>You have to say UNFAMILIAR to all other actual details (other forenames, surnames). Remember: you are denying that you recognize any of these other details as relevant to you, so you you have to say UNFAMILIAR to all of them. " +
         inducers_instructions
         ;
       this.practice_stim = this.getPracticeTestStimuli_induced;
@@ -668,7 +671,7 @@ export class HomePage {
       // induced - nontarget
       this.div_after_instr = "div_cit_blockstart";
       this.task_instruction =
-        'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (forenames, animals) appearing in the middle of the screen. You have to say UNFAMILIAR to all these details. Remember: you are denying that you recognize any of these details as relevant to you, so you you have to say UNFAMILIAR to all of them. ' +
+        'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (forenames, surnames) appearing in the middle of the screen. You have to say UNFAMILIAR to all these details. Remember: you are denying that you recognize any of these details as relevant to you, so you you have to say UNFAMILIAR to all of them. ' +
         inducers_instructions;
       this.practice_stim = this.getPracticeTestStimuli_induced;
       this.main_stim = this.getAllTestStimuli_induced;
@@ -949,21 +952,21 @@ export class HomePage {
   prune() {
     //given the probe (in each of the categories), selects 8 additional items, 5 of which will later be irrelevants. None with same starting letter, and with length closest possible to the probe.
     if (this.gender == 1) {
-      this.countrs = this.male_names;
+      this.countrs = this.male_forenames;
     } else {
-      this.countrs = this.fem_names;
+      this.countrs = this.fem_forenames;
     }
     this.countrs.forEach(function(item, index) {
       this.countrs[index] = item.toLowerCase();
     }, this);
-    this.animls.forEach(function(item, index) {
-      this.animls[index] = item.toLowerCase();
+    this.surnms.forEach(function(item, index) {
+      this.surnms[index] = item.toLowerCase();
     }, this);
     var true_details_base = [
-      this.true_name.toLowerCase(),
+      this.true_forename.toLowerCase(),
       "may",
       11,
-      this.true_anim.toLowerCase()
+      this.true_surname.toLowerCase()
     ];
     this.true_details = [
       true_details_base[0],
@@ -974,7 +977,7 @@ export class HomePage {
       this.countrs,
       ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"],
       this.nums,
-      this.animls
+      this.surnms
     ];
     var items_base2_temp = [];
     true_details_base.forEach(function(probe, index) {

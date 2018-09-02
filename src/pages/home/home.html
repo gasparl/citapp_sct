@@ -18,10 +18,10 @@
           <ion-item>
             <ion-label class="ionslabel" stacked>Condition</ion-label>
             <ion-select [(ngModel)]="pre_cond" interface="popover" style="max-width:100%;" placeholder="- select -">
-              <ion-option value="0">0 (glty - name first)</ion-option>
-              <ion-option value="1">1 (glty - anim first)</ion-option>
-              <ion-option value="2">2 (i - name first)</ion-option>
-              <ion-option value="3">3 (i - anim first)</ion-option>
+              <ion-option value="0">0 (glty - fore first)</ion-option>
+              <ion-option value="1">1 (glty - surn first)</ion-option>
+              <ion-option value="2">2 (i - fore first)</ion-option>
+              <ion-option value="3">3 (i - surn first)</ion-option>
             </ion-select>
           </ion-item>
         </ion-col>
@@ -97,6 +97,10 @@
 
       <button ion-button type="submit" block>OK</button>
     </form>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
   </div>
 
   <div *ngSwitchCase="'div_instructions'">
@@ -139,6 +143,10 @@
     <div text-center>
       <button ion-button (tap)="target_check();">OK</button>
     </div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
   </div>
 
 
@@ -174,7 +182,7 @@
     <header>
       <ion-navbar (swipeleft)="visib.end_data = true">
         <ion-title>
-          The End (@Melissa: swipe *this* left)
+          The End (@Uli: swipe *this* left)
         </ion-title>
       </ion-navbar>
     </header>
@@ -198,6 +206,6 @@
   </div>
 
 
-    <ion-input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;"></ion-input>
+        <ion-input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;"></ion-input>
 
 </ion-content>

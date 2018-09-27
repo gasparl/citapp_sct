@@ -101,7 +101,6 @@ export class HomePage {
   all_main_rts: any = { "probs": [], "irrs": [] };
   trial_stim: any;
   rspns: string;
-  can_start: boolean;
   first_correct: boolean = true;
   div_after_instr: string;
   div_after_item_selection: string;
@@ -218,16 +217,19 @@ export class HomePage {
   }
 
   initials() {
-    if (this.pre_cond < 2) {
-      this.condition = 0;
-    } else {
-      this.condition = 3;
-    }
-    if (this.pre_cond % 2 == 0) {
-      this.cat_order = 0;
-    } else {
-      this.cat_order = 1;
-    }
+    // if (this.pre_cond < 2) {
+    //   this.condition = 0;
+    // } else {
+    //   this.condition = 3;
+    // }
+    // if (this.pre_cond % 2 == 0) {
+    //   this.cat_order = 0;
+    // } else {
+    //   this.cat_order = 1;
+    // }
+    // only guilty for now
+    this.cat_order = this.pre_cond;
+
     this.basic_times.consented = Date();
     this.backgroundMode.setDefaults({
       text: "Test in progress!",
@@ -922,7 +924,6 @@ export class HomePage {
     this.bg_color = "#031116";
     this.switch_divs('div_cit_main')
     this.visib.start_text = true;
-    this.can_start = true;
   }
 
   touchstart(ev, response_side) {
@@ -1089,7 +1090,7 @@ export class HomePage {
         }
       }, this);
     }, this);
-    if (this.cat_order == 0) {
+    if (this.cat_order == 1) {
       this.stim_base = [
         stim_base_temp[0],
         stim_base_temp[1]
@@ -1125,6 +1126,8 @@ export class HomePage {
       this.experiment_title +
       "_" +
       this.subj_id +
+      "_" +
+      this.cat_order +
       "_" +
       Date.now() +
       ".txt";

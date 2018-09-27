@@ -18,10 +18,8 @@
           <ion-item>
             <ion-label class="ionslabel" stacked>Condition</ion-label>
             <ion-select [(ngModel)]="pre_cond" interface="popover" style="max-width:100%;" placeholder="- select -">
-              <ion-option value="0">0 (glty - fore first)</ion-option>
-              <ion-option value="1">1 (glty - surn first)</ion-option>
-              <ion-option value="2">2 (i - fore first)</ion-option>
-              <ion-option value="3">3 (i - surn first)</ion-option>
+              <ion-option value="1">1 (forenames first)</ion-option>
+              <ion-option value="2">2 (surnames first)</ion-option>
             </ion-select>
           </ion-item>
         </ion-col>
@@ -101,6 +99,7 @@
         <br/>
         <br/>
         <br/>
+        <br/>
   </div>
 
   <div *ngSwitchCase="'div_instructions'">
@@ -143,6 +142,7 @@
     <div text-center>
       <button ion-button (tap)="target_check();">OK</button>
     </div>
+        <br/>
         <br/>
         <br/>
         <br/>

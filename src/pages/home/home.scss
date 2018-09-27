@@ -6,7 +6,9 @@ html {
 input {
   font-size: 3.8vw;
 }
-
+.item-input input {
+   margin-bottom: 0vw;
+}
 hr {
   display: block;
   height: 1px;

@@ -229,7 +229,7 @@ export class HomePage {
     // }
     // only guilty for now
     this.cat_order = this.pre_cond;
-
+    this.condition = 0;
     this.basic_times.consented = Date();
     this.backgroundMode.setDefaults({
       text: "Test in progress!",
@@ -263,7 +263,7 @@ export class HomePage {
       this.true_surname = "Testtier"
       this.prune();
       console.log(this.stim_base);
-      this.div_after_instr = "div_blockstart";
+      this.div_after_instr = "div_cit_blockstart";
       this.nextblock(); //TODOREMOVE %%%%%% HERE THIS CORRECT */
     } else {
       this.true_forename = this.form_dems.get("forename_inp").value;
@@ -303,13 +303,13 @@ export class HomePage {
     this.block_texts[3] =
       "You passed the second practice round. This will be the third and last practice round. The response deadline is again shorter. Also, the reminder labels will not be displayed anymore, but the task is just the same.<br><br> <b>Try to be as accurate and as fast as possible</b>.<br>";
     this.block_texts[4] =
-      "Good job. Now begins the actual test. The task is the same. There will be four blocks, with pauses between them. This first block tests the category of " +
+      "Good job. Now begins the actual test. The task is the same. There will be two blocks, with a pause in-between. This first block tests the category of " +
       this.stim_base[0][0].cat +
       ", so you will be shown only the related items. " +
       target_reminder[0] +
       "<br><br><b>Again: try to be as accurate and as fast as possible.</b><br>";
     this.block_texts[5] =
-      "The first block is now done. The second and last block will test the category of " +
+      "The first block is now done. The second block will test the category of " +
       this.stim_base[1][0].cat +
       ". " +
       target_reminder[1] +
@@ -1012,7 +1012,7 @@ export class HomePage {
             return Math.abs(probe.toString().length - n.length) <= maxdif;
           });
           if (temps.length > 0) {
-            final8.push(temps[0]);
+            final8.push(temps[0]); // nonrandom!
             container = container.filter(function(n) {
               return final8[final8.length - 1] !== n;
             });

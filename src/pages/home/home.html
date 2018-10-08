@@ -49,28 +49,29 @@
     <form (ngSubmit)="task_start();" [formGroup]="form_dems">
 
       <p style="border-bottom: 2px solid grey; padding-bottom:10px">
-        Make sure to enter the <b>exact</b> same items both on the PC and on the phone. In your name, always use the exact same characters.
+          Stellen Sie sicher, dass sie die <b>exakt</b> gleichen Namen (mit den gleichen Buchstaben) sowohl am PC, als auch auf dem Handy, eingeben.
+
       </p>
       <ion-grid>
         <ion-row>
           <ion-col>
             <span style="padding-left: 16px;float: left;">
-                Your forename:
+                Ihr Vorname:
                 </span>
             <ion-item style="padding-bottom:30px;">
-              <ion-label class="stackedlabels" *ngIf="!form_dems.controls.forename_inp.valid  && submit_failed" stacked>Please enter a valid name.</ion-label>
+              <ion-label class="stackedlabels" *ngIf="!form_dems.controls.forename_inp.valid  && submit_failed" stacked>Bitte geben Sie einen gültigen Namen ein.</ion-label>
               <ion-input formControlName="forename_inp" type="text" [class.invalid]="!form_dems.controls.forename_inp.valid  && submit_failed" text-uppercase></ion-input>
             </ion-item>
           </ion-col>
           <ion-col>
 
             <span style="padding-left: 16px;float: left;">
-                Your gender:</span>
+                Ihr Geschlecht:</span>
             <ion-item style="padding-bottom:30px;">
-              <ion-label class="stackedlabels" stacked *ngIf="!form_dems.controls.gender_inp.valid  && submit_failed">Please choose gender.</ion-label>
+              <ion-label class="stackedlabels" stacked *ngIf="!form_dems.controls.gender_inp.valid  && submit_failed">Bitte wählen Sie ein Geschlecht aus.</ion-label>
               <ion-select interface='popover' formControlName="gender_inp" [class.invalid]="!form_dems.controls.gender_inp.valid  && submit_failed" style="max-width:100%;" placeholder="- select -">
-                <ion-option value="1">Male</ion-option>
-                <ion-option value="2">Female</ion-option>
+                <ion-option value="1">männlich</ion-option>
+                <ion-option value="2">weiblich</ion-option>
               </ion-select>
             </ion-item>
           </ion-col>
@@ -80,10 +81,10 @@
         <ion-row>
           <ion-col>
             <span style="padding-left: 16px;float: left;">
-        Your surname:
+        Your Nachname:
     </span>
             <ion-item style="padding-bottom:30px;">
-              <ion-label class="stackedlabels" *ngIf="!form_dems.controls.surname_inp.valid  && submit_failed" stacked>Please enter a valid name.</ion-label>
+              <ion-label class="stackedlabels" *ngIf="!form_dems.controls.surname_inp.valid  && submit_failed" stacked>Bitte geben Sie einen gültigen Namen ein.</ion-label>
               <ion-input formControlName="surname_inp" type="text" [class.invalid]="!form_dems.controls.surname_inp.valid  && submit_failed" text-uppercase></ion-input>
             </ion-item>
 
@@ -91,7 +92,7 @@
         </ion-row>
       </ion-grid>
 
-      <p *ngIf="!form_dems.valid  && submit_failed" style="color: red;">Please fill out all details accurately.</p>
+      <p *ngIf="!form_dems.valid  && submit_failed" style="color: red;">Bitte füllen Sie alle Details genau aus.</p>
 
       <button ion-button type="submit" block>OK</button>
     </form>
@@ -105,9 +106,9 @@
   <div *ngSwitchCase="'div_instructions'">
 
     <ion-title>
-      Task instructions
+      Instruktionen für die Aufgabe
     </ion-title>
-    <p>During the task, there will be two buttons at the bottom of the screen: one on the <i>left-hand side</i> and one on the <i>right-hand side</i>. <span [innerHTML]="task_instruction"></span></p>
+    <p>Während der Aufgabe werden Sie im unteren Bereich des Displays zwei Schaltflächen sehen: Eine auf der <i>linken Seite</i> und eine auf der <i>rechten</i>. <span [innerHTML]="task_instruction"></span></p>
     <div text-center>
       <button ion-button (tap)="nextblock();">OK</button>
     </div>
@@ -115,13 +116,13 @@
 
   <div *ngSwitchCase="'div_target_check'" [ngStyle]="{'pointer-events': pointev.div_target_check || 'none' }">
 
-    <span><b>To make sure you correctly memorized the target details, please fill them in below.</b>
+    <span><b>Um sicherzustellen, dass Sie sich die Details, auf die Sie mit JA antworten sollen, genau einprägen, geben Sie diese bitte hier ein.</b>
     </span>
 
     <ion-grid>
       <ion-row>
         <ion-col>
-          <br/><span style="padding-left: 16px;">Target forename:</span>
+          <br/><span style="padding-left: 16px;"> Vorname:</span>
           <ion-item text-uppercase>
             <ion-input [(ngModel)]="targ_check_inp[0]" type="text" text-uppercase>
             </ion-input>
@@ -129,7 +130,7 @@
         </ion-col>
 
         <ion-col>
-          <br/><span style="padding-left: 16px;">Target surname:</span>
+          <br/><span style="padding-left: 16px;">Nachname:</span>
           <ion-item>
             <ion-input [(ngModel)]="targ_check_inp[1]" type="text" text-uppercase>
             </ion-input>
@@ -156,40 +157,40 @@
       <button ion-button (tap)="runblock();">Start</button>
       <br/><br/>
       <hr/>
-      <button ion-button style="text-transform: none;background-color:#5e749d;" (tap)="switch_divs('div_instructions');">show instructions again</button>
+      <button ion-button style="text-transform: none;background-color:#5e749d;" (tap)="switch_divs('div_instructions');">Anweisungen erneut anzeigen</button>
     </div>
   </div>
 
 
   <div id="div_cit_main" *ngSwitchCase="'div_cit_main'">
     <p id="feed_id"><b>{{feed_text}}</b></p>
-    <p id="label_top" *ngIf="visib.labels">Recognize?</p>
+    <p id="label_top" *ngIf="visib.labels">Erkannt?</p>
 
     <p (touchstart)="touchstart($event, 'resp_a');" (touchend)="touchend($event, 'resp_a');" id="resp_left" class="resp_buttons"></p>
 
     <p (touchstart)="touchstart($event, 'resp_b');" (touchend)="touchend($event, 'resp_b');" id="resp_right" class="resp_buttons"></p>
 
-    <p id="label_left" class="labels" *ngIf="visib.labels">No</p>
+    <p id="label_left" class="labels" *ngIf="visib.labels">Nein</p>
 
-    <p id="label_right" class="labels" *ngIf="visib.labels">Yes</p>
+    <p id="label_right" class="labels" *ngIf="visib.labels">Ja</p>
 
     <p id="stimulus">{{stimulus_text}}</p>
 
-    <p id="start_text" (tap)="visib.start_text = false; start_trials();" *ngIf="visib.start_text">Tap this to begin.</p>
+    <p id="start_text" (tap)="visib.start_text = false; start_trials();" *ngIf="visib.start_text">Tippen Sie hier, um zu beginnen.</p>
   </div>
 
   <div *ngSwitchCase="'div_end'">
     <header>
       <ion-navbar (swipeleft)="visib.end_data = true">
         <ion-title>
-          The End
+          Ende
         </ion-title>
       </ion-navbar>
     </header>
     <br/>
     <b>
     <br/>
-    <br/>You can let the experiment leader know that you finished. Please do not close anything!
+    <br/>Sie können dem Versuchsleiter mitteilen, dass Sie fertig sind. Bitte tippen Sie nun nichts mehr an!
     </b>
     <br/>
     <br/>

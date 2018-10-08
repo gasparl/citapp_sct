@@ -62,7 +62,7 @@ export class HomePage {
     }.bind(this), rt_sim);
   }
 
-  experiment_title: string = "ECIT_Mobile";
+  experiment_title: string = "CIT_Mobile";
   false_delay: number = 400;
   tooslow_delay: number = 400;
   isi_delay_minmax: number[] = [300, 600];
@@ -122,8 +122,8 @@ export class HomePage {
   it_type_feed_dict: any = {
     selfrefitem: "familiarity-related items",
     otherrefitem: "unfamiliarity-related items",
-    main_item: "actual details (forenames or surnames)",
-    target: "target items"
+    main_item: "mit NEIN zu beantwortende Details",
+    target: "mit JA zu beantwortende Details"
   };
   practice_chances: number = 5;
   practice_num: number = 5;
@@ -146,8 +146,8 @@ export class HomePage {
   words_to_filter: any[] = [[], []];
   targ_check_inp: string[] = ["", ""];
 
-  categories_base: string[] = ["forenames", "months", "days", "surnames"];
-  categories: string[] = ["forenames", "surnames"];
+  categories_base: string[] = ["Vornamen", "months", "days", "Nachnamen"];
+  categories: string[] = ["Vornamen", "Nachnamen"];
 
   countrs: any[];
 
@@ -281,10 +281,10 @@ export class HomePage {
       target_reminder = ["", "", "", ""];
     } else {
       target_reminder = [
-        "Remember: in this category, your target that requires a different response is <b>" +
+        "Zur Erinnerung: das mit JA zu beantwortende Detail ist <b>" +
         this.stim_base[0][1].word.toUpperCase() +
         "</b>. ",
-        "Remember: in this category, your target that requires a different response is <b>" +
+        "Zur Erinnerung: das mit JA zu beantwortende Detail ist <b>" +
         this.stim_base[1][1].word.toUpperCase() +
         "</b>. ",
         "Again, your target that requires a different response is <b>" +
@@ -297,23 +297,23 @@ export class HomePage {
     }
     this.block_texts[0] = "";
     this.block_texts[1] =
-      'There will be three short practice rounds. In this first practice round, we just want to see that you clearly understand the task. Therefore, you will have a lot of time to choose each of your responses, just make sure you choose accurately. Here, all items from the two categories (forenames, surnames) will be mixed together randomly. <b>You must respond to each item correctly.</b> If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice round.<br><br>If needed, tap <b>show instructions again</b> to reread the details.<br><br>';
+      'Es werden drei kurze Übungsrunden stattfinden. In der ersten Übungsrunde wollen wir nur herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass sie Ihre jeweiligen Antworten genau auswählen, werden Sie für diese Aufgabe genügend Zeit haben. An dieser Stelle werden alle Items der zwei Kategorien (Vornamen, Nachnamen) zufällig durchmischt. <b>Sie müssen auf jedes Item korrekt antworten.</b> Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden), müssen Sie diese Übungsrunde wiederholen.<br><br>Falls nötig, tippen Sie <b>Anweisungen anzeigen</b> um die Details erneut zu lesen.<br><br>';
     this.block_texts[2] =
-      'Great, you passed the first practice round. In this second practice round, there will be a shorter deadline for the responses, but a certain rate of errors is allowed. (Items will be first forename names, then surname names, then again forenames, etc.) Try to be as accurate and as fast as possible.<br>';
+      'Super, Sie haben die erste Übungsrunde geschafft. In dieser zweiten Übungsrunde wird die Antwortzeit verkürzt sein, wobei aber eine bestimmte Anzahl an falschen Antworten erlaubt ist. (Vornamen und Nachnamen werden in Gruppen präsentiert.) Versuchen Sie, so genau und schnell wie möglich zu antworten. <br>';
     this.block_texts[3] =
-      "You passed the second practice round. This will be the third and last practice round. The response deadline is again shorter. Also, the reminder labels will not be displayed anymore, but the task is just the same.<br><br> <b>Try to be as accurate and as fast as possible</b>.<br>";
+      'Sie haben die zweite Übungsrunde geschafft. Nun folgt die dritte und letzte Übungsrunde. Die Antwortzeit wird erneut verkürzt. Die Wörter "Erkannt?", "Ja", "Nein" werden nicht mehr angezeigt, die Aufgabe bleibt jedoch dieselbe. <br><br> <b>Versuchen Sie, so genau und schnell wie möglich zu antworten.</b>.<br>';
     this.block_texts[4] =
-      "Good job. Now begins the actual test. The task is the same. There will be two blocks, with a pause in-between. This first block tests the category of " +
+      "Gut gemacht. Nun beginnt der eigentliche Test. Die Aufgabe bleibt dieselbe. Es wird zwei Blöcke, getrennt durch eine Pause, geben. Im ersten Block wird die Kategorie " +
       this.stim_base[0][0].cat +
-      ", so you will be shown only the related items. " +
+      "getestet, also werden Ihnen nur die damit verbundenen Items präsentiert." +
       target_reminder[0] +
-      "<br><br><b>Again: try to be as accurate and as fast as possible.</b><br>";
+      "<br><br><b>Zur Erinnerung: Versuchen Sie, so genau und schnell wie möglich zu antworten.</b><br>";
     this.block_texts[5] =
-      "The first block is now done. The second block will test the category of " +
+      "Der erste Block ist nun beendet. Im zweiten Block wird die Kategorie " +
       this.stim_base[1][0].cat +
-      ". " +
+      "getestet. " +
       target_reminder[1] +
-      "The task is otherwise the same. <b>Again: try to be as accurate and as fast as possible.</b>";
+      "Abgesehen davon bleibt die Aufgabe dieselbe. <b>Zur Erinnerung: Versuchen Sie, so genau und schnell wie möglich zu antworten.</b>";
   }
 
   capitalize(str1) {
@@ -639,7 +639,7 @@ export class HomePage {
     if (this.blocknum == 1) {
       this.teststim = [];
       alert(
-        "You did not respond correctly. You will start this practice once again. Please read the instructions carefully."
+        "Sie haben nicht richtig geantwortet. Die Übung wird nun von Neuem beginnen. Bitte lesen Sie die Anweisungen genau."
       );
       this.first_correct = false;
     }
@@ -652,9 +652,9 @@ export class HomePage {
       // standard CIT
       this.div_after_instr = "div_target_check";
       this.task_instruction =
-        'Tapping the <i>right</i> button means "YES, I recognize this item as a relevant". Tapping the <i>left</i> button means "NO, I do not recognize this item as relevant". <br> You will see words (forenames, surnames) appearing in the middle of the screen. You have to recognize and say YES to the following target details: <b>' +
+        'Antippen der <i>rechten</i>Schaltfläche bedeutet "JA, ich nehme dieses Item als relevant wahr.". Antippen der <i>linken</i> Schaltfläche bedeutet "Nein, ich nehme dieses Item nicht als relevant wahr." <br> Sie werden Wörter (Vornamen, Nachnamen) sehen, die in der Mitte des Bildschirms auftauchen. Sie sollten diese wahrnehmen und mit JA auf die folgenden Details antworten: <b>' +
         this.the_targets.join("</b>, <b>").toUpperCase() +
-        "</b><br/><br/>You have to say NO to all other details. Remember: you are denying that you recognize any of the other details as relevant to you, so you you have to say NO to all of them.<br/><br/>"
+        "</b><br/><br/>Auf alle anderen Details sollten Sie mit NEIN antworten. Zur Erinnerung: Sie leugnen, irgendwelche der anderen Details als relevant für Sie wahrzunehmen, also sollten Sie auf alle mit NEIN antworten.<br/><br/>"
         ;
       this.practice_stim = this.getPracticeTestStimuli_simple;
       this.main_stim = this.getAllTestStimuli_simple;
@@ -732,9 +732,9 @@ export class HomePage {
     }
     if (is_valid == false && this.blocknum != 1) {
       this.block_texts[this.blocknum] =
-        "You will have to repeat this practice round, because of too few correct responses.<br><br>You need at least 60% accuracy on each item type, but you did not have enough correct responses for the following one(s):" +
+        "Sie müssen diese Übungsrunde wiederholen, da sie zu wenige richtige Antworten gegeben haben. <br><br>Sie benötigen mindestens 60% richtige Antworten für jeden der beiden Antworttypen, jedoch gaben Sie nicht genügend richtige Antworten für folgende(n) Antworttyp(en):" +
         types_failed.join(",") +
-        ".<br><br>Try to make responses both accurately and in time.<br><br>";
+        ".<br><br>Bitte geben Sie genaue und im Zeitlimit liegende Antworten.<br><br>";
     }
     return is_valid;
   }
@@ -757,13 +757,6 @@ export class HomePage {
           "% correct)"
         );
       }
-    }
-    if (verylow == true && this.blocknum > 3) {
-      var feedback_text =
-        "Warning: you had very low accuracy in this last block to the following item type(s):" +
-        types_failed.join(",") +
-        ". Please pay attention and make responses in time accurately.";
-      alert(feedback_text);
     }
   }
 
@@ -1110,7 +1103,7 @@ export class HomePage {
       this.targ_check_inp[0].toUpperCase() != this.the_targets[0].toUpperCase() ||
       this.targ_check_inp[1].toUpperCase() != this.the_targets[1].toUpperCase()
     ) {
-      alert("Wrong! Please check the details more carefully!");
+      alert("Falsch! Bitte sehen Sie sich die Details genauer an! ");
       this.switch_divs("div_instructions");
       this.targ_check_inp = ["", ""];
     } else {

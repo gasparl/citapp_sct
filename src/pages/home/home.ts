@@ -305,15 +305,15 @@ export class HomePage {
     this.block_texts[4] =
       "Gut gemacht. Nun beginnt der eigentliche Test. Die Aufgabe bleibt dieselbe. Es wird zwei Blöcke, getrennt durch eine Pause, geben. Im ersten Block wird die Kategorie " +
       this.stim_base[0][0].cat +
-      "getestet, also werden Ihnen nur die damit verbundenen Items präsentiert." +
+      " getestet, also werden Ihnen nur die damit verbundenen Items präsentiert. " +
       target_reminder[0] +
-      "<br><br><b>Zur Erinnerung: Versuchen Sie, so genau und schnell wie möglich zu antworten.</b><br>";
+      "<br><br><b>Versuchen Sie, so genau und schnell wie möglich zu antworten.</b><br>";
     this.block_texts[5] =
       "Der erste Block ist nun beendet. Im zweiten Block wird die Kategorie " +
       this.stim_base[1][0].cat +
       "getestet. " +
       target_reminder[1] +
-      "Abgesehen davon bleibt die Aufgabe dieselbe. <b>Zur Erinnerung: Versuchen Sie, so genau und schnell wie möglich zu antworten.</b>";
+      " Abgesehen davon bleibt die Aufgabe dieselbe. <b>Versuchen Sie, so genau und schnell wie möglich zu antworten.</b>";
   }
 
   capitalize(str1) {
@@ -652,7 +652,7 @@ export class HomePage {
       // standard CIT
       this.div_after_instr = "div_target_check";
       this.task_instruction =
-        'Antippen der <i>rechten</i>Schaltfläche bedeutet "JA, ich nehme dieses Item als relevant wahr.". Antippen der <i>linken</i> Schaltfläche bedeutet "Nein, ich nehme dieses Item nicht als relevant wahr." <br> Sie werden Wörter (Vornamen, Nachnamen) sehen, die in der Mitte des Bildschirms auftauchen. Sie sollten diese wahrnehmen und mit JA auf die folgenden Details antworten: <b>' +
+        'Antippen der <i>rechten</i> Schaltfläche bedeutet "JA, ich nehme dieses Item als relevant wahr.". Antippen der <i>linken</i> Schaltfläche bedeutet "Nein, ich nehme dieses Item nicht als relevant wahr." <br> Sie werden Wörter (Vornamen, Nachnamen) sehen, die in der Mitte des Bildschirms auftauchen. Sie sollten diese wahrnehmen und mit JA auf die folgenden Details antworten: <b>' +
         this.the_targets.join("</b>, <b>").toUpperCase() +
         "</b><br/><br/>Auf alle anderen Details sollten Sie mit NEIN antworten. Zur Erinnerung: Sie leugnen, irgendwelche der anderen Details als relevant für Sie wahrzunehmen, also sollten Sie auf alle mit NEIN antworten.<br/><br/>"
         ;
@@ -779,9 +779,9 @@ export class HomePage {
     } else {
       this.basic_times.blocks += "\nBlock " + this.blocknum + " end " + Date();
       if (this.blocknum > 3 || this.practice_eval()) {
-        if (this.blocknum == 4 || this.blocknum == 5) {
-          this.main_eval();
-        }
+        // if (this.blocknum == 4 || this.blocknum == 5) {
+        //   this.main_eval();
+        // }
         this.blocknum++;
         if (this.blocknum == 3) {
           this.visib.labels = false;
@@ -914,7 +914,7 @@ export class HomePage {
   }
   runblock() {
     this.basic_times.blocks += "\nBlock " + this.blocknum + " start " + Date();
-    this.bg_color = "#031116";
+    this.bg_color = "#000";
     this.switch_divs('div_cit_main')
     this.visib.start_text = true;
   }
@@ -1103,7 +1103,7 @@ export class HomePage {
       this.targ_check_inp[0].toUpperCase() != this.the_targets[0].toUpperCase() ||
       this.targ_check_inp[1].toUpperCase() != this.the_targets[1].toUpperCase()
     ) {
-      alert("Falsch! Bitte sehen Sie sich die Details genauer an! ");
+      alert("Falsch! Bitte sehen Sie sich die Details genauer an!");
       this.switch_divs("div_instructions");
       this.targ_check_inp = ["", ""];
     } else {

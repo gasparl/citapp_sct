@@ -18,8 +18,8 @@
           <ion-item>
             <ion-label class="ionslabel" stacked>Condition</ion-label>
             <ion-select [(ngModel)]="pre_cond" interface="popover" style="max-width:100%;" placeholder="- select -">
-              <ion-option value="1">1 (forenames first)</ion-option>
-              <ion-option value="2">2 (surnames first)</ion-option>
+              <ion-option value="1">1 (Vorname first)</ion-option>
+              <ion-option value="2">2 (Nachname first)</ion-option>
             </ion-select>
           </ion-item>
         </ion-col>
@@ -60,7 +60,7 @@
                 </span>
             <ion-item style="padding-bottom:30px;">
               <ion-label class="stackedlabels" *ngIf="!form_dems.controls.forename_inp.valid  && submit_failed" stacked>Bitte geben Sie einen gültigen Namen ein.</ion-label>
-              <ion-input formControlName="forename_inp" type="text" [class.invalid]="!form_dems.controls.forename_inp.valid  && submit_failed" text-uppercase></ion-input>
+              <ion-input formControlName="forename_inp" type="text" [class.invalid]="!form_dems.controls.forename_inp.valid  && submit_failed" maxlength="14" text-uppercase></ion-input>
             </ion-item>
           </ion-col>
           <ion-col>
@@ -85,7 +85,7 @@
     </span>
             <ion-item style="padding-bottom:30px;">
               <ion-label class="stackedlabels" *ngIf="!form_dems.controls.surname_inp.valid  && submit_failed" stacked>Bitte geben Sie einen gültigen Namen ein.</ion-label>
-              <ion-input formControlName="surname_inp" type="text" [class.invalid]="!form_dems.controls.surname_inp.valid  && submit_failed" text-uppercase></ion-input>
+              <ion-input formControlName="surname_inp" type="text" [class.invalid]="!form_dems.controls.surname_inp.valid  && submit_failed" maxlength="14" text-uppercase></ion-input>
             </ion-item>
 
           </ion-col>

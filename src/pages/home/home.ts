@@ -17,13 +17,14 @@ import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 })
 export class HomePage {
   @ViewChild(Content) content: Content;
+  /*
   to_exec: any;
   onChange(ee) {
     if (ee.keyCode === 13) {
       console.log(eval(this.to_exec))
     }
   }
-  touchsim() {
+   touchsim() {
     var info = this.trial_stim.type + " (" + this.trial_stim.word + ")";
     var rt_sim = this.randomdigit(600, 830);
     if (this.trial_stim.type == "probe") {
@@ -60,14 +61,14 @@ export class HomePage {
       info += chosen_response + " preset " + rt_sim + ", actual " + Math.round(performance.now() - this.start) + "\n";
       console.log(info);
     }.bind(this), rt_sim);
-  }
+} */
 
-  experiment_title: string = "CIT_Mobile";
+  experiment_title: string = "CIT_Mobile_app";
   false_delay: number = 400;
   tooslow_delay: number = 400;
-  isi_delay_minmax: number[] = [300, 600];
+  isi_delay_minmax: number[] = [300, 800];
   isi_delay: number = 99999;
-  end_url: string = "https://www.figure-eight.com/";
+  // end_url: string = "https://www.figure-eight.com/";
   all_conditions: number[] = [0, 1, 2, 3, 4, 5];
   condition: number = 0;
   cat_order: number;
@@ -80,7 +81,7 @@ export class HomePage {
   task_instruction: string;
   true_forename: string;
   true_surname: string;
-  current_div: string = "set_conds"; // ddd default: "set_conds", div_dems, div_cit_main, div_end
+  current_div: string = "div_cit_main"; // ddd default: "set_conds", div_dems, div_cit_main, div_end
   visib: any = {};
   block_texts: string[] = [];
   form_items: FormGroup;
@@ -200,7 +201,7 @@ export class HomePage {
       forename_inp: [
         "",
         Validators.compose([
-          Validators.maxLength(30),
+          Validators.maxLength(14),
           Validators.pattern("[a-zA-ZÖöÜüÉéÁáÄäß]*"),
           Validators.required
         ])
@@ -208,7 +209,7 @@ export class HomePage {
       surname_inp: [
         "",
         Validators.compose([
-          Validators.maxLength(30),
+          Validators.maxLength(14),
           Validators.pattern("[a-zA-ZÖöÜüÉéÁáÄäß]*"),
           Validators.required
         ])
@@ -297,23 +298,23 @@ export class HomePage {
     }
     this.block_texts[0] = "";
     this.block_texts[1] =
-      'Es werden drei kurze Übungsrunden stattfinden. In der ersten Übungsrunde wollen wir nur herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass sie Ihre jeweiligen Antworten genau auswählen, werden Sie für diese Aufgabe genügend Zeit haben. An dieser Stelle werden alle Items der zwei Kategorien (Vornamen, Nachnamen) zufällig durchmischt. <b>Sie müssen auf jedes Item korrekt antworten.</b> Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden), müssen Sie diese Übungsrunde wiederholen.<br><br>Falls nötig, tippen Sie <b>Anweisungen anzeigen</b> um die Details erneut zu lesen.<br><br>';
+      'Es werden drei kurze Übungsrunden stattfinden. In der ersten Übungsrunde wollen wir nur herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass sie Ihre jeweiligen Antworten genau auswählen, werden Sie für diese Aufgabe genügend Zeit haben. An dieser Stelle werden alle Items der zwei Kategorien (Vornamen, Nachnamen) zufällig durchmischt. <b>Sie müssen auf jedes Item korrekt antworten.</b> Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden), müssen Sie diese Übungsrunde wiederholen.<br><br>Falls nötig, tippen Sie <b>Anweisungen erneut anzeigen</b> um die Details erneut zu lesen.<br><br>';
     this.block_texts[2] =
-      'Super, Sie haben die erste Übungsrunde geschafft. In dieser zweiten Übungsrunde wird die Antwortzeit verkürzt sein, wobei aber eine bestimmte Anzahl an falschen Antworten erlaubt ist. (Vornamen und Nachnamen werden in Gruppen präsentiert.) Versuchen Sie, so genau und schnell wie möglich zu antworten. <br>';
+      'Super, Sie haben die erste Übungsrunde geschafft. In dieser zweiten Übungsrunde wird die Antwortzeit verkürzt sein, wobei aber eine bestimmte Anzahl an falschen Antworten erlaubt ist. <br> <br>Versuchen Sie, so genau und schnell wie möglich zu antworten. <br>';
     this.block_texts[3] =
-      'Sie haben die zweite Übungsrunde geschafft. Nun folgt die dritte und letzte Übungsrunde. Die Antwortzeit wird erneut verkürzt. Die Wörter "Erkannt?", "Ja", "Nein" werden nicht mehr angezeigt, die Aufgabe bleibt jedoch dieselbe. <br><br> <b>Versuchen Sie, so genau und schnell wie möglich zu antworten.</b>.<br>';
+      'Sie haben die zweite Übungsrunde geschafft. Nun folgt die dritte und letzte Übungsrunde. Die Antwortzeit wird erneut verkürzt. Die Wörter "Erkannt?", "Ja", "Nein" werden nicht mehr angezeigt, die Aufgabe bleibt jedoch dieselbe. <br><br> Versuchen Sie, so genau und schnell wie möglich zu antworten.<br>';
     this.block_texts[4] =
       "Gut gemacht. Nun beginnt der eigentliche Test. Die Aufgabe bleibt dieselbe. Es wird zwei Blöcke, getrennt durch eine Pause, geben. Im ersten Block wird die Kategorie " +
       this.stim_base[0][0].cat +
       " getestet, also werden Ihnen nur die damit verbundenen Items präsentiert. " +
       target_reminder[0] +
-      "<br><br><b>Versuchen Sie, so genau und schnell wie möglich zu antworten.</b><br>";
+      "<br><br>Versuchen Sie, so genau und schnell wie möglich zu antworten.<br>";
     this.block_texts[5] =
       "Der erste Block ist nun beendet. Im zweiten Block wird die Kategorie " +
       this.stim_base[1][0].cat +
       "getestet. " +
       target_reminder[1] +
-      " Abgesehen davon bleibt die Aufgabe dieselbe. <b>Versuchen Sie, so genau und schnell wie möglich zu antworten.</b>";
+      " Abgesehen davon bleibt die Aufgabe dieselbe.<br><br>Versuchen Sie, so genau und schnell wie möglich zu antworten.";
   }
 
   capitalize(str1) {
@@ -652,7 +653,7 @@ export class HomePage {
       // standard CIT
       this.div_after_instr = "div_target_check";
       this.task_instruction =
-        'Antippen der <i>rechten</i> Schaltfläche bedeutet "JA, ich nehme dieses Item als relevant wahr.". Antippen der <i>linken</i> Schaltfläche bedeutet "Nein, ich nehme dieses Item nicht als relevant wahr." <br> Sie werden Wörter (Vornamen, Nachnamen) sehen, die in der Mitte des Bildschirms auftauchen. Sie sollten diese wahrnehmen und mit JA auf die folgenden Details antworten: <b>' +
+        'Antippen der <i>rechten</i> Schaltfläche bedeutet "JA, ich nehme dieses Item als relevant wahr". Antippen der <i>linken</i> Schaltfläche bedeutet "Nein, ich nehme dieses Item nicht als relevant wahr". <br> Sie werden Wörter (Vornamen, Nachnamen) sehen, die in der Mitte des Bildschirms auftauchen. Sie sollten diese wahrnehmen und mit JA auf die folgenden Details antworten: <b>' +
         this.the_targets.join("</b>, <b>").toUpperCase() +
         "</b><br/><br/>Auf alle anderen Details sollten Sie mit NEIN antworten. Zur Erinnerung: Sie leugnen, irgendwelche der anderen Details als relevant für Sie wahrzunehmen, also sollten Sie auf alle mit NEIN antworten.<br/><br/>"
         ;

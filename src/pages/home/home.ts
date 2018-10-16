@@ -81,7 +81,7 @@ export class HomePage {
   task_instruction: string;
   true_forename: string;
   true_surname: string;
-  current_div: string = "div_cit_main"; // ddd default: "set_conds", div_dems, div_cit_main, div_end
+  current_div: string = "set_conds"; // ddd default: "set_conds", div_dems, div_cit_main, div_end
   visib: any = {};
   block_texts: string[] = [];
   form_items: FormGroup;
@@ -1159,7 +1159,7 @@ export class HomePage {
     this.to_display += this.cit_data;
     this.to_display = this.to_display.replace(/\\n/g, "<br/>");
     this.backgroundMode.setDefaults({
-      text: "Data stored on phone but not sent."
+      silent: true
     })
   }
   send_mail() {

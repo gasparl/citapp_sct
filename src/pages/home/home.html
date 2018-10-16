@@ -4,35 +4,32 @@
 
   <div *ngSwitchDefault>
 
-    <ion-grid>
-      <ion-row>
-        <ion-col>
-
-          <ion-item>
-            <ion-label class="ionslabel" stacked>Subject number</ion-label>
-            <ion-input [(ngModel)]="subj_id" type="number">
-            </ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col>
-          <ion-item>
-            <ion-label class="ionslabel" stacked>Condition</ion-label>
-            <ion-select [(ngModel)]="pre_cond" interface="popover" style="max-width:100%;" placeholder="- select -">
-              <ion-option value="1">1 (Vorname first)</ion-option>
-              <ion-option value="2">2 (Nachname first)</ion-option>
-            </ion-select>
-          </ion-item>
-        </ion-col>
-
-      </ion-row>
-    </ion-grid>
-
+    <ion-item>
+      <ion-label class="ionslabel" stacked>Subject number</ion-label>
+      <ion-input [(ngModel)]="subj_id" type="number">
+      </ion-input>
+    </ion-item>
     <br/>
+    <ion-item>
+      <ion-label class="ionslabel" stacked>Condition</ion-label>
+      <ion-select [(ngModel)]="pre_cond" interface="popover" style="max-width:100%;" placeholder="- select -">
+        <ion-option value="1">1 (PC - Vorname first)</ion-option>
+        <ion-option value="2">2 (phone - Vorname first)</ion-option>
+        <ion-option value="3">3 (PC - Nachname first)</ion-option>
+        <ion-option value="4">4 (phone - Nachname first)</ion-option>
+      </ion-select>
+    </ion-item>
+
     <br/>
     <br/>
     <div text-center>
       <button ion-button type="button" style="text-transform: none;" (tap)="initials();switch_divs('div_dems');" *ngIf="pre_cond != 9999 && subj_id > 0 && subj_id < 109 && subj_id[0] != 0"><b> condition {{pre_cond}} - subject num {{subj_id}} </b> </button>
     </div>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
 
   </div>
 
@@ -46,10 +43,10 @@
       </ion-navbar>
     </header>
 
-    <form (ngSubmit)="task_start();" [formGroup]="form_dems">
+    <form [formGroup]="form_dems">
 
       <p style="border-bottom: 2px solid grey; padding-bottom:10px">
-          Stellen Sie sicher, dass sie die <b>exakt</b> gleichen Namen (mit den gleichen Buchstaben) sowohl am PC, als auch auf dem Handy, eingeben.
+        Stellen Sie sicher, dass sie die <b>exakt</b> gleichen Namen (mit den gleichen Buchstaben) sowohl am PC, als auch auf dem Handy, eingeben.
 
       </p>
       <ion-grid>
@@ -94,13 +91,13 @@
 
       <p *ngIf="!form_dems.valid  && submit_failed" style="color: red;">Bitte füllen Sie alle Details genau aus.</p>
 
-      <button ion-button type="submit" block>OK</button>
+      <button ion-button type="button" (tap)="task_start();" block>OK</button>
     </form>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
   </div>
 
   <div *ngSwitchCase="'div_instructions'">
@@ -108,9 +105,9 @@
     <ion-title>
       Instruktionen für die Aufgabe
     </ion-title>
-    <p>Während der Aufgabe werden Sie im unteren Bereich des Displays zwei Schaltflächen sehen: Eine auf der <i>linken Seite</i> und eine auf der <i>rechten</i>.  Bitte benutzen Sie nur Ihre linken und rechten <b>Zeigefinger</b> zum Antippen. <span [innerHTML]="task_instruction"></span></p>
+    <p>Während der Aufgabe werden Sie im unteren Bereich des Displays zwei Schaltflächen sehen: Eine auf der <i>linken Seite</i> und eine auf der <i>rechten</i>. Bitte benutzen Sie nur Ihre linken und rechten <b>Zeigefinger</b> zum Antippen. <span [innerHTML]="task_instruction"></span></p>
     <div text-center>
-      <button ion-button (tap)="nextblock();">OK</button>
+      <button ion-button type="button" (tap)="nextblock();">OK</button>
     </div>
   </div>
 
@@ -143,11 +140,11 @@
     <div text-center>
       <button ion-button (tap)="target_check();">OK</button>
     </div>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
   </div>
 
 
@@ -197,7 +194,7 @@
     <br/>
     <div *ngIf="visib.end_data">
       <div text-center>
-        <button ion-button type="button" (tap)="send_mail()" style="text-transform: none;">send</button>
+        <button ion-button type="button" (tap)="send_mail()" style="text-transform: none;">send (or see below)</button>
       </div>
       <br/>
       <p style="user-select: text;white-space:pre;" [innerHTML]="to_display">
@@ -206,6 +203,6 @@
   </div>
 
 
-        <ion-input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;"></ion-input>
+  <!-- <ion-input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;"></ion-input> -->
 
 </ion-content>

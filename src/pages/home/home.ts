@@ -72,6 +72,7 @@ export class HomePage {
   all_conditions: number[] = [0, 1, 2, 3, 4, 5];
   condition: number = 0;
   cat_order: number;
+  device_order: number;
   pre_cond: number = 9999;
   subj_id: string;
   response_deadline: number;
@@ -218,17 +219,17 @@ export class HomePage {
   }
 
   initials() {
-    // if (this.pre_cond < 2) {
-    //   this.condition = 0;
-    // } else {
-    //   this.condition = 3;
-    // }
-    // if (this.pre_cond % 2 == 0) {
-    //   this.cat_order = 0;
-    // } else {
-    //   this.cat_order = 1;
-    // }
-    // only guilty for now
+    if (this.pre_cond % 2 == 0) {
+      this.device_order = 2;
+    } else {
+      this.device_order = 1;
+    }
+    if (this.pre_cond < 3) {
+      this.cat_order = 1;
+    } else {
+      this.cat_order = 2;
+    }
+
     this.cat_order = this.pre_cond;
     this.condition = 0;
     this.basic_times.consented = Date();
@@ -265,7 +266,7 @@ export class HomePage {
       this.prune();
       console.log(this.stim_base);
       this.div_after_instr = "div_cit_blockstart";
-      this.nextblock(); //TODOREMOVE %%%%%% HERE THIS CORRECT */
+      this.nextblock(); */
     } else {
       this.true_forename = this.form_dems.get("forename_inp").value;
       this.gender = this.form_dems.get("gender_inp").value;
@@ -312,7 +313,7 @@ export class HomePage {
     this.block_texts[5] =
       "Der erste Block ist nun beendet. Im zweiten Block wird die Kategorie " +
       this.stim_base[1][0].cat +
-      "getestet. " +
+      " getestet. " +
       target_reminder[1] +
       " Abgesehen davon bleibt die Aufgabe dieselbe.<br><br>Versuchen Sie, so genau und schnell wie möglich zu antworten.";
   }
@@ -1120,6 +1121,10 @@ export class HomePage {
       this.experiment_title +
       "_" +
       this.subj_id +
+      "_" +
+      this.pre_cond +
+      "_" +
+      this.device_order +
       "_" +
       this.cat_order +
       "_" +

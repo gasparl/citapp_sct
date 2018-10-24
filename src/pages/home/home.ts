@@ -229,8 +229,6 @@ export class HomePage {
     } else {
       this.cat_order = 2;
     }
-
-    this.cat_order = this.pre_cond;
     this.condition = 0;
     this.basic_times.consented = Date();
     this.backgroundMode.setDefaults({

@@ -11,7 +11,8 @@ import { IonicStorageModule } from '@ionic/storage';
 import { EmailComposer } from '@ionic-native/email-composer';
 import { File } from '@ionic-native/file';
 import { Network } from '@ionic-native/network';
-
+import { NavigationBar } from '@ionic-native/navigation-bar';
+import { Insomnia } from '@ionic-native/insomnia';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,8 @@ import { Network } from '@ionic-native/network';
   ],
   providers: [
     StatusBar,
+    NavigationBar,
+    Insomnia,
     Network,
     SplashScreen,
     Clipboard,

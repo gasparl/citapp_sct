@@ -10,6 +10,10 @@ import { BackgroundMode } from '@ionic-native/background-mode';
 import { EmailComposer } from "@ionic-native/email-composer";
 import { Platform } from "ionic-angular";
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
+import { AgeValidator } from "./home_validation";
+import { NavigationBar } from '@ionic-native/navigation-bar';
+import { Insomnia } from '@ionic-native/insomnia';
+
 
 @Component({
   selector: "page-home",
@@ -63,16 +67,21 @@ export class HomePage {
     }.bind(this), rt_sim);
 } */
 
-  experiment_title: string = "CIT_Mobile_app";
+  experiment_title: string = "CIT_Mobile_app_exp2";
+  border_style: string = 'none'; //'solid red 4px'; 'none';
+  dems: string = "dems";
+  screen_size: any = {"longer" : "", "shorter" : ""};
+
   false_delay: number = 400;
   tooslow_delay: number = 400;
   isi_delay_minmax: number[] = [300, 800];
   isi_delay: number = 99999;
   // end_url: string = "https://www.figure-eight.com/";
   all_conditions: number[] = [0, 1, 2, 3, 4, 5];
+  cit_type: number = 0;
   condition: number = 0;
   cat_order: number;
-  device_order: number;
+  handpos_order: number;
   pre_cond: number = 9999;
   subj_id: string;
   response_deadline: number;
@@ -175,19 +184,25 @@ export class HomePage {
     private statusBar: StatusBar,
     private network: Network,
     private clipboard: Clipboard,
-    private backgroundMode: BackgroundMode
+    private backgroundMode: BackgroundMode,
+    private navigationBar: NavigationBar,
+    private insomnia: Insomnia
   ) {
     this.basic_times.loaded = Date();
     this.on_device = this.platform.is("cordova");
-
-    this.statusBar.hide();
-    this.backgroundMode.enable();
-    this.backgroundMode.setDefaults({
-      title: "Concealed Information Test App active",
-      text: "",
-      silent: true
-    });
-    this.path = this.file.externalDataDirectory;
+    if (this.on_device) {
+        this.statusBar.hide();
+        this.navigationBar.hideNavigationBar();
+        this.navigationBar.setUp(true);
+        this.backgroundMode.enable();
+        this.backgroundMode.setDefaults({
+          title: "Concealed Information Test App active",
+          text: "",
+          silent: true
+        });
+        this.path = this.file.externalDataDirectory;
+        this.insomnia.keepAwake();
+    }
     this.basic_times.blocks = "";
     this.nums = this.range(1, 32);
     this.visib.start_text = true;
@@ -195,6 +210,7 @@ export class HomePage {
     this.visib.end_data = false;
 
     this.form_dems = formBuilder.group({
+      age_inp: ["", AgeValidator.isValid],
       gender_inp: [
         "",
         Validators.compose([Validators.maxLength(30), Validators.required])
@@ -220,16 +236,16 @@ export class HomePage {
 
   initials() {
     if (this.pre_cond % 2 == 0) {
-      this.device_order = 2;
+      this.handpos_order = 2;
     } else {
-      this.device_order = 1;
+      this.handpos_order = 1;
     }
     if (this.pre_cond < 3) {
       this.cat_order = 1;
     } else {
       this.cat_order = 2;
     }
-    this.condition = 0;
+    this.cit_type = 0;
     this.basic_times.consented = Date();
     this.backgroundMode.setDefaults({
       text: "Test in progress!",
@@ -251,6 +267,12 @@ export class HomePage {
       this.pointev[div_to_show] = "auto";
     }.bind(this), 300);
     this.content.scrollToTop(0);
+    this.navigationBar.hideNavigationBar();
+  }
+  switch_if_filled(div_to_show) {
+    if (this.screen_size.longer > 50 && this.screen_size.longer < 180 && this.screen_size.shorter > 35 && this.screen_size.shorter < 90 ) {
+        this.switch_divs('div_dems');
+    }
   }
 
   task_start() {
@@ -277,7 +299,7 @@ export class HomePage {
 
   set_block_texts() {
     var target_reminder;
-    if (this.condition == 2 || this.condition == 5) {
+    if (this.cit_type == 2 || this.cit_type == 5) {
       target_reminder = ["", "", "", ""];
     } else {
       target_reminder = [
@@ -378,7 +400,7 @@ export class HomePage {
 
   first_practice_stim() {
     this.practice_stim();
-    if (this.condition != 0 && this.condition != 3) {
+    if (this.cit_type != 0 && this.cit_type != 3) {
       this.prac_teststim = this.prac_teststim.concat(this.inducersGen());
     }
     var basestims = this.shuffle(this.prac_teststim);
@@ -550,7 +572,7 @@ export class HomePage {
       while (safecount < 299) {
         safecount++;
         var groupOf6_rand = groupOf6;
-        if (this.condition == 2 || this.condition == 5) {
+        if (this.cit_type == 2 || this.cit_type == 5) {
           // !! skip targets if targetless induced version
           groupOf6_rand.forEach(function(item_dic_rand, indx_rand6) {
             if (item_dic_rand.type == "target") {
@@ -648,7 +670,7 @@ export class HomePage {
   set_cit_conditions() {
     var inducers_instructions =
       '<br><br>As continual reminders, there will also appear words that belong to one of the two categories (FAMILIAR or UNFAMILIAR). <br><br>Words belonging to the FAMILIAR category need the answer FAMILIAR (<i>right</i> button). These words are:<br> <b>FAMILIAR</b>, <b>RECOGNIZED</b>, <b>MINE</b><br><br>Words belonging to the UNFAMILIAR category need the answer UNFAMILIAR (<i>left</i> button). These words are:<br> <b>UNFAMILIAR</b>, <b>UNKNOWN</b>, <b>OTHER</b>, <b>THEIRS</b>, <b>THEM</b>, <b>FOREIGN</b></br></br>';
-    if (this.condition == 0 || this.condition == 3) {
+    if (this.cit_type == 0 || this.cit_type == 3) {
       // standard CIT
       this.div_after_instr = "div_target_check";
       this.task_instruction =
@@ -658,7 +680,7 @@ export class HomePage {
         ;
       this.practice_stim = this.getPracticeTestStimuli_simple;
       this.main_stim = this.getAllTestStimuli_simple;
-    } else if (this.condition == 1 || this.condition == 4) {
+    } else if (this.cit_type == 1 || this.cit_type == 4) {
       // induced & target
       this.div_after_instr = "div_target_check";
       this.task_instruction =
@@ -669,7 +691,7 @@ export class HomePage {
         ;
       this.practice_stim = this.getPracticeTestStimuli_induced;
       this.main_stim = this.getAllTestStimuli_induced;
-    } else if (this.condition == 2 || this.condition == 5) {
+    } else if (this.cit_type == 2 || this.cit_type == 5) {
       // induced - nontarget
       this.div_after_instr = "div_cit_blockstart";
       this.task_instruction =
@@ -836,7 +858,7 @@ export class HomePage {
     this.cit_data +=
       this.subj_id +
       "\t" +
-      this.condition +
+      this.cit_type +
       "\t" +
       this.cat_order +
       "\t" +
@@ -1060,7 +1082,7 @@ export class HomePage {
         return this.words_to_filter[index].indexOf(a) == -1;
       }, this);
       var words_array = [];
-      if (this.condition < 3) {
+      if (this.cit_type < 3) {
         words_array = [filtered_words[0]].concat(
           filtered_words.slice(1, 6)
         ); // for GUILTY
@@ -1122,7 +1144,7 @@ export class HomePage {
       "_" +
       this.pre_cond +
       "_" +
-      this.device_order +
+      this.handpos_order +
       "_" +
       this.cat_order +
       "_" +

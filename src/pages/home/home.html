@@ -4,102 +4,69 @@
   <div *ngSwitchDefault>
 
 
-        <ion-navbar (swipeleft)="switch_if_filled();">
-          Please measure your screen size (red frame).
-        </ion-navbar>
+    <ion-navbar (swipeleft)="switch_if_filled();">
+      Please measure your screen size (red frame).
+    </ion-navbar>
 
     <ion-grid>
       <ion-row>
         <ion-col>
-            <ion-item>
-              <ion-label class="ionslabel" stacked>Longer side</ion-label>
-              <ion-input [(ngModel)]="screen_size.longer" type="number">
-              </ion-input>
-            </ion-item>
-
+          <ion-item>
+            <ion-label class="ionslabel" stacked>Longer side</ion-label>
+            <ion-input [(ngModel)]="screen_size.longer" type="number">
+            </ion-input>
+          </ion-item>
         </ion-col>
+
         <ion-col>
-
-            <ion-item>
-              <ion-label class="ionslabel" stacked>Shorter side</ion-label>
-              <ion-input [(ngModel)]="screen_size.shorter" type="number">
-              </ion-input>
-            </ion-item>
-
+          <ion-item>
+            <ion-label class="ionslabel" stacked>Shorter side</ion-label>
+            <ion-input [(ngModel)]="screen_size.shorter" type="number">
+            </ion-input>
+          </ion-item>
         </ion-col>
       </ion-row>
     </ion-grid>
-
-
   </div>
 
 
-
-  <div *ngSwitchCase="'div_dems'" [ngStyle]="{'pointer-events': pointev.div_dems || 'none' }">
-    <header>
-      <ion-navbar>
-        <ion-title>
-          Details
-        </ion-title>
-      </ion-navbar>
-    </header>
+  <div *ngSwitchCase="'div_dems'" [ngStyle]="{'pointer-events': testingmode|| pointev.div_dems || 'none' }">
 
     <form [formGroup]="form_dems">
 
-      <ion-item>
-        <ion-label class="ionslabel" stacked>Subject number</ion-label>
-        <ion-input [(ngModel)]="subj_id" type="number">
-        </ion-input>
-      </ion-item>
-      <br/>
-      <ion-item>
-        <ion-label class="ionslabel" stacked>Condition</ion-label>
-        <ion-select [(ngModel)]="pre_cond" interface="popover" style="max-width:100%;" placeholder="- select -">
-          <ion-option value="1">1 (PC - Vorname first)</ion-option>
-          <ion-option value="2">2 (phone - Vorname first)</ion-option>
-          <ion-option value="3">3 (PC - Nachname first)</ion-option>
-          <ion-option value="4">4 (phone - Nachname first)</ion-option>
-        </ion-select>
-      </ion-item>
-
-      <br/>
-      <br/>
-
-
 
       <p style="border-bottom: 2px solid grey; padding-bottom:10px">
-        Stellen Sie sicher, dass Sie die <b>exakt</b> gleichen Namen (mit den gleichen Buchstaben) sowohl am PC, als auch auf dem Handy, eingeben.
-
+        Please fill in the following details.
       </p>
 
-      <ion-item>
-        <ion-label class="stackedlabels" stacked>Age <span *ngIf="!form_dems.controls.age_inp.valid  && submit_failed" class="error_label">Please enter a valid age (digits only, 15-99).</span></ion-label>
-        <ion-input formControlName="age_inp" type="number" [class.invalid]="!form_dems.controls.age_inp.valid  && submit_failed"></ion-input>
-      </ion-item>
 
 
       <ion-grid>
+
+
         <ion-row>
           <ion-col>
             <span style="padding-left: 16px;float: left;">
-                Ihr Vorname:
-                </span>
+            VP Nummer (as indicated on your instruction sheet):
+            </span>
+          <ion-item style="padding-bottom:30px;">
+              <ion-label class="stackedlabels" stacked><span *ngIf="!form_dems.controls.subj_id_inp.valid  && submit_failed" class="error_label">Please enter the correct number (1-200).</span></ion-label>
+              <ion-input formControlName="subj_id_inp" type="number" [class.invalid]="!form_dems.controls.subj_id_inp.valid  && submit_failed"></ion-input>
+            </ion-item>
+
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <span style="padding-left: 16px;float: left;">
+              Ihr Vorname:
+              </span>
             <ion-item style="padding-bottom:30px;">
               <ion-label class="stackedlabels" *ngIf="!form_dems.controls.forename_inp.valid  && submit_failed" stacked>Bitte geben Sie einen gültigen Namen ein.</ion-label>
               <ion-input formControlName="forename_inp" type="text" [class.invalid]="!form_dems.controls.forename_inp.valid  && submit_failed" maxlength="14" text-uppercase></ion-input>
             </ion-item>
-          </ion-col>
-          <ion-col>
 
-            <span style="padding-left: 16px;float: left;">
-                Ihr Geschlecht:</span>
-            <ion-item style="padding-bottom:30px;">
-              <ion-label class="stackedlabels" stacked *ngIf="!form_dems.controls.gender_inp.valid  && submit_failed">Bitte wählen Sie ein Geschlecht aus.</ion-label>
-              <ion-select interface='popover' formControlName="gender_inp" [class.invalid]="!form_dems.controls.gender_inp.valid  && submit_failed" style="max-width:100%;" placeholder="- select -">
-                <ion-option value="1">männlich</ion-option>
-                <ion-option value="2">weiblich</ion-option>
-              </ion-select>
-            </ion-item>
           </ion-col>
         </ion-row>
 
@@ -108,12 +75,38 @@
           <ion-col>
             <span style="padding-left: 16px;float: left;">
         Ihr Nachname:
-    </span>
+        </span>
             <ion-item style="padding-bottom:30px;">
               <ion-label class="stackedlabels" *ngIf="!form_dems.controls.surname_inp.valid  && submit_failed" stacked>Bitte geben Sie einen gültigen Namen ein.</ion-label>
               <ion-input formControlName="surname_inp" type="text" [class.invalid]="!form_dems.controls.surname_inp.valid  && submit_failed" maxlength="14" text-uppercase></ion-input>
             </ion-item>
+          </ion-col>
+        </ion-row>
 
+        <ion-row>
+          <ion-col>
+
+
+            <span style="padding-left: 16px;float: left;">
+                            Ihr Geschlecht:</span>
+            <ion-item style="padding-bottom:30px;">
+              <ion-label class="stackedlabels" stacked *ngIf="!form_dems.controls.gender_inp.valid  && submit_failed">Bitte wählen Sie ein Geschlecht aus.</ion-label>
+              <ion-select interface='popover' formControlName="gender_inp" [class.invalid]="!form_dems.controls.gender_inp.valid  && submit_failed" style="max-width:100%;" placeholder="- select -">
+                <ion-option value="1">männlich</ion-option>
+                <ion-option value="2">weiblich</ion-option>
+              </ion-select>
+            </ion-item>
+
+
+          </ion-col>
+          <ion-col>
+            <span style="padding-left: 16px;float: left;">
+                            Age:
+                            </span>
+            <ion-item>
+              <ion-label class="stackedlabels" stacked><span *ngIf="!form_dems.controls.age_inp.valid  && submit_failed" class="error_label">Please enter a valid age (digits only, 17-30).</span></ion-label>
+              <ion-input formControlName="age_inp" type="number" [class.invalid]="!form_dems.controls.age_inp.valid  && submit_failed"></ion-input>
+            </ion-item>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -121,6 +114,8 @@
       <p *ngIf="!form_dems.valid  && submit_failed" style="color: red;">Bitte füllen Sie alle Details genau aus.</p>
 
       <button ion-button type="button" (tap)="task_start();" block>OK</button>
+
+
     </form>
     <br/>
     <br/>

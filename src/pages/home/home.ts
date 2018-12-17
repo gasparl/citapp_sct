@@ -71,15 +71,12 @@ export class HomePage {
   border_style: string = 'none'; //'solid red 4px'; 'none';
   dems: string = "dems";
   screen_size: any = {"longer" : "", "shorter" : ""};
-
+  s_age: number;
   false_delay: number = 400;
   tooslow_delay: number = 400;
   isi_delay_minmax: number[] = [300, 800];
   isi_delay: number = 99999;
-  // end_url: string = "https://www.figure-eight.com/";
-  all_conditions: number[] = [0, 1, 2, 3, 4, 5];
   cit_type: number = 0;
-  condition: number = 0;
   cat_order: number;
   handpos_order: number;
   pre_cond: number = 9999;
@@ -91,7 +88,8 @@ export class HomePage {
   task_instruction: string;
   true_forename: string;
   true_surname: string;
-  current_div: string = "set_conds"; // ddd default: "set_conds", div_dems, div_cit_main, div_end
+  current_div: string = "div_dems"; // ddd default: "measure", div_dems, div_cit_main, div_end
+  testingmode: boolean = true; // REMOVE
   visib: any = {};
   block_texts: string[] = [];
   form_items: FormGroup;
@@ -211,6 +209,10 @@ export class HomePage {
 
     this.form_dems = formBuilder.group({
       age_inp: ["", AgeValidator.isValid],
+      subj_id_inp: [
+        "",
+        Validators.compose([Validators.maxLength(3), Validators.min(1), Validators.max(200), Validators.required])
+      ],
       gender_inp: [
         "",
         Validators.compose([Validators.maxLength(30), Validators.required])
@@ -235,6 +237,7 @@ export class HomePage {
   }
 
   initials() {
+    this.pre_cond = parseInt(this.subj_id) % 4;
     if (this.pre_cond % 2 == 0) {
       this.handpos_order = 2;
     } else {
@@ -269,7 +272,7 @@ export class HomePage {
     this.content.scrollToTop(0);
     this.navigationBar.hideNavigationBar();
   }
-  switch_if_filled(div_to_show) {
+  switch_if_filled() {
     if (this.screen_size.longer > 50 && this.screen_size.longer < 180 && this.screen_size.shorter > 35 && this.screen_size.shorter < 90 ) {
         this.switch_divs('div_dems');
     }
@@ -291,6 +294,8 @@ export class HomePage {
       this.true_forename = this.form_dems.get("forename_inp").value;
       this.gender = this.form_dems.get("gender_inp").value;
       this.true_surname = this.form_dems.get("surname_inp").value;
+      this.s_age = this.form_dems.get("age_inp").value;
+      this.subj_id = this.form_dems.get("subj_id_inp").value;
       this.prune();
       this.switch_divs("div_instructions");
     }
@@ -667,7 +672,7 @@ export class HomePage {
     }
   }
 
-  set_cit_conditions() {
+  set_cit_types() {
     var inducers_instructions =
       '<br><br>As continual reminders, there will also appear words that belong to one of the two categories (FAMILIAR or UNFAMILIAR). <br><br>Words belonging to the FAMILIAR category need the answer FAMILIAR (<i>right</i> button). These words are:<br> <b>FAMILIAR</b>, <b>RECOGNIZED</b>, <b>MINE</b><br><br>Words belonging to the UNFAMILIAR category need the answer UNFAMILIAR (<i>left</i> button). These words are:<br> <b>UNFAMILIAR</b>, <b>UNKNOWN</b>, <b>OTHER</b>, <b>THEIRS</b>, <b>THEM</b>, <b>FOREIGN</b></br></br>';
     if (this.cit_type == 0 || this.cit_type == 3) {
@@ -1117,7 +1122,7 @@ export class HomePage {
       ];
     }
     this.set_block_texts();
-    this.set_cit_conditions();
+    this.set_cit_types();
   }
 
   target_check() {
@@ -1201,6 +1206,7 @@ export class HomePage {
       this.backgroundMode.setDefaults({
         silent: true
       })
+      this.insomnia.allowSleepAgain()
     } else {
       console.log("These are native plugins - only works on the phone.");
     }

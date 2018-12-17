@@ -16,7 +16,7 @@ export class AgeValidator {
             };
         }
 
-        if(control.value < 15){
+        if(control.value < 8){
             return {
                 "too young": true
             };

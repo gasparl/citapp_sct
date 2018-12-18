@@ -70,7 +70,8 @@ export class HomePage {
   experiment_title: string = "CIT_Mobile_app_exp2";
   border_style: string = 'none'; //'solid red 4px'; 'none';
   dems: string = "dems";
-  screen_size: any = {"longer" : "", "shorter" : ""};
+  screen_size: any = { "longer": "", "shorter": "" };
+  crrnt_handpos: string;
   s_age: number;
   false_delay: number = 400;
   tooslow_delay: number = 400;
@@ -120,7 +121,7 @@ export class HomePage {
     block3: 0
   };
   cit_data: string =
-    "subject_id\tcondition\tcateg_order\tblock_number\ttrial_number\tstimulus_shown\tcategory\tstim_type\tresponse_key\trt_start\trt_end\tincorrect\ttoo_slow\tisi\tdate_in_ms\n";
+    "subject_id\tcondition\thandposition\tblock_number\ttrial_number\tstimulus_shown\tcategory\tstim_type\tresponse_key\trt_start\trt_end\tincorrect\ttoo_slow\tisi\tdate_in_ms\n";
   correct_resp: string = "none";
   blocknum: number = 1;
   rt_start: number = 99999;
@@ -189,17 +190,22 @@ export class HomePage {
     this.basic_times.loaded = Date();
     this.on_device = this.platform.is("cordova");
     if (this.on_device) {
-        this.statusBar.hide();
-        this.navigationBar.hideNavigationBar();
-        this.navigationBar.setUp(true);
-        this.backgroundMode.enable();
-        this.backgroundMode.setDefaults({
-          title: "Concealed Information Test App active",
-          text: "",
-          silent: true
-        });
-        this.path = this.file.externalDataDirectory;
-        this.insomnia.keepAwake();
+      if (this.network.type) {
+        if (this.network.type != "none") {
+          alert("Warning: it seems you are connected to the internet. Please turn it off to avoid interferences.")
+        }
+      }
+      this.statusBar.hide();
+      this.navigationBar.hideNavigationBar();
+      this.navigationBar.setUp(true);
+      this.backgroundMode.enable();
+      this.backgroundMode.setDefaults({
+        title: "Concealed Information Test App active",
+        text: "",
+        silent: true
+      });
+      this.path = this.file.externalDataDirectory;
+      this.insomnia.keepAwake();
     }
     this.basic_times.blocks = "";
     this.nums = this.range(1, 32);
@@ -236,12 +242,55 @@ export class HomePage {
     });
   }
 
+
+
+  switch_divs(div_to_show) {
+    this.current_div = div_to_show;
+    Object.keys(this.pointev).forEach(ky => this.pointev[ky] = "none");
+    setTimeout(function() {
+      this.pointev[div_to_show] = "auto";
+    }.bind(this), 300);
+    this.content.scrollToTop(0);
+    this.navigationBar.hideNavigationBar();
+  }
+  switch_if_filled() {
+    if (this.screen_size.longer > 50 && this.screen_size.longer < 180 && this.screen_size.shorter > 35 && this.screen_size.shorter < 90) {
+      this.switch_divs('div_dems');
+    }
+  }
+
+
   initials() {
+    if (!this.form_dems.valid) {
+      this.submit_failed = true;
+
+      // for TESTING:
+
+      this.true_forename = "Testvornam";
+      this.gender = 1;
+      this.true_surname = "Testnachnam"
+      this.s_age = 33;
+      this.subj_id = "188";
+      this.div_after_instr = "div_cit_blockstart";
+      this.switch_divs('div_confirm');
+    } else {
+      this.true_forename = this.form_dems.get("forename_inp").value;
+      this.gender = this.form_dems.get("gender_inp").value;
+      this.true_surname = this.form_dems.get("surname_inp").value;
+      this.s_age = this.form_dems.get("age_inp").value;
+      this.subj_id = this.form_dems.get("subj_id_inp").value;
+      this.switch_divs('div_confirm');
+    }
+  }
+
+  task_start() {
     this.pre_cond = parseInt(this.subj_id) % 4;
     if (this.pre_cond % 2 == 0) {
-      this.handpos_order = 2;
+      this.handpos_order = 2; // first thumbs
+      this.crrnt_handpos = "Zeigefinger";
     } else {
-      this.handpos_order = 1;
+      this.handpos_order = 1; // first index
+      this.crrnt_handpos = "Daumen";
     }
     if (this.pre_cond < 3) {
       this.cat_order = 1;
@@ -254,51 +303,8 @@ export class HomePage {
       text: "Test in progress!",
       silent: false
     })
-    if (this.on_device && this.network.type) {
-      if (this.network.type != "none") {
-        alert("Warning: it seems you are connected to the internet. We recommend to turn it off to avoid interferences.")
-      }
-    } else {
-      console.log("Network check - only works on the phone.");
-    }
-  }
-
-  switch_divs(div_to_show) {
-    this.current_div = div_to_show;
-    Object.keys(this.pointev).forEach(ky => this.pointev[ky] = "none");
-    setTimeout(function() {
-      this.pointev[div_to_show] = "auto";
-    }.bind(this), 300);
-    this.content.scrollToTop(0);
-    this.navigationBar.hideNavigationBar();
-  }
-  switch_if_filled() {
-    if (this.screen_size.longer > 50 && this.screen_size.longer < 180 && this.screen_size.shorter > 35 && this.screen_size.shorter < 90 ) {
-        this.switch_divs('div_dems');
-    }
-  }
-
-  task_start() {
-    if (!this.form_dems.valid) {
-      this.submit_failed = true;
-
-      // for TESTING:
-      /*this.true_forename = "Testname";
-      this.gender = 1;
-      this.true_surname = "Testtier"
-      this.prune();
-      console.log(this.stim_base);
-      this.div_after_instr = "div_cit_blockstart";
-      this.nextblock(); */
-    } else {
-      this.true_forename = this.form_dems.get("forename_inp").value;
-      this.gender = this.form_dems.get("gender_inp").value;
-      this.true_surname = this.form_dems.get("surname_inp").value;
-      this.s_age = this.form_dems.get("age_inp").value;
-      this.subj_id = this.form_dems.get("subj_id_inp").value;
-      this.prune();
-      this.switch_divs("div_instructions");
-    }
+    this.prune();
+    this.switch_divs("div_instructions");
   }
 
 
@@ -315,16 +321,17 @@ export class HomePage {
         this.stim_base[1][1].word.toUpperCase() +
         "</b>. ",
         "Again, your target that requires a different response is <b>" +
-        //this.stim_base[2][1].word.toUpperCase() +
+        this.stim_base[2][1].word.toUpperCase() +
         "</b>. ",
         "Again, your target that requires a different response is <b>" +
-        //this.stim_base[3][1].word.toUpperCase() +
+        this.stim_base[3][1].word.toUpperCase() +
         "</b>. "
       ];
     }
+    var pos_instruction = { 'Zeigefinger': 'use your indexfingers to touch the buttons, with the phone lying on the table.', 'Daumen': 'use your thumbs to touch the buttons, with the phone held in your hands as you normally would hold it (but with your hands lying on the table)%%' }
     this.block_texts[0] = "";
     this.block_texts[1] =
-      'Es werden drei kurze Übungsrunden stattfinden. In der ersten Übungsrunde wollen wir nur herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass Sie Ihre jeweiligen Antworten genau auswählen, werden Sie für diese Aufgabe genügend Zeit haben. An dieser Stelle werden alle Items der zwei Kategorien (Vornamen, Nachnamen) zufällig durchmischt. <b>Sie müssen auf jedes Item korrekt antworten.</b> Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden), müssen Sie diese Übungsrunde wiederholen.<br><br>Falls nötig, tippen Sie <b>Anweisungen erneut anzeigen</b> um die Details erneut zu lesen.<br><br>';
+      '%%You will have to ' + pos_instruction + '. Place your phone in a comfortable distance, and please try to keep it more or less in that position throughout the experiment.%% <br><br>Es werden drei kurze Übungsrunden stattfinden. In der ersten Übungsrunde wollen wir nur herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass Sie Ihre jeweiligen Antworten genau auswählen, werden Sie für diese Aufgabe genügend Zeit haben. An dieser Stelle werden alle Items der zwei Kategorien (Vornamen, Nachnamen) zufällig durchmischt. <b>Sie müssen auf jedes Item korrekt antworten.</b> Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden), müssen Sie diese Übungsrunde wiederholen.<br><br>Falls nötig, tippen Sie <b>Anweisungen erneut anzeigen</b> um die Details erneut zu lesen.<br><br>';
     this.block_texts[2] =
       'Super, Sie haben die erste Übungsrunde geschafft. In dieser zweiten Übungsrunde wird die Antwortzeit verkürzt sein, wobei aber eine bestimmte Anzahl an falschen Antworten erlaubt ist. <br> <br>Versuchen Sie, so genau und schnell wie möglich zu antworten. <br>';
     this.block_texts[3] =
@@ -341,6 +348,22 @@ export class HomePage {
       " getestet. " +
       target_reminder[1] +
       " Abgesehen davon bleibt die Aufgabe dieselbe.<br><br>Versuchen Sie, so genau und schnell wie möglich zu antworten.";
+
+    this.block_texts[6] =
+      '%%Now, you will have to change hand position. Please keep the phone approximately in the same place as so far, but ' + pos_instruction + '. <br><br> Now you will have one short practice phase again to get used to this new position. (Afterwards you will repeat the same blocks as with the previous handposition.)%% <br><br> Versuchen Sie, so genau und schnell wie möglich zu antworten.<br>';
+
+    this.block_texts[7] =
+      "Gut gemacht. Nun beginnen die nächste zwei Blöcke, getrennt durch eine Pause. Nochmals, im ersten Block wird die Kategorie " +
+      this.stim_base[2][0].cat +
+      " getestet, also werden Ihnen nur die damit verbundenen Items präsentiert. " +
+      target_reminder[2] +
+      "<br><br>Versuchen Sie, so genau und schnell wie möglich zu antworten.<br>";
+    this.block_texts[7] =
+      "In diesem letzten Block wird nochmals die Kategorie " +
+      this.stim_base[3][0].cat +
+      " getestet. " +
+      target_reminder[3] +
+      " <br><br>Versuchen Sie, so genau und schnell wie möglich zu antworten.";
   }
 
   capitalize(str1) {
@@ -813,6 +836,13 @@ export class HomePage {
         if (this.blocknum == 3) {
           this.visib.labels = false;
         }
+        if (this.blocknum == 6) {
+          if (this.crrnt_handpos == "Zeigefinger") {
+            this.crrnt_handpos = "Daumen";
+          } else {
+            this.crrnt_handpos = "Zeigefinger";
+          }
+        }
         this.nextblock();
       } else {
         if (this.blocknum == 1) {
@@ -863,9 +893,9 @@ export class HomePage {
     this.cit_data +=
       this.subj_id +
       "\t" +
-      this.cit_type +
+      this.pre_cond +
       "\t" +
-      this.cat_order +
+      this.crrnt_handpos +
       "\t" +
       this.blocknum +
       "\t" +
@@ -924,7 +954,7 @@ export class HomePage {
       } else if (this.blocknum == 2) {
         this.response_deadline = 2000;
         this.call_practice_stim();
-      } else if (this.blocknum == 3) {
+      } else if (this.blocknum == 3 || this.blocknum == 6) {
         this.response_deadline = this.response_deadline_main;
         this.call_practice_stim();
       } else {
@@ -1113,10 +1143,16 @@ export class HomePage {
     if (this.cat_order == 1) {
       this.stim_base = [
         stim_base_temp[0],
+        stim_base_temp[1],
+        "practice_indexholder",
+        stim_base_temp[0],
         stim_base_temp[1]
       ];
     } else {
       this.stim_base = [
+        stim_base_temp[1],
+        stim_base_temp[0],
+        "practice_indexholder",
         stim_base_temp[1],
         stim_base_temp[0]
       ];

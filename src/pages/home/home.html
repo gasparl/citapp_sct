@@ -49,7 +49,7 @@
             <span style="padding-left: 16px;float: left;">
             VP Nummer (as indicated on your instruction sheet):
             </span>
-          <ion-item style="padding-bottom:30px;">
+            <ion-item style="padding-bottom:30px;">
               <ion-label class="stackedlabels" stacked><span *ngIf="!form_dems.controls.subj_id_inp.valid  && submit_failed" class="error_label">Please enter the correct number (1-200).</span></ion-label>
               <ion-input formControlName="subj_id_inp" type="number" [class.invalid]="!form_dems.controls.subj_id_inp.valid  && submit_failed"></ion-input>
             </ion-item>
@@ -113,7 +113,7 @@
 
       <p *ngIf="!form_dems.valid  && submit_failed" style="color: red;">Bitte füllen Sie alle Details genau aus.</p>
 
-      <button ion-button type="button" (tap)="task_start();" block>OK</button>
+      <button ion-button type="button" (tap)="initials();" block>OK</button>
 
 
     </form>
@@ -124,12 +124,30 @@
     <br/>
   </div>
 
+
+  <div *ngSwitchCase="'div_confirm'">
+    Please double-check:
+    <br/><br/> (1) Your entered subject number matches the one on the paper:<br/><br/>
+    <div text-center><b>{{subj_id}}</b></div>
+    <br/> (2) Your entered name is spelled correctly: <br/><br/>
+    <div text-center><b>{{true_forename.toUpperCase()}} {{true_surname.toUpperCase()}}</b></div>
+    <br/>
+    <hr/>
+
+    <div style="float: left">
+      <button ion-button type="button" (tap)="switch_divs('div_dems');">Nein (revise)</button></div> &nbsp;
+    <div style="float: right">
+      <button ion-button type="button" (tap)="task_start();">JA, I confirm</button>
+    </div>
+  </div>
+
   <div *ngSwitchCase="'div_instructions'">
 
     <ion-title>
       Instruktionen für die Aufgabe
     </ion-title>
-    <p>Während der Aufgabe werden Sie im unteren Bereich des Displays zwei Schaltflächen sehen: Eine auf der <i>linken Seite</i> und eine auf der <i>rechten</i>. Bitte benutzen Sie nur Ihre linken und rechten <b>Zeigefinger</b> zum Antippen. <span [innerHTML]="task_instruction"></span></p>
+    <p>Während der Aufgabe werden Sie im unteren Bereich des Displays zwei Schaltflächen sehen: Eine auf der <i>linken Seite</i> und eine auf der <i>rechten</i>. In diesem aktuellen Teil, bitte benutzen Sie nur Ihre linken und rechten <b>{{crrnt_handpos}}</b> zum Antippen!
+        <span [innerHTML]="task_instruction"></span></p>
     <div text-center>
       <button ion-button type="button" (tap)="nextblock();">OK</button>
     </div>
@@ -174,6 +192,7 @@
 
   <div *ngSwitchCase="'div_blockstart'">
     <p [innerHTML]="block_texts[blocknum]"></p>
+    <i>%%Please make sure you are using your <b>{{crrnt_handpos}}</b> für Antippen.</i>
     <div text-center>
       <button ion-button (tap)="runblock();">Start</button>
       <br/><br/>
@@ -211,7 +230,12 @@
     <br/>
     <b>
     <br/>
-    <br/>Sie können dem Versuchsleiter mitteilen, dass Sie fertig sind. Bitte tippen Sie nun nichts mehr an!
+    <br/>Kurze Information über den Test:
+    <br> In dieser Studie versuchen wir, Ihre wirklichen selbstbezogenen Details (z.B. Ihren tatsächlichen Vornamen) von solchen zu unterscheiden, die Ihnen nicht zugehörig sind (z.B. andere Vornamen). Ziel dieses Tests ist es, anhand von Reaktionszeiten
+    herauszufinden, wenn eine Person versucht, bestimmte Daten zu verschleiern bzw. zu verheimlichen. Dies geschieht auf Basis der Vermutung, dass Reaktionszeiten für die Ihnen präsentierten eigenen Namen langsamer ausfallen, als im Falle anderer
+    Namen. Hauptanliegen der gesamten Studie ist es, %%%% Here we are simply testing whether this works better with index fingers or with thumbs. %%%%.
+    <br><br> Falls Sie sich für die endgültigen Ergebnisse der Studie interessieren, % just send a quick additional mail to the same address as for the data (gaspar.lukacs@univie.ac.at) with "FEEDBACK" in the subject%. Wir senden Ihnen dann gerne eine Kopie des resultierenden Manuskripts zu (etwa im Laufe eines halben Jahres).
+    <br>Für weitere unmittelbare Informationen wenden Sie sich bitte an den Versuchsleiter.
     </b>
     <br/>
     <br/>

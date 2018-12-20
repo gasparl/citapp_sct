@@ -21,14 +21,14 @@ import { Insomnia } from '@ionic-native/insomnia';
 })
 export class HomePage {
   @ViewChild(Content) content: Content;
-  /*
+  ///*
   to_exec: any;
   onChange(ee) {
     if (ee.keyCode === 13) {
       console.log(eval(this.to_exec))
     }
   }
-   touchsim() {
+  touchsim() {
     var info = this.trial_stim.type + " (" + this.trial_stim.word + ")";
     var rt_sim = this.randomdigit(600, 830);
     if (this.trial_stim.type == "probe") {
@@ -65,14 +65,14 @@ export class HomePage {
       info += chosen_response + " preset " + rt_sim + ", actual " + Math.round(performance.now() - this.start) + "\n";
       console.log(info);
     }.bind(this), rt_sim);
-} */
+  }// */
 
   experiment_title: string = "CIT_Mobile_app_exp2";
   border_style: string = 'none'; //'solid red 4px'; 'none';
-  dems: string = "dems";
   screen_size: any = { "longer": "", "shorter": "" };
   crrnt_handpos: string;
   s_age: number;
+  personal_feedback: string = '';
   false_delay: number = 400;
   tooslow_delay: number = 400;
   isi_delay_minmax: number[] = [300, 800];
@@ -118,7 +118,8 @@ export class HomePage {
   practice_repeated: any = {
     block1: 0,
     block2: 0,
-    block3: 0
+    block3: 0,
+    block6: 0
   };
   cit_data: string =
     "subject_id\tcondition\thandposition\tblock_number\ttrial_number\tstimulus_shown\tcategory\tstim_type\tresponse_key\trt_start\trt_end\tincorrect\ttoo_slow\tisi\tdate_in_ms\n";
@@ -192,7 +193,7 @@ export class HomePage {
     if (this.on_device) {
       if (this.network.type) {
         if (this.network.type != "none") {
-          alert("Warning: it seems you are connected to the internet. Please turn it off to avoid interferences.")
+          alert("Achtung: Scheinbar sind Sie mit dem Internet verbunden. Bitte schalten Sie es aus, um Unterbrechungen zu vermeiden.")
         }
       }
       this.statusBar.hide();
@@ -211,7 +212,6 @@ export class HomePage {
     this.nums = this.range(1, 32);
     this.visib.start_text = true;
     this.visib.labels = true;
-    this.visib.end_data = false;
 
     this.form_dems = formBuilder.group({
       age_inp: ["", AgeValidator.isValid],
@@ -265,14 +265,16 @@ export class HomePage {
       this.submit_failed = true;
 
       // for TESTING:
-
+      console.log('testing');
       this.true_forename = "Testvornam";
       this.gender = 1;
       this.true_surname = "Testnachnam"
       this.s_age = 33;
-      this.subj_id = "188";
-      this.div_after_instr = "div_cit_blockstart";
-      this.switch_divs('div_confirm');
+      this.subj_id = "189";
+      this.task_start()
+      this.div_after_instr = 'div_blockstart';
+      this.nextblock();
+
     } else {
       this.true_forename = this.form_dems.get("forename_inp").value;
       this.gender = this.form_dems.get("gender_inp").value;
@@ -321,17 +323,17 @@ export class HomePage {
         this.stim_base[1][1].word.toUpperCase() +
         "</b>. ",
         "Again, your target that requires a different response is <b>" +
-        this.stim_base[2][1].word.toUpperCase() +
+        this.stim_base[3][1].word.toUpperCase() +
         "</b>. ",
         "Again, your target that requires a different response is <b>" +
-        this.stim_base[3][1].word.toUpperCase() +
+        this.stim_base[4][1].word.toUpperCase() +
         "</b>. "
       ];
     }
-    var pos_instruction = { 'Zeigefinger': 'use your indexfingers to touch the buttons, with the phone lying on the table.', 'Daumen': 'use your thumbs to touch the buttons, with the phone held in your hands as you normally would hold it (but with your hands lying on the table)%%' }
+    var pos_instruction = { 'Zeigefinger': 'benutzen Sie Ihre Zeigefinger zum Antippen der Schaltflächen. Ihr Smartphone sollte dabei auf dem Tisch liegen.', 'Daumen': 'benutzen Sie Ihre Daumen zum Antippen der Schaltflächen. Halten Sie Ihr Smartphone dabei wie üblich in beiden Händen. (Ihre Hände sollten aber bequem auf dem Tisch aufliegen.)' }
     this.block_texts[0] = "";
     this.block_texts[1] =
-      '%%You will have to ' + pos_instruction + '. Place your phone in a comfortable distance, and please try to keep it more or less in that position throughout the experiment.%% <br><br>Es werden drei kurze Übungsrunden stattfinden. In der ersten Übungsrunde wollen wir nur herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass Sie Ihre jeweiligen Antworten genau auswählen, werden Sie für diese Aufgabe genügend Zeit haben. An dieser Stelle werden alle Items der zwei Kategorien (Vornamen, Nachnamen) zufällig durchmischt. <b>Sie müssen auf jedes Item korrekt antworten.</b> Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden), müssen Sie diese Übungsrunde wiederholen.<br><br>Falls nötig, tippen Sie <b>Anweisungen erneut anzeigen</b> um die Details erneut zu lesen.<br><br>';
+      'Bitte ' + pos_instruction[this.crrnt_handpos] + '. Bitte platzieren Sie ihr Handy in einer für Sie angenehmen Distanz und versuchen Sie, es an dieser Position während des gesamten Versuchs liegen zu lassen.<br><br>Es werden drei kurze Übungsrunden stattfinden. In der ersten Übungsrunde wollen wir nur herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass Sie Ihre jeweiligen Antworten genau auswählen, werden Sie für diese Aufgabe genügend Zeit haben. An dieser Stelle werden alle Items der zwei Kategorien (Vornamen, Nachnamen) zufällig durchmischt. <b>Sie müssen auf jedes Item korrekt antworten.</b> Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden), müssen Sie diese Übungsrunde wiederholen.<br><br>Falls nötig, tippen Sie <b>Anweisungen erneut anzeigen</b> um die Details erneut zu lesen.<br>';
     this.block_texts[2] =
       'Super, Sie haben die erste Übungsrunde geschafft. In dieser zweiten Übungsrunde wird die Antwortzeit verkürzt sein, wobei aber eine bestimmte Anzahl an falschen Antworten erlaubt ist. <br> <br>Versuchen Sie, so genau und schnell wie möglich zu antworten. <br>';
     this.block_texts[3] =
@@ -348,19 +350,24 @@ export class HomePage {
       " getestet. " +
       target_reminder[1] +
       " Abgesehen davon bleibt die Aufgabe dieselbe.<br><br>Versuchen Sie, so genau und schnell wie möglich zu antworten.";
+      if (this.crrnt_handpos == 'Zeigefinger') {
+          var pos_instruction2 = pos_instruction.Daumen;
+      } else {
+          var pos_instruction2 = pos_instruction.Zeigefinger;
+      }
 
     this.block_texts[6] =
-      '%%Now, you will have to change hand position. Please keep the phone approximately in the same place as so far, but ' + pos_instruction + '. <br><br> Now you will have one short practice phase again to get used to this new position. (Afterwards you will repeat the same blocks as with the previous handposition.)%% <br><br> Versuchen Sie, so genau und schnell wie möglich zu antworten.<br>';
+      'Wechseln Sie bitte jetzt die Handposition: lassen Sie das Handy ungefähr in der gleichen Position (Distanz) wie zuvor, aber ' + pos_instruction2 + '. <br><br> Es folgt nun eine weitere kurze Übungsrunde, damit Sie sich an die neue Position gewöhnen könnnen. (Danach werden Sie die gleichen zwei Blöcke wie mit der vorherigen Handpositionierung wiederholen). <br><br> Versuchen Sie, so genau und schnell wie möglich zu antworten.<br>';
 
     this.block_texts[7] =
       "Gut gemacht. Nun beginnen die nächste zwei Blöcke, getrennt durch eine Pause. Nochmals, im ersten Block wird die Kategorie " +
-      this.stim_base[2][0].cat +
+      this.stim_base[3][0].cat +
       " getestet, also werden Ihnen nur die damit verbundenen Items präsentiert. " +
       target_reminder[2] +
       "<br><br>Versuchen Sie, so genau und schnell wie möglich zu antworten.<br>";
-    this.block_texts[7] =
+    this.block_texts[8] =
       "In diesem letzten Block wird nochmals die Kategorie " +
-      this.stim_base[3][0].cat +
+      this.stim_base[4][0].cat +
       " getestet. " +
       target_reminder[3] +
       " <br><br>Versuchen Sie, so genau und schnell wie möglich zu antworten.";
@@ -721,7 +728,7 @@ export class HomePage {
       this.main_stim = this.getAllTestStimuli_induced;
     } else if (this.cit_type == 2 || this.cit_type == 5) {
       // induced - nontarget
-      this.div_after_instr = "div_cit_blockstart";
+      this.div_after_instr = "div_blockstart";
       this.task_instruction =
         'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (forenames, surnames) appearing in the middle of the screen. You have to say UNFAMILIAR to all these details. Remember: you are denying that you recognize any of these details as relevant to you, so you you have to say UNFAMILIAR to all of them. ' +
         inducers_instructions;
@@ -736,7 +743,7 @@ export class HomePage {
     } else {
       this.correct_resp = "resp_a";
     }
-    //this.touchsim(); // for testing -- TODOREMOVE
+    this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       this.stimulus_text = this.text_to_show;
       this.start = performance.now();
@@ -828,7 +835,7 @@ export class HomePage {
       this.isi();
     } else {
       this.basic_times.blocks += "\nBlock " + this.blocknum + " end " + Date();
-      if (this.blocknum > 3 || this.practice_eval()) {
+      if ( (this.blocknum > 3 && this.blocknum != 6) || this.practice_eval()) {
         // if (this.blocknum == 4 || this.blocknum == 5) {
         //   this.main_eval();
         // }
@@ -851,6 +858,8 @@ export class HomePage {
           this.practice_repeated.block2 += 1;
         } else if (this.blocknum == 3) {
           this.practice_repeated.block3 += 1;
+        } else if (this.blocknum == 6) {
+          this.practice_repeated.block6 += 1;
         }
         this.nextblock();
       }
@@ -1202,7 +1211,11 @@ export class HomePage {
       " Finished " +
       this.basic_times.finished +
       this.basic_times.blocks +
-      "\nRepetitions" +
+      "\ndems_gender_age_reps" +
+      "\t" +
+      this.gender +
+      "\t" +
+      this.s_age +
       "\t" +
       this.practice_repeated.block1 +
       "\t" +
@@ -1210,16 +1223,22 @@ export class HomePage {
       "\t" +
       this.practice_repeated.block3 +
       "\t" +
+      this.practice_repeated.block6 +
+      "\t" +
       dcit +
       "\n";
     this.clipboard.copy(this.cit_data);
     this.file.writeFile(this.path, this.f_name, this.cit_data);
     var outcome;
+    this.personal_feedback += (Math.ceil(dcit * 1000) / 1000).toFixed(3);
     if (dcit > 0.1) {
       outcome = " => found GUILTY (<i>d</i><sub>CIT</sub> > 0.1";
+      this.personal_feedback += ". Das bedeutet, dass Ihre Reaktionszeit für Ihre Name signifikant langsamer als für andere Namen war, und somit haben wir enthüllt, dass Sie dieses Detail verheimlicht haben";
     } else {
       outcome = " => found INNOCENT (<i>d</i><sub>CIT</sub> <= 0.1";
+      this.personal_feedback += ". Das bedeutet, dass Ihre Reaktionszeit für Ihre Name nicht signifikant langsamer als für andere Namen war, und somit konnten wir nicht enthüllen, dass Sie dieses Detail verheimlicht haben";
     }
+
     outcome += "; Pr-Irr diff ~" + Math.round(this.mean(this.all_main_rts.probs) - this.mean(this.all_main_rts.irrs)) + " ms)"
     this.to_display = "<i>d</i><sub>CIT</sub> = " + (Math.ceil(dcit * 1000) / 1000).toFixed(3) + outcome + "<br/><br/>Path to saved file:<br/>" + this.path + "<br/>" + "File name: " + this.f_name + "<br/><br/>Full data:<br/>"
     this.to_display += this.cit_data;

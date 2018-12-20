@@ -333,7 +333,7 @@ export class HomePage {
     var pos_instruction = { 'Zeigefinger': 'benutzen Sie Ihre Zeigefinger zum Antippen der Schaltflächen. Ihr Smartphone sollte dabei auf dem Tisch liegen.', 'Daumen': 'benutzen Sie Ihre Daumen zum Antippen der Schaltflächen. Halten Sie Ihr Smartphone dabei wie üblich in beiden Händen. (Ihre Hände sollten aber bequem auf dem Tisch aufliegen.)' }
     this.block_texts[0] = "";
     this.block_texts[1] =
-      'Bitte ' + pos_instruction[this.crrnt_handpos] + '. Bitte platzieren Sie ihr Handy in einer für Sie angenehmen Distanz und versuchen Sie, es an dieser Position während des gesamten Versuchs liegen zu lassen.<br><br>Es werden drei kurze Übungsrunden stattfinden. In der ersten Übungsrunde wollen wir nur herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass Sie Ihre jeweiligen Antworten genau auswählen, werden Sie für diese Aufgabe genügend Zeit haben. An dieser Stelle werden alle Items der zwei Kategorien (Vornamen, Nachnamen) zufällig durchmischt. <b>Sie müssen auf jedes Item korrekt antworten.</b> Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden), müssen Sie diese Übungsrunde wiederholen.<br><br>Falls nötig, tippen Sie <b>Anweisungen erneut anzeigen</b> um die Details erneut zu lesen.<br>';
+      'Bitte ' + pos_instruction[this.crrnt_handpos] + ' Platzieren Sie ihr Handy in einer für Sie angenehmen Distanz und versuchen Sie, es an dieser Position während des gesamten Versuchs liegen zu lassen.<br><br>Es werden drei kurze Übungsrunden stattfinden. In der ersten Übungsrunde wollen wir nur herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass Sie Ihre jeweiligen Antworten genau auswählen, werden Sie für diese Aufgabe genügend Zeit haben. An dieser Stelle werden alle Items der zwei Kategorien (Vornamen, Nachnamen) zufällig durchmischt. <b>Sie müssen auf jedes Item korrekt antworten.</b> Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden), müssen Sie diese Übungsrunde wiederholen.<br><br>Falls nötig, tippen Sie <b>Anweisungen erneut anzeigen</b> um die Details erneut zu lesen.<br>';
     this.block_texts[2] =
       'Super, Sie haben die erste Übungsrunde geschafft. In dieser zweiten Übungsrunde wird die Antwortzeit verkürzt sein, wobei aber eine bestimmte Anzahl an falschen Antworten erlaubt ist. <br> <br>Versuchen Sie, so genau und schnell wie möglich zu antworten. <br>';
     this.block_texts[3] =
@@ -355,9 +355,8 @@ export class HomePage {
       } else {
           var pos_instruction2 = pos_instruction.Zeigefinger;
       }
-
     this.block_texts[6] =
-      'Wechseln Sie bitte jetzt die Handposition: lassen Sie das Handy ungefähr in der gleichen Position (Distanz) wie zuvor, aber ' + pos_instruction2 + '. <br><br> Es folgt nun eine weitere kurze Übungsrunde, damit Sie sich an die neue Position gewöhnen könnnen. (Danach werden Sie die gleichen zwei Blöcke wie mit der vorherigen Handpositionierung wiederholen). <br><br> Versuchen Sie, so genau und schnell wie möglich zu antworten.<br>';
+      'Wechseln Sie bitte jetzt die Handposition: lassen Sie das Handy ungefähr in der gleichen Position (Distanz) wie zuvor, aber ' + pos_instruction2 + ' <br><br> Es folgt nun eine weitere kurze Übungsrunde, damit Sie sich an die neue Position gewöhnen könnnen. (Danach werden Sie die gleichen zwei Blöcke wie mit der vorherigen Handpositionierung wiederholen). <br><br> Versuchen Sie, so genau und schnell wie möglich zu antworten.<br>';
 
     this.block_texts[7] =
       "Gut gemacht. Nun beginnen die nächste zwei Blöcke, getrennt durch eine Pause. Nochmals, im ersten Block wird die Kategorie " +

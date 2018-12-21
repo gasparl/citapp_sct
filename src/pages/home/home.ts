@@ -32,7 +32,7 @@ export class HomePage {
     var info = this.trial_stim.type + " (" + this.trial_stim.word + ")";
     var rt_sim = this.randomdigit(600, 830);
     if (this.trial_stim.type == "probe") {
-      rt_sim = rt_sim + 10;
+      rt_sim = rt_sim;// + 10;
     }
     var correct_chance1 = 1;
     var correct_chance2 = 0.95;
@@ -322,10 +322,10 @@ export class HomePage {
         "Zur Erinnerung: das mit JA zu beantwortende Detail ist <b>" +
         this.stim_base[1][1].word.toUpperCase() +
         "</b>. ",
-        "Again, your target that requires a different response is <b>" +
+        "Zur Erinnerung: das mit JA zu beantwortende Detail ist <b>" +
         this.stim_base[3][1].word.toUpperCase() +
         "</b>. ",
-        "Again, your target that requires a different response is <b>" +
+        "Zur Erinnerung: das mit JA zu beantwortende Detail ist <b>" +
         this.stim_base[4][1].word.toUpperCase() +
         "</b>. "
       ];

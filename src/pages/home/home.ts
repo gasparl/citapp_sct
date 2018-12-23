@@ -1213,17 +1213,17 @@ export class HomePage {
       "\ndems_gender_age_reps" +
       "\t" +
       this.gender +
-      "\t" +
+      "/" +
       this.s_age +
-      "\t" +
+      "/" +
       this.practice_repeated.block1 +
-      "\t" +
+      "/" +
       this.practice_repeated.block2 +
-      "\t" +
+      "/" +
       this.practice_repeated.block3 +
-      "\t" +
+      "/" +
       this.practice_repeated.block6 +
-      "\t" +
+      "/" +
       dcit +
       "\n";
     this.clipboard.copy(this.cit_data);

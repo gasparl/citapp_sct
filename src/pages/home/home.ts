@@ -21,7 +21,7 @@ import { Insomnia } from '@ionic-native/insomnia';
 })
 export class HomePage {
   @ViewChild(Content) content: Content;
-  ///*
+  /*
   to_exec: any;
   onChange(ee) {
     if (ee.keyCode === 13) {
@@ -65,7 +65,7 @@ export class HomePage {
       info += chosen_response + " preset " + rt_sim + ", actual " + Math.round(performance.now() - this.start) + "\n";
       console.log(info);
     }.bind(this), rt_sim);
-  }// */
+  } */
 
   experiment_title: string = "CIT_Mobile_app_exp2";
   border_style: string = 'none'; //'solid red 4px'; 'none';
@@ -90,7 +90,6 @@ export class HomePage {
   true_forename: string;
   true_surname: string;
   current_div: string = "div_dems"; // ddd default: "measure", div_dems, div_cit_main, div_end
-  testingmode: boolean = true; // REMOVE
   visib: any = {};
   block_texts: string[] = [];
   form_items: FormGroup;
@@ -265,15 +264,15 @@ export class HomePage {
       this.submit_failed = true;
 
       // for TESTING:
-      console.log('testing');
-      this.true_forename = "Testvornam";
-      this.gender = 1;
-      this.true_surname = "Testnachnam"
-      this.s_age = 33;
-      this.subj_id = "189";
-      this.task_start()
-      this.div_after_instr = 'div_blockstart';
-      this.nextblock();
+      // console.log('testing');
+      // this.true_forename = "Testvornam";
+      // this.gender = 1;
+      // this.true_surname = "Testnachnam"
+      // this.s_age = 33;
+      // this.subj_id = "189";
+      // this.task_start()
+      // this.div_after_instr = 'div_blockstart';
+      // this.nextblock();
 
     } else {
       this.true_forename = this.form_dems.get("forename_inp").value;
@@ -742,7 +741,7 @@ export class HomePage {
     } else {
       this.correct_resp = "resp_a";
     }
-    this.touchsim(); // for testing -- TODOREMOVE
+    // this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       this.stimulus_text = this.text_to_show;
       this.start = performance.now();
@@ -1250,7 +1249,8 @@ export class HomePage {
     if (this.on_device) {
       let email = {
         to: "lkcsgaspar@gmail.com",
-        subject: "CITapp data " + this.subj_id + " " + this.experiment_title,
+        cc: "melissa-kunzi@web.de",
+        subject: "CITapp data " + this.experiment_title + " " + this.subj_id + " " + this.true_surname,
         body: "",
         attachments: [
           this.path + this.f_name

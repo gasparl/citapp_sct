@@ -68,7 +68,7 @@ export class HomePage {
   } */
 
   experiment_title: string = "CIT_Mobile_app_exp2";
-  border_style: string = 'none'; //'solid red 4px'; 'none';
+  border_style: string = 'solid red 4px'; //'solid red 4px'; 'none';
   screen_size: any = { "longer": "", "shorter": "" };
   crrnt_handpos: string;
   s_age: number;
@@ -89,7 +89,7 @@ export class HomePage {
   task_instruction: string;
   true_forename: string;
   true_surname: string;
-  current_div: string = "div_dems"; // ddd default: "measure", div_dems, div_cit_main, div_end
+  current_div: string = "measure"; // ddd default: "measure", div_dems, div_cit_main, div_end
   visib: any = {};
   block_texts: string[] = [];
   form_items: FormGroup;
@@ -255,6 +255,7 @@ export class HomePage {
   switch_if_filled() {
     if (this.screen_size.longer > 50 && this.screen_size.longer < 180 && this.screen_size.shorter > 35 && this.screen_size.shorter < 90) {
       this.switch_divs('div_dems');
+      this.border_style = 'none'
     }
   }
 
@@ -287,16 +288,16 @@ export class HomePage {
   task_start() {
     this.pre_cond = parseInt(this.subj_id) % 4;
     if (this.pre_cond % 2 == 0) {
-      this.handpos_order = 2; // first thumbs
+      this.handpos_order = 2; // first index
       this.crrnt_handpos = "Zeigefinger";
     } else {
-      this.handpos_order = 1; // first index
+      this.handpos_order = 1; // first thumbs
       this.crrnt_handpos = "Daumen";
     }
     if (this.pre_cond < 3) {
-      this.cat_order = 1;
+      this.cat_order = 1; // first forenames
     } else {
-      this.cat_order = 2;
+      this.cat_order = 2; // first surnames
     }
     this.cit_type = 0;
     this.basic_times.consented = Date();

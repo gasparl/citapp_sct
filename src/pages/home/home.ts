@@ -710,7 +710,7 @@ export class HomePage {
       this.task_instruction =
         'Antippen der <i>rechten</i> Schaltfläche bedeutet "JA, ich nehme dieses Item als relevant wahr". Antippen der <i>linken</i> Schaltfläche bedeutet "Nein, ich nehme dieses Item nicht als relevant wahr". <br> Sie werden Wörter (Vornamen, Nachnamen) sehen, die in der Mitte des Bildschirms auftauchen. Sie sollten diese wahrnehmen und mit JA auf die folgenden Details antworten: <b>' +
         this.the_targets.join("</b>, <b>").toUpperCase() +
-        "</b><br/><br/>Auf alle anderen Details sollten Sie mit NEIN antworten. Zur Erinnerung: Sie leugnen, irgendwelche der anderen Details als relevant für Sie wahrzunehmen, also sollten Sie auf alle mit NEIN antworten.<br/><br/>"
+        "</b><br/><br/>Auf alle anderen Details (andere Namen) sollten Sie mit NEIN antworten. Zur Erinnerung: Sie leugnen, irgendwelche der anderen Details als relevant für Sie wahrzunehmen, also sollten Sie auf alle mit NEIN antworten.<br/><br/>"
         ;
       this.practice_stim = this.getPracticeTestStimuli_simple;
       this.main_stim = this.getAllTestStimuli_simple;
@@ -1232,10 +1232,10 @@ export class HomePage {
     this.personal_feedback += (Math.ceil(dcit * 1000) / 1000).toFixed(3);
     if (dcit > 0.1) {
       outcome = " => found GUILTY (<i>d</i><sub>CIT</sub> > 0.1";
-      this.personal_feedback += ". Das bedeutet, dass Ihre Reaktionszeit für Ihre Name signifikant langsamer als für andere Namen war, und somit haben wir enthüllt, dass Sie dieses Detail verheimlicht haben";
+      this.personal_feedback += ". Das bedeutet, dass Ihre Reaktionszeit für Ihren Name signifikant langsamer war als für andere Namen. Somit haben wir enthüllt, dass Sie dieses Detail verheimlicht haben";
     } else {
       outcome = " => found INNOCENT (<i>d</i><sub>CIT</sub> <= 0.1";
-      this.personal_feedback += ". Das bedeutet, dass Ihre Reaktionszeit für Ihre Name nicht signifikant langsamer als für andere Namen war, und somit konnten wir nicht enthüllen, dass Sie dieses Detail verheimlicht haben";
+      this.personal_feedback += ". Das bedeutet, dass Ihre Reaktionszeit für Ihren Name nicht signifikant langsamer war als für andere Namen. Somit konnten wir nicht enthüllen, dass Sie dieses Detail verheimlicht haben";
     }
 
     outcome += "; Pr-Irr diff ~" + Math.round(this.mean(this.all_main_rts.probs) - this.mean(this.all_main_rts.irrs)) + " ms)"

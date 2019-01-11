@@ -294,7 +294,7 @@ export class HomePage {
       this.handpos_order = 1; // first thumbs
       this.crrnt_handpos = "Daumen";
     }
-    if (this.pre_cond < 3) {
+    if (this.pre_cond < 2) {
       this.cat_order = 1; // first forenames
     } else {
       this.cat_order = 2; // first surnames

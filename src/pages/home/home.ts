@@ -172,6 +172,7 @@ export class HomePage {
   f_name: string;
   to_display: string = "";
   pointev: any = {};
+  versionnum: string = 'notandroid';
 
   constructor(
     public navCtrl: NavController,
@@ -189,6 +190,9 @@ export class HomePage {
   ) {
     this.basic_times.loaded = Date();
     this.on_device = this.platform.is("cordova");
+    if ( this.platform.versions().android ) {
+        this.versionnum = this.platform.versions().android.num.toString() ;
+    }
     if (this.on_device) {
       if (this.network.type) {
         if (this.network.type != "none") {
@@ -1225,6 +1229,8 @@ export class HomePage {
       this.practice_repeated.block6 +
       "/" +
       dcit +
+      "/" +
+      this.versionnum +
       "\n";
     this.clipboard.copy(this.cit_data);
     this.file.writeFile(this.path, this.f_name, this.cit_data);

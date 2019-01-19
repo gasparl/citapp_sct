@@ -1231,6 +1231,10 @@ export class HomePage {
       dcit +
       "/" +
       this.versionnum +
+      "/" +
+      this.screen_size.longer +
+      "/" +
+      this.screen_size.shorter +
       "\n";
     this.clipboard.copy(this.cit_data);
     this.file.writeFile(this.path, this.f_name, this.cit_data);

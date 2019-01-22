@@ -21,7 +21,7 @@ import { Insomnia } from '@ionic-native/insomnia';
 })
 export class HomePage {
   @ViewChild(Content) content: Content;
-  /*
+  // /*
   to_exec: any;
   onChange(ee) {
     if (ee.keyCode === 13) {
@@ -65,10 +65,10 @@ export class HomePage {
       info += chosen_response + " preset " + rt_sim + ", actual " + Math.round(performance.now() - this.start) + "\n";
       console.log(info);
     }.bind(this), rt_sim);
-  } */
+  }
+  //*/
 
   experiment_title: string = "CIT_Mobile_app_exp2";
-  border_style: string = 'solid red 4px'; //'solid red 4px'; 'none';
   screen_size: any = { "longer": "", "shorter": "" };
   crrnt_handpos: string;
   s_age: number;
@@ -256,28 +256,21 @@ export class HomePage {
     this.content.scrollToTop(0);
     this.navigationBar.hideNavigationBar();
   }
-  switch_if_filled() {
-    if (this.screen_size.longer > 50 && this.screen_size.longer < 180 && this.screen_size.shorter > 35 && this.screen_size.shorter < 90) {
-      this.switch_divs('div_dems');
-      this.border_style = 'none'
-    }
-  }
-
 
   initials() {
     if (!this.form_dems.valid) {
       this.submit_failed = true;
 
       // for TESTING:
-      // console.log('testing');
-      // this.true_forename = "Testvornam";
-      // this.gender = 1;
-      // this.true_surname = "Testnachnam"
-      // this.s_age = 33;
-      // this.subj_id = "189";
-      // this.task_start()
-      // this.div_after_instr = 'div_blockstart';
-      // this.nextblock();
+      console.log('testing');
+      this.true_forename = "Testvornam";
+      this.gender = 1;
+      this.true_surname = "Testnachnam"
+      this.s_age = 33;
+      this.subj_id = "189";
+      this.task_start()
+      this.div_after_instr = 'div_blockstart';
+      this.nextblock();
 
     } else {
       this.true_forename = this.form_dems.get("forename_inp").value;
@@ -746,7 +739,7 @@ export class HomePage {
     } else {
       this.correct_resp = "resp_a";
     }
-    // this.touchsim(); // for testing -- TODOREMOVE
+    this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       this.stimulus_text = this.text_to_show;
       this.start = performance.now();

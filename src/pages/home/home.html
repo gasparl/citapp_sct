@@ -1,36 +1,9 @@
-<ion-content padding [ngSwitch]="current_div" [ngStyle]="{ 'background-color': bg_color, 'border': border_style }" text-wrap>
+<ion-content padding [ngSwitch]="current_div" [ngStyle]="{ 'background-color': bg_color }" text-wrap>
 
 
-  <div *ngSwitchDefault>
 
 
-    <ion-navbar (swipeleft)="switch_if_filled();">
-      Bitte messen Sie Ihren Bildschirm aus (im roten Rahmen).
-    </ion-navbar>
-
-    <ion-grid>
-      <ion-row>
-        <ion-col>
-          <ion-item>
-            <ion-label class="ionslabel" stacked>Lange Seite</ion-label>
-            <ion-input [(ngModel)]="screen_size.longer" type="number">
-            </ion-input>
-          </ion-item>
-        </ion-col>
-
-        <ion-col>
-          <ion-item>
-            <ion-label class="ionslabel" stacked>Kurze Seite</ion-label>
-            <ion-input [(ngModel)]="screen_size.shorter" type="number">
-            </ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
-
-
-  <div *ngSwitchCase="'div_dems'" [ngStyle]="{'pointer-events': pointev.div_dems || 'none' }">
+  <div *ngSwitchDefault >
 
     <form [formGroup]="form_dems">
 
@@ -250,6 +223,7 @@
   </div>
 
 
-  <!--  <ion-input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;"></ion-input>-->
+   <ion-input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;"></ion-input>
+<!-- app console for testing -->
 
 </ion-content>

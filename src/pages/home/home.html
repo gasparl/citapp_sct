@@ -45,7 +45,7 @@
             VP Nummer (wie auf dem Instruktionsblatt beschrieben):
             </span>
             <ion-item style="padding-bottom:30px;">
-              <ion-label class="stackedlabels" stacked><span *ngIf="!form_dems.controls.subj_id_inp.valid  && submit_failed" class="error_label">Bitte geben Sie die korrekte Nummer (1-200) ein.</span></ion-label>
+              <ion-label class="stackedlabels" stacked><span *ngIf="!form_dems.controls.subj_id_inp.valid  && submit_failed" class="error_label">Bitte geben Sie die korrekte Nummer ein.</span></ion-label>
               <ion-input formControlName="subj_id_inp" type="number" [class.invalid]="!form_dems.controls.subj_id_inp.valid  && submit_failed"></ion-input>
             </ion-item>
 

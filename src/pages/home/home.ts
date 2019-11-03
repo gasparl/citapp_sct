@@ -83,7 +83,7 @@ export class HomePage {
   bg_color: string = "#fff";
   feed_text: string = "";
   task_instruction: string;
-  current_div: string = "measure"; // ddd default: "measure", div_dems, div_cit_main, div_end
+  current_div: string = "div_start"; // ddd default: "div_start", div_items, div_dems, div_cit_main, div_end
   visib: any = {};
   block_texts: string[] = [];
   form_items: FormGroup;
@@ -210,30 +210,9 @@ export class HomePage {
         "",
         Validators.compose([Validators.maxLength(3), Validators.min(1), Validators.max(200), Validators.required])
       ],
-      gender_inp: [
-        "",
-        Validators.compose([Validators.maxLength(30), Validators.required])
-      ],
-      forename_inp: [
-        "",
-        Validators.compose([
-          Validators.maxLength(14),
-          Validators.pattern("[a-zA-ZÖöÜüÉéÁáÄäß]*"),
-          Validators.required
-        ])
-      ],
-      surname_inp: [
-        "",
-        Validators.compose([
-          Validators.maxLength(14),
-          Validators.pattern("[a-zA-ZÖöÜüÉéÁáÄäß]*"),
-          Validators.required
-        ])
-      ]
     });
+    this.cit_items = [];
   }
-
-
 
   switch_divs(div_to_show) {
     this.current_div = div_to_show;

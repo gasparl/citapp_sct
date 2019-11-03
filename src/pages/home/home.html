@@ -3,7 +3,7 @@
   <div *ngSwitchCase="'div_start'">
 
     <div>
-      <button ion-button type="button">Start new test</button></div>
+      <button ion-button type="button" (tap)="switch_divs('div_items');">Start new test</button></div>
 
     <br /><br />
     <div>
@@ -12,7 +12,7 @@
   </div>
 
   <div *ngSwitchCase="'div_items'">
-    <form (ngSubmit)="basics();">
+    <form (ngSubmit)="switch_divs('div_instructions');">
       <ion-item>
         <ion-label stacked>Target</ion-label>
         <ion-input [(ngModel)]="cit_items[0]" name="target" type="text"></ion-input>
@@ -41,22 +41,6 @@
     </form>
   </div>
 
-
-  <div *ngSwitchCase="'div_confirm'">
-    Bitte überprüfen Sie noch einmal, dass:
-    <br /><br /> (1) die eingegebene VP-Nummer der auf dem Papier entspricht:<br /><br />
-    <div text-center><b>{{subj_id}}</b></div>
-    <br /> (2) der von Ihnen eingegebene Name fehlerfrei buchstabiert ist: <br /><br />
-    <div text-center><b>{{true_forename.toUpperCase()}} {{true_surname.toUpperCase()}}</b></div>
-    <br />
-    <hr />
-
-    <div style="float: left">
-      <button ion-button type="button" (tap)="switch_divs('div_dems');">Nein (Angaben ändern)</button></div> &nbsp;
-    <div style="float: right">
-      <button ion-button type="button" (tap)="task_start();">JA, alles korrekt</button>
-    </div>
-  </div>
 
   <div *ngSwitchCase="'div_instructions'">
 

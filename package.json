@@ -54,13 +54,13 @@
     "ionic-angular": "3.9.2",
     "ionic-plugin-keyboard": "^2.2.1",
     "ionicons": "3.0.0",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.1",
     "rxjs": "5.5.8",
     "sw-toolbox": "3.6.0",
     "zone.js": "0.8.20"
   },
   "devDependencies": {
-    "@ionic/app-scripts": "^3.2.1",
+    "@ionic/app-scripts": "^3.2.4",
     "@types/node": "^9.6.1",
     "typescript": "~2.6.2"
   },

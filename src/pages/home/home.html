@@ -1,106 +1,55 @@
 <ion-content padding [ngSwitch]="current_div" [ngStyle]="{ 'background-color': bg_color }" text-wrap>
 
+  <div *ngSwitchCase="'div_start'">
 
+    <div>
+      <button ion-button type="button">Start new test</button></div>
 
+    <br /><br />
+    <div>
+      <button ion-button type="button">Previous results</button>
+    </div>
+  </div>
 
-  <div *ngSwitchDefault >
-
-    <form [formGroup]="form_dems">
-
-
-      <p style="border-bottom: 2px solid grey; padding-bottom:10px">
-        Bitte füllen Sie die folgenden Angaben aus.
-      </p>
-      <ion-grid>
-        <ion-row>
-          <ion-col>
-            <span style="padding-left: 16px;float: left;">
-            VP Nummer (wie auf dem Instruktionsblatt beschrieben):
-            </span>
-            <ion-item style="padding-bottom:30px;">
-              <ion-label class="stackedlabels" stacked><span *ngIf="!form_dems.controls.subj_id_inp.valid  && submit_failed" class="error_label">Bitte geben Sie die korrekte Nummer ein.</span></ion-label>
-              <ion-input formControlName="subj_id_inp" type="number" [class.invalid]="!form_dems.controls.subj_id_inp.valid  && submit_failed"></ion-input>
-            </ion-item>
-
-          </ion-col>
-        </ion-row>
-
-        <ion-row>
-          <ion-col>
-            <span style="padding-left: 16px;float: left;">
-              Ihr Vorname:
-              </span>
-            <ion-item style="padding-bottom:30px;">
-              <ion-label class="stackedlabels" *ngIf="!form_dems.controls.forename_inp.valid  && submit_failed" stacked>Bitte geben Sie einen gültigen Namen ein.</ion-label>
-              <ion-input formControlName="forename_inp" type="text" [class.invalid]="!form_dems.controls.forename_inp.valid  && submit_failed" maxlength="14" text-uppercase></ion-input>
-            </ion-item>
-
-          </ion-col>
-        </ion-row>
-
-
-        <ion-row>
-          <ion-col>
-            <span style="padding-left: 16px;float: left;">
-        Ihr Nachname:
-        </span>
-            <ion-item style="padding-bottom:30px;">
-              <ion-label class="stackedlabels" *ngIf="!form_dems.controls.surname_inp.valid  && submit_failed" stacked>Bitte geben Sie einen gültigen Namen ein.</ion-label>
-              <ion-input formControlName="surname_inp" type="text" [class.invalid]="!form_dems.controls.surname_inp.valid  && submit_failed" maxlength="14" text-uppercase></ion-input>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-
-        <ion-row>
-          <ion-col>
-
-
-            <span style="padding-left: 16px;float: left;">
-                            Ihr Geschlecht:</span>
-            <ion-item style="padding-bottom:30px;">
-              <ion-label class="stackedlabels" stacked *ngIf="!form_dems.controls.gender_inp.valid  && submit_failed">Bitte wählen Sie ein Geschlecht aus.</ion-label>
-              <ion-select interface='popover' formControlName="gender_inp" [class.invalid]="!form_dems.controls.gender_inp.valid  && submit_failed" style="max-width:100%;" placeholder="- select -">
-                <ion-option value="1">männlich</ion-option>
-                <ion-option value="2">weiblich</ion-option>
-              </ion-select>
-            </ion-item>
-
-
-          </ion-col>
-          <ion-col>
-            <span style="padding-left: 16px;float: left;">
-                            Alter:
-                            </span>
-            <ion-item>
-              <ion-label class="stackedlabels" stacked><span *ngIf="!form_dems.controls.age_inp.valid  && submit_failed" class="error_label">Bitte geben Sie ein gültiges Alter ein (nur Ziffern, 17-30).</span></ion-label>
-              <ion-input formControlName="age_inp" type="number" [class.invalid]="!form_dems.controls.age_inp.valid  && submit_failed"></ion-input>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-
-      <p *ngIf="!form_dems.valid  && submit_failed" style="color: red;">Bitte füllen Sie alle Details genau aus.</p>
-
-      <button ion-button type="button" (tap)="initials();" block>OK</button>
-
-
+  <div *ngSwitchCase="'div_items'">
+    <form (ngSubmit)="basics();">
+      <ion-item>
+        <ion-label stacked>Target</ion-label>
+        <ion-input [(ngModel)]="cit_items[0]" name="target" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Probe item 1</ion-label>
+        <ion-input [(ngModel)]="cit_items[1]" name="probe1" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Probe item 2</ion-label>
+        <ion-input [(ngModel)]="cit_items[2]" name="probe2" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Probe item 3</ion-label>
+        <ion-input [(ngModel)]="cit_items[3]" name="probe3" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Probe item 4</ion-label>
+        <ion-input [(ngModel)]="cit_items[4]" name="probe4" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Probe item 5</ion-label>
+        <ion-input [(ngModel)]="cit_items[5]" name="probe5" type="text"></ion-input>
+      </ion-item>
+      <button ion-button type="submit" block>OK</button>
     </form>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
   </div>
 
 
   <div *ngSwitchCase="'div_confirm'">
     Bitte überprüfen Sie noch einmal, dass:
-    <br/><br/> (1)  die eingegebene VP-Nummer der auf dem Papier entspricht:<br/><br/>
+    <br /><br /> (1) die eingegebene VP-Nummer der auf dem Papier entspricht:<br /><br />
     <div text-center><b>{{subj_id}}</b></div>
-    <br/> (2) der von Ihnen eingegebene Name fehlerfrei buchstabiert ist: <br/><br/>
+    <br /> (2) der von Ihnen eingegebene Name fehlerfrei buchstabiert ist: <br /><br />
     <div text-center><b>{{true_forename.toUpperCase()}} {{true_surname.toUpperCase()}}</b></div>
-    <br/>
-    <hr/>
+    <br />
+    <hr />
 
     <div style="float: left">
       <button ion-button type="button" (tap)="switch_divs('div_dems');">Nein (Angaben ändern)</button></div> &nbsp;
@@ -114,8 +63,9 @@
     <ion-title>
       Instruktionen für die Aufgabe
     </ion-title>
-    <p>Während der Aufgabe werden Sie im unteren Bereich des Displays zwei Schaltflächen sehen: Eine auf der <i>linken Seite</i> und eine auf der <i>rechten</i>. In diesem aktuellen Teil benutzen Sie bitte nur Ihren linken und rechten <b>{{crrnt_handpos}}</b> zum Antippen!
-        <span [innerHTML]="task_instruction"></span></p>
+    <p>Während der Aufgabe werden Sie im unteren Bereich des Displays zwei Schaltflächen sehen: Eine auf der <i>linken Seite</i> und eine auf der <i>rechten</i>. In diesem aktuellen Teil benutzen Sie bitte nur Ihren linken und rechten <b>{{crrnt_handpos}}</b>
+      zum Antippen!
+      <span [innerHTML]="task_instruction"></span></p>
     <div text-center>
       <button ion-button type="button" (tap)="nextblock();">OK</button>
     </div>
@@ -129,7 +79,7 @@
     <ion-grid>
       <ion-row>
         <ion-col>
-          <br/><span style="padding-left: 16px;"> Vorname:</span>
+          <br /><span style="padding-left: 16px;"> Vorname:</span>
           <ion-item text-uppercase>
             <ion-input [(ngModel)]="targ_check_inp[0]" type="text" text-uppercase>
             </ion-input>
@@ -137,7 +87,7 @@
         </ion-col>
 
         <ion-col>
-          <br/><span style="padding-left: 16px;">Nachname:</span>
+          <br /><span style="padding-left: 16px;">Nachname:</span>
           <ion-item>
             <ion-input [(ngModel)]="targ_check_inp[1]" type="text" text-uppercase>
             </ion-input>
@@ -146,25 +96,25 @@
       </ion-row>
     </ion-grid>
 
-    <br/>
+    <br />
     <div text-center>
       <button ion-button (tap)="target_check();">OK</button>
     </div>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
   </div>
 
 
   <div *ngSwitchCase="'div_blockstart'">
     <p [innerHTML]="block_texts[blocknum]"></p>
-    <i>(Bitte stellen Sie sicher, dass Sie Ihre <b>{{crrnt_handpos}}</b> zum Antippen benutzen.)</i><br/><br/>
+    <i>(Bitte stellen Sie sicher, dass Sie Ihre <b>{{crrnt_handpos}}</b> zum Antippen benutzen.)</i><br /><br />
     <div text-center>
       <button ion-button (tap)="runblock();">Start</button>
-      <br/><br/>
-      <hr/>
+      <br /><br />
+      <hr />
       <button ion-button style="text-transform: none;background-color:#5e749d;" (tap)="switch_divs('div_instructions');">Anweisungen erneut anzeigen</button>
     </div>
   </div>
@@ -196,34 +146,37 @@
       </ion-navbar>
     </header>
     <b>Bitte senden Sie die Daten mit folgender Taste (wählen Sie nach dem Tastendruck aus den angegebenen Applikationen Ihr Email-Programm aus):
-    <div text-center>
-      <button ion-button type="button" (tap)="send_mail()" style="text-transform: none;">DATEN SENDEN</button>
-    </div>
-    <br/> Stellen Sie sicher, dass sich eine Datei im Anhang befindet. Wenn es irgendwelche Probleme gibt, geben Sie uns Bescheid. Nach dem Versenden der Mail können Sie die Applikation beenden. Vielen Dank für Ihre Teilnahme.
+      <div text-center>
+        <button ion-button type="button" (tap)="send_mail()" style="text-transform: none;">DATEN SENDEN</button>
+      </div>
+      <br /> Stellen Sie sicher, dass sich eine Datei im Anhang befindet. Wenn es irgendwelche Probleme gibt, geben Sie uns Bescheid. Nach dem Versenden der Mail können Sie die Applikation beenden. Vielen Dank für Ihre Teilnahme.
     </b>
-    <br/>
-    <br/>Kurze Information über den Test:
-    <br> In dieser Studie versuchen wir, Ihre wirklichen selbstbezogenen Details (z.B. Ihren tatsächlichen Vornamen) von solchen zu unterscheiden, die Ihnen nicht zugehörig sind (z.B. andere Vornamen). Ziel dieses Tests ist es, anhand von Reaktionszeiten
+    <br />
+    <br />Kurze Information über den Test:
+    <br> In dieser Studie versuchen wir, Ihre wirklichen selbstbezogenen Details (z.B. Ihren tatsächlichen Vornamen) von solchen zu unterscheiden, die Ihnen nicht zugehörig sind (z.B. andere Vornamen). Ziel dieses Tests ist es, anhand von
+    Reaktionszeiten
     herauszufinden, wenn eine Person versucht, bestimmte Daten zu verschleiern bzw. zu verheimlichen. Dies geschieht auf Basis der Vermutung, dass Reaktionszeiten für die Ihnen präsentierten eigenen Namen langsamer ausfallen, als im Falle anderer
     Namen. Hauptanliegen der aktuellen Studie ist es, zu zeigen, ob dies besser mit Daumen oder Zeigefinger funktioniert.
     <br><br>
-    Bezüglich Ihrer Ergebnisse: Der Unterschied zwischen Ihrem eigenen Namen und den anderen Namen ist standardisiert. Dieser Wert liegt üblicherweise zwischen -1 und 5. Ist der Wert größer als 0.1, kategorisieren wir diese Person als schuldig. Ihr Wert liegt bei {{personal_feedback}}.
+    Bezüglich Ihrer Ergebnisse: Der Unterschied zwischen Ihrem eigenen Namen und den anderen Namen ist standardisiert. Dieser Wert liegt üblicherweise zwischen -1 und 5. Ist der Wert größer als 0.1, kategorisieren wir diese Person als schuldig. Ihr
+    Wert liegt bei {{personal_feedback}}.
 
-    <br><br> Falls Sie sich für die endgültigen Ergebnisse der Studie interessieren, senden Sie einfach eine Email mit dem Betreff "FEEDBACK" an die gleiche Addresse, die Sie zum Senden der Datei genutzt haben (gaspar.lukacs@univie.ac.at). Wir senden Ihnen dann gerne eine Kopie des resultierenden Manuskripts zu (etwa im Laufe eines halben Jahres).
+    <br><br> Falls Sie sich für die endgültigen Ergebnisse der Studie interessieren, senden Sie einfach eine Email mit dem Betreff "FEEDBACK" an die gleiche Addresse, die Sie zum Senden der Datei genutzt haben (gaspar.lukacs@univie.ac.at). Wir
+    senden Ihnen dann gerne eine Kopie des resultierenden Manuskripts zu (etwa im Laufe eines halben Jahres).
     <br>Für weitere unmittelbare Informationen wenden Sie sich bitte an den Versuchsleiter.
-    <br/>
-    <br/>
-    <br/>
-    <hr/>
-    <hr/>
+    <br />
+    <br />
+    <br />
+    <hr />
+    <hr />
     Technical details:
-      <br/>
-      <p style="user-select: text;white-space:pre;" [innerHTML]="to_display">
-      </p>
+    <br />
+    <p style="user-select: text;white-space:pre;" [innerHTML]="to_display">
+    </p>
   </div>
 
 
-   <ion-input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;"></ion-input>
-<!-- app console for testing -->
+  <ion-input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;"></ion-input>
+  <!-- app console for testing -->
 
 </ion-content>

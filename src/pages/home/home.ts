@@ -68,18 +68,14 @@ export class HomePage {
   }
   //*/
 
-  experiment_title: string = "CIT_Mobile_app_exp2";
-  screen_size: any = { "longer": "", "shorter": "" };
-  crrnt_handpos: string;
-  s_age: number;
+  experiment_title: string = "test"; // TODO as input
+  cit_items: string[];
   personal_feedback: string = '';
   false_delay: number = 400;
   tooslow_delay: number = 400;
   isi_delay_minmax: number[] = [300, 800];
   isi_delay: number = 99999;
   cit_type: number = 0;
-  cat_order: number;
-  handpos_order: number;
   pre_cond: number = 9999;
   subj_id: string;
   response_deadline: number;
@@ -87,8 +83,6 @@ export class HomePage {
   bg_color: string = "#fff";
   feed_text: string = "";
   task_instruction: string;
-  true_forename: string;
-  true_surname: string;
   current_div: string = "measure"; // ddd default: "measure", div_dems, div_cit_main, div_end
   visib: any = {};
   block_texts: string[] = [];
@@ -117,8 +111,7 @@ export class HomePage {
   practice_repeated: any = {
     block1: 0,
     block2: 0,
-    block3: 0,
-    block6: 0
+    block3: 0
   };
   cit_data: string =
     "subject_id\tcondition\thandposition\tblock_number\ttrial_number\tstimulus_shown\tcategory\tstim_type\tresponse_key\trt_start\trt_end\tincorrect\ttoo_slow\tisi\tdate_in_ms\n";
@@ -135,13 +128,10 @@ export class HomePage {
     main_item: "mit NEIN zu beantwortende Details",
     target: "mit JA zu beantwortende Details"
   };
-  practice_chances: number = 5;
   practice_num: number = 5;
   first_blockstart: boolean = true;
   basic_times: any = {};
 
-  num_of_failed_fin: number = 111111;
-  failed_final: number = 0;
   response_window: any;
   nums: any[];
 
@@ -150,8 +140,6 @@ export class HomePage {
   the_targets: any[] = [];
   the_probes: any[] = [];
 
-  items_base2: any[];
-  true_details: any[];
 
   words_to_filter: any[] = [[], []];
   targ_check_inp: string[] = ["", ""];
@@ -190,8 +178,8 @@ export class HomePage {
   ) {
     this.basic_times.loaded = Date();
     this.on_device = this.platform.is("cordova");
-    if ( this.platform.versions().android ) {
-        this.versionnum = this.platform.versions().android.num.toString() ;
+    if (this.platform.versions().android) {
+      this.versionnum = this.platform.versions().android.num.toString();
     }
     if (this.on_device) {
       if (this.network.type) {
@@ -260,49 +248,25 @@ export class HomePage {
   initials() {
     if (!this.form_dems.valid) {
       this.submit_failed = true;
-
       // for TESTING:
       console.log('testing');
-      this.true_forename = "Testvornam";
-      this.gender = 1;
-      this.true_surname = "Testnachnam"
-      this.s_age = 33;
       this.subj_id = "189";
       this.task_start()
       this.div_after_instr = 'div_blockstart';
       this.nextblock();
-
     } else {
-      this.true_forename = this.form_dems.get("forename_inp").value;
-      this.gender = this.form_dems.get("gender_inp").value;
-      this.true_surname = this.form_dems.get("surname_inp").value;
-      this.s_age = this.form_dems.get("age_inp").value;
       this.subj_id = this.form_dems.get("subj_id_inp").value;
       this.switch_divs('div_confirm');
     }
   }
 
   task_start() {
-    this.pre_cond = parseInt(this.subj_id) % 4;
-    if (this.pre_cond % 2 == 0) {
-      this.handpos_order = 2; // first index
-      this.crrnt_handpos = "Zeigefinger";
-    } else {
-      this.handpos_order = 1; // first thumbs
-      this.crrnt_handpos = "Daumen";
-    }
-    if (this.pre_cond < 2) {
-      this.cat_order = 1; // first forenames
-    } else {
-      this.cat_order = 2; // first surnames
-    }
     this.cit_type = 0;
     this.basic_times.consented = Date();
     this.backgroundMode.setDefaults({
       text: "Test in progress!",
       silent: false
     })
-    this.prune();
     this.switch_divs("div_instructions");
   }
 
@@ -329,8 +293,7 @@ export class HomePage {
     }
     var pos_instruction = { 'Zeigefinger': 'benutzen Sie Ihre Zeigefinger zum Antippen der Schaltflächen. Ihr Smartphone sollte dabei auf dem Tisch liegen.', 'Daumen': 'benutzen Sie Ihre Daumen zum Antippen der Schaltflächen. Halten Sie Ihr Smartphone dabei wie üblich in beiden Händen. (Ihre Hände sollten aber bequem auf dem Tisch aufliegen.)' }
     this.block_texts[0] = "";
-    this.block_texts[1] =
-      'Bitte ' + pos_instruction[this.crrnt_handpos] + ' Platzieren Sie ihr Handy in einer für Sie angenehmen Distanz und versuchen Sie, es an dieser Position während des gesamten Versuchs liegen zu lassen.<br><br>Es werden drei kurze Übungsrunden stattfinden. In der ersten Übungsrunde wollen wir nur herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass Sie Ihre jeweiligen Antworten genau auswählen, werden Sie für diese Aufgabe genügend Zeit haben. An dieser Stelle werden alle Items der zwei Kategorien (Vornamen, Nachnamen) zufällig durchmischt. <b>Sie müssen auf jedes Item korrekt antworten.</b> Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden), müssen Sie diese Übungsrunde wiederholen.<br><br>Falls nötig, tippen Sie <b>Anweisungen erneut anzeigen</b> um die Details erneut zu lesen.<br>';
+    this.block_texts[1] = ' Platzieren Sie ihr Handy in einer für Sie angenehmen Distanz und versuchen Sie, es an dieser Position während des gesamten Versuchs liegen zu lassen.<br><br>Es werden drei kurze Übungsrunden stattfinden. In der ersten Übungsrunde wollen wir nur herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass Sie Ihre jeweiligen Antworten genau auswählen, werden Sie für diese Aufgabe genügend Zeit haben. An dieser Stelle werden alle Items der zwei Kategorien (Vornamen, Nachnamen) zufällig durchmischt. <b>Sie müssen auf jedes Item korrekt antworten.</b> Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden), müssen Sie diese Übungsrunde wiederholen.<br><br>Falls nötig, tippen Sie <b>Anweisungen erneut anzeigen</b> um die Details erneut zu lesen.<br>';
     this.block_texts[2] =
       'Super, Sie haben die erste Übungsrunde geschafft. In dieser zweiten Übungsrunde wird die Antwortzeit verkürzt sein, wobei aber eine bestimmte Anzahl an falschen Antworten erlaubt ist. <br> <br>Versuchen Sie, so genau und schnell wie möglich zu antworten. <br>';
     this.block_texts[3] =
@@ -347,13 +310,9 @@ export class HomePage {
       " getestet. " +
       target_reminder[1] +
       " Abgesehen davon bleibt die Aufgabe dieselbe.<br><br>Versuchen Sie, so genau und schnell wie möglich zu antworten.";
-      if (this.crrnt_handpos == 'Zeigefinger') {
-          var pos_instruction2 = pos_instruction.Daumen;
-      } else {
-          var pos_instruction2 = pos_instruction.Zeigefinger;
-      }
+
     this.block_texts[6] =
-      'Wechseln Sie bitte jetzt die Handposition: lassen Sie das Handy ungefähr in der gleichen Position (Distanz) wie zuvor, aber ' + pos_instruction2 + ' <br><br> Es folgt nun eine weitere kurze Übungsrunde, damit Sie sich an die neue Position gewöhnen könnnen. (Danach werden Sie die gleichen zwei Blöcke wie mit der vorherigen Handpositionierung wiederholen). <br><br> Versuchen Sie, so genau und schnell wie möglich zu antworten.<br>';
+      'Wechseln Sie bitte jetzt die Handposition: lassen Sie das Handy ungefähr in der gleichen Position (Distanz) wie zuvor, aber<br><br> Es folgt nun eine weitere kurze Übungsrunde, damit Sie sich an die neue Position gewöhnen könnnen. (Danach werden Sie die gleichen zwei Blöcke wie mit der vorherigen Handpositionierung wiederholen). <br><br> Versuchen Sie, so genau und schnell wie möglich zu antworten.<br>';
 
     this.block_texts[7] =
       "Gut gemacht. Nun beginnen die nächste zwei Blöcke, getrennt durch eine Pause. Nochmals, im ersten Block wird die Kategorie " +
@@ -831,20 +790,13 @@ export class HomePage {
       this.isi();
     } else {
       this.basic_times.blocks += "\nBlock " + this.blocknum + " end " + Date();
-      if ( (this.blocknum > 3 && this.blocknum != 6) || this.practice_eval()) {
+      if ((this.blocknum > 3 && this.blocknum != 6) || this.practice_eval()) {
         // if (this.blocknum == 4 || this.blocknum == 5) {
         //   this.main_eval();
         // }
         this.blocknum++;
         if (this.blocknum == 3) {
           this.visib.labels = false;
-        }
-        if (this.blocknum == 6) {
-          if (this.crrnt_handpos == "Zeigefinger") {
-            this.crrnt_handpos = "Daumen";
-          } else {
-            this.crrnt_handpos = "Zeigefinger";
-          }
         }
         this.nextblock();
       } else {
@@ -898,9 +850,7 @@ export class HomePage {
     this.cit_data +=
       this.subj_id +
       "\t" +
-      this.pre_cond +
-      "\t" +
-      this.crrnt_handpos +
+      this.cit_type +
       "\t" +
       this.blocknum +
       "\t" +
@@ -1005,179 +955,28 @@ export class HomePage {
 
   // ITEM GENERATION
 
-  prune() {
-    //given the probe (in each of the categories), selects 8 additional items, 5 of which will later be irrelevants. None with same starting letter, and with length closest possible to the probe.
-    if (this.gender == 1) {
-      this.countrs = this.male_forenames;
-    } else {
-      this.countrs = this.fem_forenames;
-    }
-    this.countrs.forEach(function(item, index) {
-      this.countrs[index] = item.toLowerCase();
-    }, this);
-    this.surnms.forEach(function(item, index) {
-      this.surnms[index] = item.toLowerCase();
-    }, this);
-    var true_details_base = [
-      this.true_forename.toLowerCase(),
-      "may",
-      11,
-      this.true_surname.toLowerCase()
-    ];
-    this.true_details = [
-      true_details_base[0],
-      [true_details_base[1], true_details_base[2]].join(" "),
-      true_details_base[3]
-    ];
-    var items_base1 = [
-      this.countrs,
-      ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"],
-      this.nums,
-      this.surnms
-    ];
-    var items_base2_temp = [];
-    true_details_base.forEach(function(probe, index) {
-      var container = items_base1[index],
-        temps;
-      var final8 = [probe];
-      var maxdif = 0;
-      if (probe[0] > -1) {
-        final8.push.apply(final8, [0, 0, 0, 0, 0, 0, 0]);
-      } else {
-        container = container.filter(function(n) {
-          return probe != n;
-        });
-        container = container.filter(function(n) {
-          // filter if same starting character
-          return probe[0] != n[0];
-        });
-        if (index === 0 || index === 3) {
-          if (/\s/.test(probe.toString())) {
-            container = container.filter(function(n) {
-              return /\s/.test(n);
-            });
-          } else {
-            container = container.filter(function(n) {
-              return !/\s/.test(n);
-            });
-          }
-        }
-        while (final8.length < 9 && maxdif < 99) {
-          temps = container.filter(function(n) {
-            return Math.abs(probe.toString().length - n.length) <= maxdif;
-          });
-          if (temps.length > 0) {
-            final8.push(temps[0]); // nonrandom!
-            container = container.filter(function(n) {
-              return final8[final8.length - 1] !== n;
-            });
-            if (index === 0 || index === 3) {
-              container = container.filter(function(n) {
-                return final8[final8.length - 1][0] !== n[0];
-              });
-            }
-          } else {
-            maxdif++;
-          }
-        }
-      }
-      items_base2_temp.push(final8);
-    }, this);
-    var days = this.range(1, 32);
-    var day;
-    var days_to_filt1 = [true_details_base[2]];
-    items_base2_temp[1].forEach(function(month, index) {
-      if (index > 0) {
-        var days_to_filt2 = days_to_filt1;
-        if (month == "february") {
-          days_to_filt2 = days_to_filt1.concat([29, 30, 31]);
-        } else {
-          if (
-            ["april", "june", "september", "november"].indexOf(month) > -1
-          ) {
-            days_to_filt2.push(31);
-          }
-        }
-        var dys_temp = days.filter(function(a) {
-          return days_to_filt2.indexOf(a) == -1;
-        });
-        day = dys_temp[0];
-      } else {
-        day = items_base2_temp[2][0];
-      }
-      items_base2_temp[2][index] = [month, day].join(" ");
-      days_to_filt1.push(day);
-    }, this);
-    items_base2_temp.splice(1, 1);
-    items_base2_temp.splice(1, 1); // skip dates
-    this.items_base2 = items_base2_temp;
-    this.create_stim_base();
-  }
 
   create_stim_base() {
     //creates all stimuli (a 6-item group - 1probe,1target,4irrelevants - for each of 4 different categories) from the given item and probe words
-    var stim_base_temp = [[], []];
-    this.items_base2.forEach(function(categ, index) {
-      var filtered_words = categ.filter(function(a) {
-        return this.words_to_filter[index].indexOf(a) == -1;
-      }, this);
-      var words_array = [];
-      if (this.cit_type < 3) {
-        words_array = [filtered_words[0]].concat(
-          filtered_words.slice(1, 6)
-        ); // for GUILTY
+    var stim_base_temp = [];
+    var words_array = []; // TODO deepcopy
+    words_array.forEach(function(word, num) {
+      stim_base_temp.push({
+        'word': word
+      });
+      if (0 === num) {
+        stim_base_temp[num]["type"] = "probe";
+        this.the_probes.push(stim_base_temp[num].word);
+      } else if (1 == num) {
+        stim_base_temp[num]["type"] = "target";
+        this.the_targets.push(stim_base_temp[num].word);
       } else {
-        words_array = filtered_words.slice(1, 7); // for INNOCENT
+        stim_base_temp[num]["type"] = "irrelevant" + (num - 1);
       }
-      words_array.forEach(function(word, num) {
-        stim_base_temp[index].push({
-          word: word,
-          cat: this.categories[index]
-        });
-        if (0 === num) {
-          stim_base_temp[index][num]["type"] = "probe";
-          this.the_probes.push(stim_base_temp[index][num].word);
-        } else if (1 == num) {
-          stim_base_temp[index][num]["type"] = "target";
-          this.the_targets.push(stim_base_temp[index][num].word);
-        } else {
-          stim_base_temp[index][num]["type"] = "irrelevant" + (num - 1);
-        }
-      }, this);
     }, this);
-    if (this.cat_order == 1) {
-      this.stim_base = [
-        stim_base_temp[0],
-        stim_base_temp[1],
-        "practice_indexholder",
-        stim_base_temp[0],
-        stim_base_temp[1]
-      ];
-    } else {
-      this.stim_base = [
-        stim_base_temp[1],
-        stim_base_temp[0],
-        "practice_indexholder",
-        stim_base_temp[1],
-        stim_base_temp[0]
-      ];
-    }
+    this.stim_base = stim_base_temp;
     this.set_block_texts();
     this.set_cit_types();
-  }
-
-  target_check() {
-    if (
-      this.targ_check_inp[0].toUpperCase() != this.the_targets[0].toUpperCase() ||
-      this.targ_check_inp[1].toUpperCase() != this.the_targets[1].toUpperCase()
-    ) {
-      alert("Falsch! Bitte sehen Sie sich die Details genauer an!");
-      this.switch_divs("div_instructions");
-      this.targ_check_inp = ["", ""];
-    } else {
-      this.div_after_instr = "div_blockstart";
-      this.switch_divs("div_blockstart");
-    }
   }
 
 
@@ -1189,10 +988,6 @@ export class HomePage {
       this.subj_id +
       "_" +
       this.pre_cond +
-      "_" +
-      this.handpos_order +
-      "_" +
-      this.cat_order +
       "_" +
       Date.now() +
       ".txt";
@@ -1207,12 +1002,8 @@ export class HomePage {
       " Finished " +
       this.basic_times.finished +
       this.basic_times.blocks +
-      "\ndems_gender_age_reps" +
+      "\ndems_reps" +
       "\t" +
-      this.gender +
-      "/" +
-      this.s_age +
-      "/" +
       this.practice_repeated.block1 +
       "/" +
       this.practice_repeated.block2 +
@@ -1224,10 +1015,6 @@ export class HomePage {
       dcit +
       "/" +
       this.versionnum +
-      "/" +
-      this.screen_size.longer +
-      "/" +
-      this.screen_size.shorter +
       "\n";
     this.clipboard.copy(this.cit_data);
     this.file.writeFile(this.path, this.f_name, this.cit_data);
@@ -1254,7 +1041,7 @@ export class HomePage {
       let email = {
         to: "lkcsgaspar@gmail.com",
         cc: "melissa-kunzi@web.de",
-        subject: "CITapp data " + this.experiment_title + " " + this.subj_id + " " + this.true_surname,
+        subject: "CITapp data " + this.experiment_title + " " + this.subj_id + " ",
         body: "",
         attachments: [
           this.path + this.f_name

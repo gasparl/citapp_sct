@@ -1,5 +1,5 @@
 import { Component, ViewChild } from "@angular/core";
-import { Content } from 'ionic-angular';
+import { Content, Slides } from 'ionic-angular';
 import { NavController } from "ionic-angular";
 import { Storage } from "@ionic/storage";
 import { File } from '@ionic-native/file';
@@ -10,7 +10,6 @@ import { BackgroundMode } from '@ionic-native/background-mode';
 import { EmailComposer } from "@ionic-native/email-composer";
 import { Platform } from "ionic-angular";
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
-import { AgeValidator } from "./home_validation";
 import { NavigationBar } from '@ionic-native/navigation-bar';
 import { Insomnia } from '@ionic-native/insomnia';
 
@@ -21,6 +20,7 @@ import { Insomnia } from '@ionic-native/insomnia';
 })
 export class HomePage {
   @ViewChild(Content) content: Content;
+  @ViewChild(Slides) slides: Slides;
   // /*
   to_exec: any;
   onChange(ee) {
@@ -68,8 +68,8 @@ export class HomePage {
   }
   //*/
 
-  experiment_title: string = "test"; // TODO as input
-  cit_items: string[];
+  experiment_title: string; // TODO as input
+  cit_items: string[] = [];
   personal_feedback: string = '';
   false_delay: number = 400;
   tooslow_delay: number = 400;
@@ -83,20 +83,13 @@ export class HomePage {
   bg_color: string = "#fff";
   feed_text: string = "";
   task_instruction: string;
-  current_div: string = "div_start"; // ddd default: "div_start", div_items, div_dems, div_cit_main, div_end
+  current_div: string = "div_settings"; // ddd default: "div_start", div_settings, div_dems, div_cit_main, div_end
   visib: any = {};
   block_texts: string[] = [];
   form_items: FormGroup;
-  form_dems: FormGroup;
   submit_failed: boolean = false;
   on_device: boolean;
-  gender: number;
-  lastOf6filler: string = "none";
-  lastOf6word: string = "none";
   teststim: any[];
-  prac_teststim: any[];
-  main_stim: any;
-  practice_stim: any;
   tooslow: number;
   incorrect: number;
   block_trialnum: number;
@@ -105,8 +98,6 @@ export class HomePage {
   trial_stim: any;
   rspns: string;
   first_correct: boolean = true;
-  div_after_instr: string;
-  div_after_item_selection: string;
   text_to_show: string;
   practice_repeated: any = {
     block1: 0,
@@ -114,7 +105,7 @@ export class HomePage {
     block3: 0
   };
   cit_data: string =
-    "subject_id\tcondition\thandposition\tblock_number\ttrial_number\tstimulus_shown\tcategory\tstim_type\tresponse_key\trt_start\trt_end\tincorrect\ttoo_slow\tisi\tdate_in_ms\n";
+    "subject_id\tcit_version\tblock_number\ttrial_number\tstimulus_shown\tcategory\tstim_type\tresponse_key\trt_start\trt_end\tincorrect\ttoo_slow\tisi\tdate_in_ms\n";
   correct_resp: string = "none";
   blocknum: number = 1;
   rt_start: number = 99999;
@@ -123,38 +114,20 @@ export class HomePage {
   listen: boolean = false;
   listn_end: boolean = false;
   it_type_feed_dict: any = {
-    selfrefitem: "familiarity-related items",
-    otherrefitem: "unfamiliarity-related items",
-    main_item: "mit NEIN zu beantwortende Details",
-    target: "mit JA zu beantwortende Details"
+    selfrefitem: "target-side fillers",
+    otherrefitem: "nontarget-side fillers",
+    main_item: "nontarget items",
+    target: "target item"
   };
   practice_num: number = 5;
-  first_blockstart: boolean = true;
   basic_times: any = {};
-
   response_window: any;
   nums: any[];
-
-  stim_base_6: any[];
   stim_base: any[];
-  the_targets: any[] = [];
-  the_probes: any[] = [];
-
-
-  words_to_filter: any[] = [[], []];
-  targ_check_inp: string[] = ["", ""];
-
-  categories_base: string[] = ["Vornamen", "months", "days", "Nachnamen"];
-  categories: string[] = ["Vornamen", "Nachnamen"];
-
-  countrs: any[];
-
-  male_forenames: any[] = ["Nico", "Justin", "Jakob", "Gerald", "Max", "Mario", "Jürgen", "Ferdinand", "Simon", "Harald", "Andre", "Gregor", "Martin", "Julian", "Berat", "Robert", "Leonard", "Theodor", "Arthur", "Emir", "Theo", "Marcel", "Lorenz", "Moritz", "Samuel", "Stefan", "Anton", "Felix", "Herbert", "Clemens", "Gerhard", "Peter", "Sascha", "Richard", "Günther", "Ali", "Johann", "Nicolas", "Leo", "Alexander", "Emanuel", "Manfred", "Klaus", "Roland", "Laurenz", "Valentin", "Dominik", "Marvin", "Helmut", "Hamza", "Viktor", "Jonathan", "Josef", "Christoph", "Markus", "Pascal", "Maximilian", "Finn", "Mathias", "Rafael", "Roman", "Yusuf", "Manuel", "Oliver", "Rene", "Karl", "Adam", "Christopher", "Jan", "Kilian", "Michael", "Jonas", "Werner", "Kevin", "David", "Emil", "Constantin", "Noah", "Bernhard", "Bernd", "Georg", "Marco", "Florian", "Franz", "Fabio", "Wolfgang", "Thomas", "Vincent", "Christian", "Andreas", "Erik", "Johannes", "Tobias", "Benjamin", "Ben", "Sandro", "Armin", "Daniel", "Reinhard", "Benedikt", "Amir", "Gernot", "Elias", "Gabriel", "Patrik", "Andrej", "Konstantin", "Oskar", "Sebastian", "Matthias", "Fabian", "Hannes", "Paul", "Leon", "Tim", "Leopold", "Adrian"];
-
-  fem_forenames: any[] = ["Sandra", "Jacqueline", "Johanna", "Celine", "Silvia", "Ecrin", "Verena", "Sofia", "Sophie", "Hira", "Cornelia", "Valerie", "Angelina", "Lina", "Miriam", "Petra", "Natalie", "Simone", "Isabella", "Hanna", "Emilia", "Melina", "Maja", "Larissa", "Anja", "Angelika", "Patricia", "Claudia", "Mia", "Birgit", "Astrid", "Bettina", "Antonia", "Jessica", "Klara", "Nina", "Elisabeth", "Janine", "Manuela", "Charlotte", "Olivia", "Christina", "Leonie", "Katharina", "Amina", "Anastasia", "Bernadette", "Mila", "Pia", "Magdalena", "Romana", "Paula", "Amelie", "Kerstin", "Ela", "Jana", "Jennifer", "Lea", "Susanne", "Sara", "Nadine", "Lara", "Jasmin", "Mira", "Ella", "Yvonne", "Marie", "Theresa", "Melanie", "Alma", "Tanja", "Alina", "Martina", "Denise", "Rebecca", "Paulina", "Franziska", "Karin", "Lena", "Ines", "Nicole", "Michelle", "Viktoria", "Chiara", "Bianca", "Stefanie", "Carina", "Linda", "Azra", "Stella", "Nora", "Flora", "Vanessa", "Teresa", "Sonja", "Tamara", "Anna", "Ana", "Andrea", "Melissa", "Lilly", "Elif", "Lisa", "Clara", "Teodora", "Kristina", "Anita", "Leonora", "Silke", "Emma", "Esila", "Daniela", "Veronika", "Elena", "Marina", "Helena", "Natascha", "Elina", "Carmen", "Alexandra", "Eva", "Barbara", "Maya", "Tina", "Valentina", "Elisa", "Sabine", "Matilda", "Doris", "Julia", "Rosa", "Laura", "Annika", "Nisa", "Iris", "Zoe", "Monika", "Selina"];
-
-  surnms: any[] = ["Bauer", "Müllner", "Langer", "Petrovic", "Huber", "Mayer", "Lehner", "Brunner", "Gruber", "Pfeiffer", "Nowak", "Steiner", "Tichy", "Weiß", "Swoboda", "Traxler", "Schmid", "Urban", "Holzer", "Kainz", "Stadler", "Auer", "Wieser", "Hahn", "Moser", "Varga", "Schuster", "Leitner", "Eder", "Ziegler", "Wimmer", "Winkler", "Schindler", "Graf", "Nikolic", "Reiter", "Hofer", "Berger", "Koch", "Yilmaz", "Schwarz", "Bayer", "Baumgartner", "Schmidt", "Haider", "Kaufmann", "Horvath", "Djordjevic", "Lechner", "Maier", "Todorovic", "Weiss", "Lang", "Bruckner", "Neumann", "Wolf", "Schober", "Fuchs", "König", "Hofbauer", "Pichler", "Neubauer", "Fischer", "Toth", "Strobl", "Wagner", "Schneider", "Kraus", "Vasic", "Kern", "Winter", "Klein", "Schubert", "Weber", "Frank", "Braun", "Werner", "Kaiser", "Haas", "Zimmermann", "Jovanovic", "Koller", "Novak", "Hofmann", "Richter", "Binder", "Seidl", "Wittmann", "Böhm", "Walter", "Unger", "Aigner", "Markovic", "Wiesinger", "Windisch", "Wallner", "Zach", "Müller", "Hoffmann", "Riedl"];
-
+  the_targets: string[] = [];
+  the_probes: string[] = [];
+  targetrefs: string[] = [];
+  nontargrefs: string[] = [];
   stimulus_text: string = "";
   path: any = "";
   f_name: string;
@@ -176,7 +149,6 @@ export class HomePage {
     private navigationBar: NavigationBar,
     private insomnia: Insomnia
   ) {
-    this.basic_times.loaded = Date();
     this.on_device = this.platform.is("cordova");
     if (this.platform.versions().android) {
       this.versionnum = this.platform.versions().android.num.toString();
@@ -184,7 +156,7 @@ export class HomePage {
     if (this.on_device) {
       if (this.network.type) {
         if (this.network.type != "none") {
-          alert("Achtung: Scheinbar sind Sie mit dem Internet verbunden. Bitte schalten Sie es aus, um Unterbrechungen zu vermeiden.")
+          alert("Warning: it seems you are connected to the internet. It is best to turn it off to avoid interruptions.")
         }
       }
       this.statusBar.hide();
@@ -197,21 +169,64 @@ export class HomePage {
         silent: true
       });
       this.path = this.file.externalDataDirectory;
-      this.insomnia.keepAwake();
     }
-    this.basic_times.blocks = "";
-    this.nums = this.range(1, 32);
     this.visib.start_text = true;
-    this.visib.labels = true;
 
-    this.form_dems = formBuilder.group({
-      age_inp: ["", AgeValidator.isValid],
-      subj_id_inp: [
+    this.form_items = formBuilder.group({
+      exp_title: [
         "",
-        Validators.compose([Validators.maxLength(3), Validators.min(1), Validators.max(200), Validators.required])
+        Validators.compose([Validators.maxLength(30),
+        Validators.pattern("[a-zA-Z0-9_]*"), Validators.required])
       ],
+      sub_id: [
+        "",
+        Validators.compose([Validators.maxLength(30),
+        Validators.pattern("[a-zA-Z0-9_]*"), Validators.required])
+      ],
+
+      target: [
+        "",
+        Validators.compose([
+          Validators.maxLength(30),
+          Validators.required
+        ])
+      ],
+      probe1: [
+        "",
+        Validators.compose([
+          Validators.maxLength(30),
+          Validators.required
+        ])
+      ],
+      probe2: [
+        "",
+        Validators.compose([
+          Validators.maxLength(30),
+          Validators.required
+        ])
+      ],
+      probe3: [
+        "",
+        Validators.compose([
+          Validators.maxLength(30),
+          Validators.required
+        ])
+      ],
+      probe4: [
+        "",
+        Validators.compose([
+          Validators.maxLength(30),
+          Validators.required
+        ])
+      ],
+      probe5: [
+        "",
+        Validators.compose([
+          Validators.maxLength(30),
+          Validators.required
+        ])
+      ]
     });
-    this.cit_items = [];
   }
 
   switch_divs(div_to_show) {
@@ -225,23 +240,20 @@ export class HomePage {
   }
 
   initials() {
-    if (!this.form_dems.valid) {
+    if (!this.form_items.valid) { // TODO validation copy from form_dems in latest citapp_sp
       this.submit_failed = true;
       // for TESTING:
       console.log('testing');
       this.subj_id = "189";
-      this.task_start()
-      this.div_after_instr = 'div_blockstart';
-      this.nextblock();
     } else {
-      this.subj_id = this.form_dems.get("subj_id_inp").value;
-      this.switch_divs('div_confirm');
+      this.subj_id = this.form_items.get("subj_id_inp").value;
+      this.switch_divs('div_instructions');
     }
   }
 
   task_start() {
     this.cit_type = 0;
-    this.basic_times.consented = Date();
+    this.insomnia.keepAwake();
     this.backgroundMode.setDefaults({
       text: "Test in progress!",
       silent: false
@@ -249,62 +261,56 @@ export class HomePage {
     this.switch_divs("div_instructions");
   }
 
+  inducers_instructions: string;
+  the_nontargs: string[];
+  targs_names: string;
+  nontargs_names: string;
+  set_cit_type() {
+    this.inducers_instructions =
+      'You have to categorize each word that appears during the test by pressing the key "E" on the left or the key "I" on the right.</br></br>Press the right ("I") key, when you see a familiar-referring word. These words are: ' + this.targetrefs + '. Press the left ("E") key, when you see an unfamiliar-referring word. These words are: ' + this.nontargrefs + '.';
+    if (this.cit_type == 0) {
+      // standard CIT
+      this.task_instruction = 'You will see country names appearing in the middle of the screen. You have to press the key "I" to the following target country: <b>' +
+        this.the_targets.sort().join("</b>, <b>").toUpperCase() +
+        '</b><br>You have to press the key "E" to all other details.<br><br>';
+    } else if (this.cit_type == 1) {
+      // fillers (no target)
+      this.task_instruction = 'Press the right ("I") key when you see the following target country: <b>' +
+        this.the_targets.sort().join("</b>, <b>").toUpperCase() +
+        '.</b><br>Press the left ("E") key to all other countries (<b>' +
+        this.the_nontargs.sort().join("</b>, <b>").toUpperCase() +
+        '</b>). </br></br>' +
+        this.inducers_instructions;
+    } else if (this.cit_type == 2) {
+      // fillers & target
+      this.task_instruction = 'Press the right ("I") key when you see the following target country: <b>' +
+        this.the_targets.sort().join("</b>, <b>").toUpperCase() +
+        '.</b><br>Press the left ("E") key to all other countries (<b>' +
+        this.the_nontargs.sort().join("</b>, <b>").toUpperCase() +
+        '</b>). </br></br>' +
+        this.inducers_instructions;
+    }
+    this.targs_names = '<b>' + this.the_targets.sort().join("</b>, <b>").toUpperCase() + '</b>';
+    this.nontargs_names = '<b>' + this.the_nontargs.sort().join("</b>, <b>").toUpperCase() + '</b>';
+  }
 
   set_block_texts() {
     var target_reminder;
-    if (this.cit_type == 2 || this.cit_type == 5) {
-      target_reminder = ["", "", "", ""];
+    if (this.cit_type == 1) {
+      target_reminder = "";
     } else {
-      target_reminder = [
-        "Zur Erinnerung: das mit JA zu beantwortende Detail ist <b>" +
-        this.stim_base[0][1].word.toUpperCase() +
-        "</b>. ",
-        "Zur Erinnerung: das mit JA zu beantwortende Detail ist <b>" +
-        this.stim_base[1][1].word.toUpperCase() +
-        "</b>. ",
-        "Zur Erinnerung: das mit JA zu beantwortende Detail ist <b>" +
-        this.stim_base[3][1].word.toUpperCase() +
-        "</b>. ",
-        "Zur Erinnerung: das mit JA zu beantwortende Detail ist <b>" +
-        this.stim_base[4][1].word.toUpperCase() +
-        "</b>. "
-      ];
+      target_reminder = this.stim_base[0][1].word.toUpperCase();
     }
-    var pos_instruction = { 'Zeigefinger': 'benutzen Sie Ihre Zeigefinger zum Antippen der Schaltflächen. Ihr Smartphone sollte dabei auf dem Tisch liegen.', 'Daumen': 'benutzen Sie Ihre Daumen zum Antippen der Schaltflächen. Halten Sie Ihr Smartphone dabei wie üblich in beiden Händen. (Ihre Hände sollten aber bequem auf dem Tisch aufliegen.)' }
     this.block_texts[0] = "";
-    this.block_texts[1] = ' Platzieren Sie ihr Handy in einer für Sie angenehmen Distanz und versuchen Sie, es an dieser Position während des gesamten Versuchs liegen zu lassen.<br><br>Es werden drei kurze Übungsrunden stattfinden. In der ersten Übungsrunde wollen wir nur herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass Sie Ihre jeweiligen Antworten genau auswählen, werden Sie für diese Aufgabe genügend Zeit haben. An dieser Stelle werden alle Items der zwei Kategorien (Vornamen, Nachnamen) zufällig durchmischt. <b>Sie müssen auf jedes Item korrekt antworten.</b> Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden), müssen Sie diese Übungsrunde wiederholen.<br><br>Falls nötig, tippen Sie <b>Anweisungen erneut anzeigen</b> um die Details erneut zu lesen.<br>';
+    this.block_texts[1] =
+      'During the experiment, various words will appear in the middle of the screen. You have to categorize each word by pressing the key "E" on the left or the key "I" on the right.</br></br>There will be three short practice rounds. In this first practice round, you have to categorize expressions that refer to familiarity or unfamiliarity. ' + this.inducers_instructions +
+      '<br><br><span id="feedback_id1">In each category of words, you need to respond to at least 80% correctly and in time (within 1 second).<br><br></span><p id="chances_id"></p>';
     this.block_texts[2] =
-      'Super, Sie haben die erste Übungsrunde geschafft. In dieser zweiten Übungsrunde wird die Antwortzeit verkürzt sein, wobei aber eine bestimmte Anzahl an falschen Antworten erlaubt ist. <br> <br>Versuchen Sie, so genau und schnell wie möglich zu antworten. <br>';
+      'Now, in this second practice round, we just want to see that you clearly understand the task. Therefore, you will have a lot of time to choose each of your responses, just make sure you choose accurately. <b>You must respond to each item correctly.</b> If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice round.<br><br>If needed, click <b>show full instructions again</b> to reread the details.<span id="feedback_id2"></span><p id="chances_id"></p>';
     this.block_texts[3] =
-      'Sie haben die zweite Übungsrunde geschafft. Nun folgt die dritte und letzte Übungsrunde. Die Antwortzeit wird erneut verkürzt. Die Wörter "Erkannt?", "Ja", "Nein" werden nicht mehr angezeigt, die Aufgabe bleibt jedoch dieselbe. <br><br> Versuchen Sie, so genau und schnell wie möglich zu antworten.<br>';
+      "<span id='feedback_id3'>You passed the second practice round. In this third and last practice round, you will again have to respond fast, but a certain rate of error is allowed. (Also, the reminder labels at the bottom will not be displayed anymore. But the task is the same.)<br><br>The task is difficult, so don't be surprised if you make mistakes, but do your best: <b>try to be as accurate and as fast as possible</b>.<br></span><p id='chances_id'></p>";
     this.block_texts[4] =
-      "Gut gemacht. Nun beginnt der eigentliche Test. Die Aufgabe bleibt dieselbe. Es wird zwei Blöcke, getrennt durch eine Pause, geben. Im ersten Block wird die Kategorie " +
-      this.stim_base[0][0].cat +
-      " getestet, also werden Ihnen nur die damit verbundenen Items präsentiert. " +
-      target_reminder[0] +
-      "<br><br>Versuchen Sie, so genau und schnell wie möglich zu antworten.<br>";
-    this.block_texts[5] =
-      "Der erste Block ist nun beendet. Im zweiten Block wird die Kategorie " +
-      this.stim_base[1][0].cat +
-      " getestet. " +
-      target_reminder[1] +
-      " Abgesehen davon bleibt die Aufgabe dieselbe.<br><br>Versuchen Sie, so genau und schnell wie möglich zu antworten.";
-
-    this.block_texts[6] =
-      'Wechseln Sie bitte jetzt die Handposition: lassen Sie das Handy ungefähr in der gleichen Position (Distanz) wie zuvor, aber<br><br> Es folgt nun eine weitere kurze Übungsrunde, damit Sie sich an die neue Position gewöhnen könnnen. (Danach werden Sie die gleichen zwei Blöcke wie mit der vorherigen Handpositionierung wiederholen). <br><br> Versuchen Sie, so genau und schnell wie möglich zu antworten.<br>';
-
-    this.block_texts[7] =
-      "Gut gemacht. Nun beginnen die nächste zwei Blöcke, getrennt durch eine Pause. Nochmals, im ersten Block wird die Kategorie " +
-      this.stim_base[3][0].cat +
-      " getestet, also werden Ihnen nur die damit verbundenen Items präsentiert. " +
-      target_reminder[2] +
-      "<br><br>Versuchen Sie, so genau und schnell wie möglich zu antworten.<br>";
-    this.block_texts[8] =
-      "In diesem letzten Block wird nochmals die Kategorie " +
-      this.stim_base[4][0].cat +
-      " getestet. " +
-      target_reminder[3] +
-      " <br><br>Versuchen Sie, so genau und schnell wie möglich zu antworten.";
+      "Good job. Now begins the actual test. The task is the same.<br><br>There will be %% blocks, with breaks in-between. <b>Again: try to be as accurate and as fast as possible.</b><br><br>When you are ready, click on <b>Start</b> to start the first block of the main test.";
   }
 
   capitalize(str1) {
@@ -367,12 +373,19 @@ export class HomePage {
     return r;
   }
 
+  neat_date() {
+    var m = new Date();
+    return m.getFullYear() + "" +
+      ("0" + (m.getMonth() + 1)).slice(-2) + "" +
+      ("0" + m.getDate()).slice(-2) + "" +
+      ("0" + m.getHours()).slice(-2) + "" +
+      ("0" + m.getMinutes()).slice(-2) + "" +
+      ("0" + m.getSeconds()).slice(-2);
+  }
+
   first_practice_stim() {
-    this.practice_stim();
-    if (this.cit_type != 0 && this.cit_type != 3) {
-      this.prac_teststim = this.prac_teststim.concat(this.inducersGen());
-    }
-    var basestims = this.shuffle(this.prac_teststim);
+
+    var basestims = [];
     this.teststim = [];
     var stim_words = [];
     for (var i = 0; i < 2; i++) {
@@ -391,26 +404,6 @@ export class HomePage {
     }
   }
 
-  getPracticeTestStimuli_simple() {
-    //18 prac_teststim from all 4 categories (6+6+6)
-    this.prac_teststim = [];
-    this.stim_base.slice(0, 2).forEach(function(groupOf6) {
-      var blocksOf108 = this.randomDegradePlus(groupOf6);
-      this.prac_teststim.push.apply(this.prac_teststim, blocksOf108.slice(0, 6));
-    }, this);
-  }
-  getAllTestStimuli_simple() {
-    //same as above, but for the full test: 3x36=108 stimuli from each of the 3 categories
-    this.teststim = this.randomDegradePlus(this.stim_base[this.blocknum - 4]);
-  }
-  getPracticeTestStimuli_induced() {
-    //27 degraded prac_teststim from all 3 categories (9+9+9)
-    this.prac_teststim = [];
-    this.stim_base.slice(0, 2).forEach(function(groupOf6) {
-      var blocksOf162 = this.inducersAdded(groupOf6);
-      this.prac_teststim.push.apply(this.prac_teststim, blocksOf162.slice(0, 9));
-    }, this);
-  }
   getAllTestStimuli_induced() {
     //same as above, but one block of the full test: 162 stimuli from each of the 3 categories
     this.teststim = this.inducersAdded(this.stim_base[this.blocknum - 4]);
@@ -641,33 +634,24 @@ export class HomePage {
       '<br><br>As continual reminders, there will also appear words that belong to one of the two categories (FAMILIAR or UNFAMILIAR). <br><br>Words belonging to the FAMILIAR category need the answer FAMILIAR (<i>right</i> button). These words are:<br> <b>FAMILIAR</b>, <b>RECOGNIZED</b>, <b>MINE</b><br><br>Words belonging to the UNFAMILIAR category need the answer UNFAMILIAR (<i>left</i> button). These words are:<br> <b>UNFAMILIAR</b>, <b>UNKNOWN</b>, <b>OTHER</b>, <b>THEIRS</b>, <b>THEM</b>, <b>FOREIGN</b></br></br>';
     if (this.cit_type == 0 || this.cit_type == 3) {
       // standard CIT
-      this.div_after_instr = "div_target_check";
       this.task_instruction =
         'Antippen der <i>rechten</i> Schaltfläche bedeutet "JA, ich nehme dieses Item als relevant wahr". Antippen der <i>linken</i> Schaltfläche bedeutet "Nein, ich nehme dieses Item nicht als relevant wahr". <br> Sie werden Wörter (Vornamen, Nachnamen) sehen, die in der Mitte des Bildschirms auftauchen. Sie sollten diese wahrnehmen und mit JA auf die folgenden Details antworten: <b>' +
         this.the_targets.join("</b>, <b>").toUpperCase() +
         "</b><br/><br/>Auf alle anderen Details (andere Namen) sollten Sie mit NEIN antworten. Zur Erinnerung: Sie leugnen, irgendwelche der anderen Details als relevant für Sie wahrzunehmen, also sollten Sie auf alle mit NEIN antworten.<br/><br/>"
         ;
-      this.practice_stim = this.getPracticeTestStimuli_simple;
-      this.main_stim = this.getAllTestStimuli_simple;
     } else if (this.cit_type == 1 || this.cit_type == 4) {
       // induced & target
-      this.div_after_instr = "div_target_check";
       this.task_instruction =
         'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (forenames, surnames) appearing in the middle of the screen. You have to say FAMILIAR to the following target details: <b>' +
         this.the_targets.join("</b>, <b>").toUpperCase() +
         "</b><br><br>You have to say UNFAMILIAR to all other actual details (other forenames, surnames). Remember: you are denying that you recognize any of these other details as relevant to you, so you you have to say UNFAMILIAR to all of them. " +
         inducers_instructions
         ;
-      this.practice_stim = this.getPracticeTestStimuli_induced;
-      this.main_stim = this.getAllTestStimuli_induced;
     } else if (this.cit_type == 2 || this.cit_type == 5) {
       // induced - nontarget
-      this.div_after_instr = "div_blockstart";
       this.task_instruction =
         'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (forenames, surnames) appearing in the middle of the screen. You have to say UNFAMILIAR to all these details. Remember: you are denying that you recognize any of these details as relevant to you, so you you have to say UNFAMILIAR to all of them. ' +
         inducers_instructions;
-      this.practice_stim = this.getPracticeTestStimuli_induced;
-      this.main_stim = this.getAllTestStimuli_induced;
     }
   }
 
@@ -774,9 +758,6 @@ export class HomePage {
         //   this.main_eval();
         // }
         this.blocknum++;
-        if (this.blocknum == 3) {
-          this.visib.labels = false;
-        }
         this.nextblock();
       } else {
         if (this.blocknum == 1) {
@@ -859,23 +840,8 @@ export class HomePage {
     this.next_trial();
   }
   call_practice_stim() {
-    this.practice_stim();
-    this.teststim = this.prac_teststim;
-    // do not halve stims in this experiment's practice
+    //this.teststim = this.prac_teststim; TODO
 
-    //takes halves of the practice stims generated
-    /*if (this.practice_num % 2 == 1) {
-      // generate and take first half
-      this.practice_stim();
-      this.teststim = this.prac_teststim.slice(0, Math.floor(this.prac_teststim.length / 2));
-    } else {
-      // just take second half
-      this.teststim = this.prac_teststim.slice(
-        Math.floor(this.prac_teststim.length / 2),
-        this.prac_teststim.length
-      );
-    }
-    */
     this.practice_num++;
   }
   nextblock() {
@@ -893,10 +859,10 @@ export class HomePage {
         this.call_practice_stim();
       } else {
         this.response_deadline = this.response_deadline_main;
-        this.main_stim();
+        // this.main_stim();
       }
       this.rt_data_dict = {};
-      this.switch_divs(this.div_after_instr)
+      // this.switch_divs(this.div_after_instr)
     } else {
       this.basic_times.blocks += "\nBlock " + this.blocknum + " end_last " + Date();
       this.switch_divs("div_end")

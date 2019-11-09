@@ -1,6 +1,9 @@
 <ion-header *ngIf="current_div == 'div_settings'">
   <ion-toolbar>
     <ion-segment>
+      <ion-segment-button icon-only (click)="menu_pop($event)">
+        <ion-icon name="menu"></ion-icon>
+      </ion-segment-button>
       <ion-segment-button value="main">
         Main
       </ion-segment-button>
@@ -28,6 +31,14 @@
     <div>
       <button ion-button type="button" (tap)="switch_divs('div_settings');">Start new test</button></div>
 
+    <br /><br />
+    <div>
+      <button ion-button type="button">Demo (%with redirect to Autofill%)</button>
+    </div>
+    <br /><br />
+    <div>
+      <button ion-button type="button">Information (brief intro with link to full README file)</button>
+    </div>
     <br /><br />
     <div>
       <button ion-button type="button">Previous results</button>
@@ -86,12 +97,12 @@
           <h1>Slide 3</h1>
         </ion-slide>
         <ion-slide>
-        <br />
-        <p *ngIf="!form_items.valid && submit_failed" style="color: red;">Please fill in all necessary details.</p>
-        <button ion-button type="submit" block>OK</button>
+          <br />
+          <p *ngIf="!form_items.valid && submit_failed" style="color: red;">Please fill in all necessary details.</p>
+          <button ion-button type="submit" block>OK</button>
         </ion-slide>
 
-        
+
       </ion-slides>
 
 

@@ -12,7 +12,8 @@ import { Platform } from "ionic-angular";
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 import { NavigationBar } from '@ionic-native/navigation-bar';
 import { Insomnia } from '@ionic-native/insomnia';
-
+import { PopoverController } from 'ionic-angular';
+import { PopoverItems } from './menupopover';
 
 @Component({
   selector: "page-home",
@@ -147,7 +148,8 @@ export class HomePage {
     private clipboard: Clipboard,
     private backgroundMode: BackgroundMode,
     private navigationBar: NavigationBar,
-    private insomnia: Insomnia
+    private insomnia: Insomnia,
+    public popoverCtrl: PopoverController
   ) {
     this.on_device = this.platform.is("cordova");
     if (this.platform.versions().android) {
@@ -228,6 +230,13 @@ export class HomePage {
       ]
     });
   }
+
+  menu_pop(myEvent) {
+      let popover = this.popoverCtrl.create(PopoverItems);
+      popover.present({
+        ev: myEvent
+      });
+    }
 
   switch_divs(div_to_show) {
     this.current_div = div_to_show;

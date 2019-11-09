@@ -13,11 +13,13 @@ import { File } from '@ionic-native/file';
 import { Network } from '@ionic-native/network';
 import { NavigationBar } from '@ionic-native/navigation-bar';
 import { Insomnia } from '@ionic-native/insomnia';
+import { PopoverItems } from '../pages/home/menupopover';
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
+    HomePage,
+    PopoverItems
   ],
   imports: [
     BrowserModule,
@@ -27,7 +29,8 @@ import { Insomnia } from '@ionic-native/insomnia';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    HomePage,
+    PopoverItems
   ],
   providers: [
     StatusBar,

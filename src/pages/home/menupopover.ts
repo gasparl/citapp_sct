@@ -4,18 +4,15 @@ import { ViewController } from 'ionic-angular';
 @Component({
   template: `
       <ion-list>
-        <button ion-item (click)="go_to()">Start new test</button>
-        <button ion-item (click)="go_to()">Demo</button>
-        <button ion-item (click)="go_to()">Information</button>
-        <button ion-item (click)="go_to()">Previous results</button>
+        <button ion-item (tap)="go_to('m_demo')">Demo</button>
+        <button ion-item (tap)="go_to('m_info')">Information</button>
+        <button ion-item (tap)="go_to('m_prevs')">Previous results</button>
       </ion-list>
     `
 })
 export class PopoverItems {
   constructor(public viewCtrl: ViewController) { }
-
-  go_to() {
-    this.viewCtrl.dismiss();
-    // slide to...
+  go_to(m_name) {
+    this.viewCtrl.dismiss(m_name);
   }
 }

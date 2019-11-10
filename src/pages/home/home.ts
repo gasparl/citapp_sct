@@ -69,7 +69,6 @@ export class HomePage {
   }
   //*/
 
-  experiment_title: string; // TODO as input
   cit_items: string[] = [];
   personal_feedback: string = '';
   false_delay: number = 400;
@@ -175,11 +174,6 @@ export class HomePage {
     this.visib.start_text = true;
 
     this.form_items = formBuilder.group({
-      exp_title: [
-        "",
-        Validators.compose([Validators.maxLength(30),
-        Validators.pattern("[a-zA-Z0-9_]*"), Validators.required])
-      ],
       sub_id: [
         "",
         Validators.compose([Validators.maxLength(30),
@@ -231,12 +225,21 @@ export class HomePage {
     });
   }
 
+  seg_values: string[] = ['main', 'fillers', 'settings', 'autofill', 'start'];
+  current_segment: string = '';
+  current_menu: string = '';
   menu_pop(myEvent) {
-      let popover = this.popoverCtrl.create(PopoverItems);
-      popover.present({
-        ev: myEvent
-      });
-    }
+    let popover = this.popoverCtrl.create(PopoverItems);
+    popover.present({
+      ev: myEvent
+    });
+    popover.onDidDismiss(pop_data => {
+      if (pop_data != null) {
+        this.current_menu = pop_data;
+        this.current_segment = 'menus';
+      }
+    })
+  }
 
   switch_divs(div_to_show) {
     this.current_div = div_to_show;
@@ -937,8 +940,6 @@ export class HomePage {
   store_data() {
     var dcit = (this.mean(this.all_main_rts.probs) - this.mean(this.all_main_rts.irrs)) / this.sd(this.all_main_rts.irrs);
     this.f_name =
-      this.experiment_title +
-      "_" +
       this.subj_id +
       "_" +
       this.pre_cond +
@@ -995,7 +996,7 @@ export class HomePage {
       let email = {
         to: "lkcsgaspar@gmail.com",
         cc: "melissa-kunzi@web.de",
-        subject: "CITapp data " + this.experiment_title + " " + this.subj_id + " ",
+        subject: "CITapp data " + this.subj_id + " ",
         body: "",
         attachments: [
           this.path + this.f_name

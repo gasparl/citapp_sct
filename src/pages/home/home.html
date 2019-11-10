@@ -1,22 +1,22 @@
 <ion-header *ngIf="current_div == 'div_settings'">
   <ion-toolbar>
-    <ion-segment>
-      <ion-segment-button icon-only (tap)="menu_pop($event)">
+    <ion-segment [(ngModel)]='current_segment'>
+      <ion-segment-button value="menus" icon-only (tap)="menu_pop($event)">
         <ion-icon name="menu"></ion-icon>
       </ion-segment-button>
-      <ion-segment-button value="main" (tap)="slides.slideTo(1)">
-        Main
+      <ion-segment-button value="main" (tap)="current_menu = '';slides.slideTo(0);content.scrollToTop(0);">
+        Core
       </ion-segment-button>
-      <ion-segment-button value="fillers" (tap)="slides.slideTo(1)">
+      <ion-segment-button value="fillers" (tap)="current_menu = '';slides.slideTo(1);content.scrollToTop(0);">
         Fillers
       </ion-segment-button>
-      <ion-segment-button value="settings">
+      <ion-segment-button value="settings" (tap)="current_menu = '';slides.slideTo(2);content.scrollToTop(0);">
         Settings
       </ion-segment-button>
-      <ion-segment-button value="autofill">
+      <ion-segment-button value="autofill" (tap)="current_menu = '';slides.slideTo(3);content.scrollToTop(0);">
         Autofill
       </ion-segment-button>
-      <ion-segment-button value="start">
+      <ion-segment-button value="start" (tap)="current_menu = '';slides.slideTo(4);content.scrollToTop(0);">
         Start
       </ion-segment-button>
     </ion-segment>
@@ -43,60 +43,79 @@
     <div>
       <button ion-button type="button">Previous results</button>
     </div>
+
   </div>
+
 
   <div *ngSwitchCase="'div_settings'">
 
-    <form (ngSubmit)="initials()" [formGroup]="form_items">
+    <div [hidden]="current_menu == ''">
 
+      <p [hidden]="current_menu != 'm_demo'">
+        Fill in demo items: %Autofill demo% <br /></p>
+      <p [hidden]="current_menu != 'm_info'">this test is blah</p>
+      <p [hidden]="current_menu != 'm_prevs'">here are the previous results</p>
 
+    </div>
 
-      <ion-slides>
+    <form [hidden]="current_menu != ''" (ngSubmit)="initials()" [formGroup]="form_items">
+
+      <ion-slides (ionSlideWillChange)='current_segment = seg_values[slides.getActiveIndex()];'>
         <ion-slide>
 
-
           <ion-item>
-            <ion-label stacked><b>Experiment title</b></ion-label>
-            <ion-input [(ngModel)]="experiment_title" formControlName="exp_title" type="text" [class.invalid]="!form_items.controls.exp_title.valid && submit_failed"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label stacked><b>Subject ID</b></ion-label>
+            <ion-label style="min-width:21vw;" fixed><b>Subject ID:</b></ion-label>
             <ion-input [(ngModel)]="subj_id" formControlName="sub_id" type="text" [class.invalid]="!form_items.controls.sub_id.valid && submit_failed"></ion-input>
           </ion-item>
+          <br /><br /><div style="font-weight:bold;font-size:120%;text-align:left;padding-left: 16px;">
+            Main items in the test</div>
           <ion-item>
-            <ion-label stacked>Test item: <i>target</i></ion-label>
+            <ion-label fixed>Target:</ion-label>
             <ion-input [(ngModel)]="cit_items[0]" formControlName="target" type="text" [class.invalid]="!form_items.controls.target.valid && submit_failed"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label stacked>Test item: <i>probe 1</i></ion-label>
+            <ion-label fixed>Probe 1:</ion-label>
             <ion-input [(ngModel)]="cit_items[1]" formControlName="probe1" type="text" [class.invalid]="!form_items.controls.probe1.valid && submit_failed"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label stacked>Test item: <i>probe 2</i></ion-label>
+            <ion-label fixed>Probe 2:</ion-label>
             <ion-input [(ngModel)]="cit_items[2]" formControlName="probe2" type="text" [class.invalid]="!form_items.controls.probe2.valid && submit_failed"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label stacked>Test item: <i>probe 3</i></ion-label>
+            <ion-label fixed>Probe 3:</ion-label>
             <ion-input [(ngModel)]="cit_items[3]" formControlName="probe3" type="text" [class.invalid]="!form_items.controls.probe3.valid && submit_failed"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label stacked>Test item: <i>probe 4</i></ion-label>
+            <ion-label fixed>Probe 4:</ion-label>
             <ion-input [(ngModel)]="cit_items[4]" formControlName="probe4" type="text" [class.invalid]="!form_items.controls.probe4.valid && submit_failed"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label stacked>Test item: <i>probe 5</i></ion-label>
+            <ion-label fixed>Probe 5:</ion-label>
             <ion-input [(ngModel)]="cit_items[5]" formControlName="probe5" type="text" [class.invalid]="!form_items.controls.probe5.valid && submit_failed"></ion-input>
           </ion-item>
 
 
         </ion-slide>
         <ion-slide>
-          <h1>Slide 2</h1>
+          <h1>Fillers</h1>
+          here are some <br />
+          more <br />
+          stuff <br />
         </ion-slide>
         <ion-slide>
-          <h1>Slide 3</h1>
+          <h1>Setttings</h1>
+          CIT version (1, 2, 3) %% <br />
+          Number of blocks (1, 2, 3, 4) %% <br />
+
         </ion-slide>
         <ion-slide>
+          <h1>Autofill</h1>
+
+          Email: %% <br />
+          Password: %% <br />
+        </ion-slide>
+        <ion-slide>
+          <h1>Start</h1>
           <br />
           <p *ngIf="!form_items.valid && submit_failed" style="color: red;">Please fill in all necessary details.</p>
           <button ion-button type="submit" block>OK</button>

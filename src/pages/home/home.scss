@@ -4,11 +4,20 @@ html {
 }
 
 input {
-  font-size: 3.8vw;
+  font-size: 3.4vw;
 }
+
 .item-input input {
-   margin-bottom: 0vw;
+  margin-bottom: 0;
+  margin-left: 0;
+  font-style: italic;
 }
+
+ion-label[fixed] {
+  font-size: 3.3vw !important;
+  margin-bottom: 0;
+}
+
 hr {
   display: block;
   height: 1px;
@@ -22,10 +31,11 @@ page-home {
   ion-input.invalid {
     border: 2px solid #ea6153 !important;
   }
-  .ionslabel {
-    font-size: 3.6vw !important;
-    color: black !important;
+
+  .swiper-slide:not(.swiper-slide-active) > div {
+    display: none;
   }
+
   .item-inner {
     border-bottom-color: grey !important;
     box-shadow: none !important;
@@ -81,7 +91,7 @@ page-home {
   }
 
   #label_top {
-  font-size: 5.5vw;
+    font-size: 5.5vw;
     height: 15%;
     width: 40%;
     text-align: center;
@@ -103,7 +113,7 @@ page-home {
   }
 
   .labels {
-  font-size: 5.5vw;
+    font-size: 5.5vw;
     top: 50%;
     color: #fff;
     position: fixed;
@@ -130,6 +140,7 @@ page-home {
     transform: translate(-50%, -50%);
     background-color: #888888;
   }
+
   #feed_id {
     color: #ff080a;
     text-align: center;

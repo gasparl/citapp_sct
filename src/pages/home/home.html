@@ -1,13 +1,13 @@
 <ion-header *ngIf="current_div == 'div_settings'">
   <ion-toolbar>
     <ion-segment>
-      <ion-segment-button icon-only (click)="menu_pop($event)">
+      <ion-segment-button icon-only (tap)="menu_pop($event)">
         <ion-icon name="menu"></ion-icon>
       </ion-segment-button>
-      <ion-segment-button value="main">
+      <ion-segment-button value="main" (tap)="slides.slideTo(1)">
         Main
       </ion-segment-button>
-      <ion-segment-button value="fillers">
+      <ion-segment-button value="fillers" (tap)="slides.slideTo(1)">
         Fillers
       </ion-segment-button>
       <ion-segment-button value="settings">
@@ -51,7 +51,7 @@
 
 
 
-      <ion-slides scroll="false">
+      <ion-slides>
         <ion-slide>
 
 

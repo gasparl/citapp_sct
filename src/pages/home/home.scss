@@ -1,16 +1,10 @@
+:root {
+  --inputcase: uppercase;
+}
+
 html {
   font-size: 2.4vw;
   text-align: justify;
-}
-
-input {
-  font-size: 3.4vw;
-}
-
-.item-input input {
-  margin-bottom: 0;
-  margin-left: 0;
-  font-style: italic;
 }
 
 ion-label[fixed] {
@@ -28,8 +22,25 @@ hr {
 }
 
 page-home {
+  ion-input {
+    font-size: 3.4vw;
+    text-transform: var(--inputcase);
+    font-style: italic;
+  }
+
+  input {
+    font-size: inherit;
+    text-transform: inherit;
+    font-style: inherit;
+  }
+
   ion-input.invalid {
     border: 2px solid #ea6153 !important;
+  }
+
+  .item-input input {
+    margin-bottom: 0;
+    margin-left: 0;
   }
 
   .swiper-slide:not(.swiper-slide-active) > div {
@@ -87,36 +98,6 @@ page-home {
     top: 30%;
     left: 50%;
     margin: 0 -50% 0 0;
-    transform: translate(-50%, -50%);
-  }
-
-  #label_top {
-    font-size: 5.5vw;
-    height: 15%;
-    width: 40%;
-    text-align: center;
-    position: fixed;
-    margin: 0;
-    top: 10%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
-    color: #ffffff;
-  }
-
-  #label_left {
-    left: 15%;
-  }
-
-  #label_right {
-    left: 85%;
-  }
-
-  .labels {
-    font-size: 5.5vw;
-    top: 50%;
-    color: #fff;
-    position: fixed;
     transform: translate(-50%, -50%);
   }
 

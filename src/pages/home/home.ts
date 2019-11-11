@@ -73,13 +73,13 @@ export class HomePage {
   personal_feedback: string = '';
   false_delay: number = 400;
   tooslow_delay: number = 400;
-  isi_delay_minmax: number[] = [300, 800];
+  isi_delay_minmax: number[] = [300, 700];
   isi_delay: number = 99999;
-  cit_type: number = 0;
+  cit_type: number = 2;
   pre_cond: number = 9999;
   subj_id: string;
   response_deadline: number;
-  response_deadline_main: number = 800;
+  response_deadline_main: number = 900;
   bg_color: string = "#fff";
   feed_text: string = "";
   task_instruction: string;
@@ -108,6 +108,7 @@ export class HomePage {
     "subject_id\tcit_version\tblock_number\ttrial_number\tstimulus_shown\tcategory\tstim_type\tresponse_key\trt_start\trt_end\tincorrect\ttoo_slow\tisi\tdate_in_ms\n";
   correct_resp: string = "none";
   blocknum: number = 1;
+  num_of_blocks: number = 1;
   rt_start: number = 99999;
   rt_end: number = 99999;
   start: any = 0;
@@ -126,14 +127,18 @@ export class HomePage {
   stim_base: any[];
   the_targets: string[] = [];
   the_probes: string[] = [];
-  targetrefs: string[] = [];
-  nontargrefs: string[] = [];
   stimulus_text: string = "";
   path: any = "";
   f_name: string;
   to_display: string = "";
   pointev: any = {};
   versionnum: string = 'notandroid';
+  targetrefs: string[] = [];
+  nontargrefs: string[] = [];
+  targetref_words_orig: string[] = ["FAMILIAR", "MINE", "RECOGNIZED"];
+  nontargref_words_orig: string[] = ["FOREIGN", "IRRELEVANT", "OTHER", "RANDOM", "THEIRS", "UNFAMILIAR"];
+  targetref_words: string[] = JSON.parse(JSON.stringify(this.targetref_words_orig));
+  nontargref_words: string[] = JSON.parse(JSON.stringify(this.nontargref_words_orig));
 
   constructor(
     public navCtrl: NavController,
@@ -154,12 +159,54 @@ export class HomePage {
     if (this.platform.versions().android) {
       this.versionnum = this.platform.versions().android.num.toString();
     }
+
+    this.visib.start_text = true;
+
+    let validator_dict = {
+      sub_id: [
+        "",
+        Validators.compose([Validators.maxLength(30),
+        Validators.pattern("[a-zA-Z0-9_]*"), Validators.required])
+      ]
+    }
+
+    let input_names = ['target', 'probe1', 'probe2', 'probe3', 'probe4', 'probe5', 'filler1', 'filler2', 'filler3', 'filler4', 'filler5', 'filler6', 'filler7', 'filler8', 'filler9'];
+    input_names.forEach(ky => validator_dict[ky] = [
+      "",
+      Validators.compose([
+        Validators.maxLength(30),
+        Validators.required
+      ])
+    ]);
+    this.form_items = formBuilder.group(validator_dict);
+
+  }
+
+  texttrans: boolean = true;
+  change_texttrans() {
+    if (this.texttrans === true) {
+      document.documentElement.style.setProperty('--inputcase', 'uppercase');
+    } else {
+      document.documentElement.style.setProperty('--inputcase', 'none');
+    }
+    console.log(this.cit_items);
+  };
+
+  internet_on: boolean = true;
+  ionViewDidLoad() {
+
     if (this.on_device) {
-      if (this.network.type) {
-        if (this.network.type != "none") {
-          alert("Warning: it seems you are connected to the internet. It is best to turn it off to avoid interruptions.")
+
+      setInterval(() => {
+        if (this.network.type) {
+          if (this.network.type != "none") {
+            this.internet_on = true;
+          } else {
+            this.internet_on = false;
+          }
         }
-      }
+      }, 500);
+
       this.statusBar.hide();
       this.navigationBar.hideNavigationBar();
       this.navigationBar.setUp(true);
@@ -171,60 +218,7 @@ export class HomePage {
       });
       this.path = this.file.externalDataDirectory;
     }
-    this.visib.start_text = true;
-
-    this.form_items = formBuilder.group({
-      sub_id: [
-        "",
-        Validators.compose([Validators.maxLength(30),
-        Validators.pattern("[a-zA-Z0-9_]*"), Validators.required])
-      ],
-
-      target: [
-        "",
-        Validators.compose([
-          Validators.maxLength(30),
-          Validators.required
-        ])
-      ],
-      probe1: [
-        "",
-        Validators.compose([
-          Validators.maxLength(30),
-          Validators.required
-        ])
-      ],
-      probe2: [
-        "",
-        Validators.compose([
-          Validators.maxLength(30),
-          Validators.required
-        ])
-      ],
-      probe3: [
-        "",
-        Validators.compose([
-          Validators.maxLength(30),
-          Validators.required
-        ])
-      ],
-      probe4: [
-        "",
-        Validators.compose([
-          Validators.maxLength(30),
-          Validators.required
-        ])
-      ],
-      probe5: [
-        "",
-        Validators.compose([
-          Validators.maxLength(30),
-          Validators.required
-        ])
-      ]
-    });
   }
-
   seg_values: string[] = ['main', 'fillers', 'settings', 'autofill', 'start'];
   current_segment: string = '';
   current_menu: string = '';
@@ -258,13 +252,32 @@ export class HomePage {
       console.log('testing');
       this.subj_id = "189";
     } else {
-      this.subj_id = this.form_items.get("subj_id_inp").value;
+      if (this.texttrans === true) {
+        this.cit_items = this.cit_items.map(w => w.toUpperCase())
+        this.targetref_words = this.targetref_words.map(w => w.toUpperCase())
+        this.nontargref_words = this.nontargref_words.map(w => w.toUpperCase())
+      }
       this.switch_divs('div_instructions');
     }
   }
 
+  default_fillers() {
+    this.targetref_words = JSON.parse(JSON.stringify(this.targetref_words_orig));
+    this.nontargref_words = JSON.parse(JSON.stringify(this.nontargref_words_orig));
+  }
+  default_core() {
+    this.cit_items.map((x, i) => this.cit_items[i] = '');
+    this.subj_id = '';
+  }
+  default_settings() {
+    this.texttrans = true;
+    this.cit_type = 2;
+    this.num_of_blocks = 1;
+    this.isi_delay_minmax = [300, 700];
+    this.response_deadline_main = 900;
+  }
+
   task_start() {
-    this.cit_type = 0;
     this.insomnia.keepAwake();
     this.backgroundMode.setDefaults({
       text: "Test in progress!",

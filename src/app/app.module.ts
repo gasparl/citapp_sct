@@ -14,6 +14,7 @@ import { Network } from '@ionic-native/network';
 import { NavigationBar } from '@ionic-native/navigation-bar';
 import { Insomnia } from '@ionic-native/insomnia';
 import { PopoverItems } from '../pages/home/menupopover';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { PopoverItems } from '../pages/home/menupopover';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     IonicModule.forRoot(MyApp, { scrollPadding: false }),
     IonicStorageModule.forRoot()
   ],

@@ -14,6 +14,7 @@ import { NavigationBar } from '@ionic-native/navigation-bar';
 import { Insomnia } from '@ionic-native/insomnia';
 import { PopoverController } from 'ionic-angular';
 import { PopoverItems } from './menupopover';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: "page-home",
@@ -153,8 +154,24 @@ export class HomePage {
     private backgroundMode: BackgroundMode,
     private navigationBar: NavigationBar,
     private insomnia: Insomnia,
-    public popoverCtrl: PopoverController
+    public popoverCtrl: PopoverController,
+    private http: HttpClient
   ) {
+
+    this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_pass.php', JSON.stringify({
+      email_post: 'NEWfromCITAPP@xxxxx.ac.at',
+      pw_post: 'asdfsaEXELKMZZZ23113',
+      data_post: 'DATA XXXXXXXXXXX'
+    }), { responseType: "text" }).subscribe((response) => {
+      console.log("response received!!");
+      console.log(response);
+    },
+      err => {
+        console.log("Some ERROR?!: ", err);
+      });
+
+    console.log('tried posting');
+
     this.on_device = this.platform.is("cordova");
     if (this.platform.versions().android) {
       this.versionnum = this.platform.versions().android.num.toString();
@@ -191,6 +208,7 @@ export class HomePage {
     }
     console.log(this.cit_items);
   };
+
 
   internet_on: boolean = true;
   ionViewDidLoad() {
@@ -260,6 +278,8 @@ export class HomePage {
       this.switch_divs('div_instructions');
     }
   }
+
+
 
   default_fillers() {
     this.targetref_words = JSON.parse(JSON.stringify(this.targetref_words_orig));

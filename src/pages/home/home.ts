@@ -140,6 +140,7 @@ export class HomePage {
   nontargref_words_orig: string[] = ["FOREIGN", "IRRELEVANT", "OTHER", "RANDOM", "THEIRS", "UNFAMILIAR"];
   targetref_words: string[] = JSON.parse(JSON.stringify(this.targetref_words_orig));
   nontargref_words: string[] = JSON.parse(JSON.stringify(this.nontargref_words_orig));
+  settings_storage: Function;
 
   constructor(
     public navCtrl: NavController,
@@ -158,18 +159,25 @@ export class HomePage {
     private http: HttpClient
   ) {
 
-    this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_pass.php', JSON.stringify({
-      email_post: 'NEWfromCITAPP@xxxxx.ac.at',
-      pw_post: 'asdfsaEXELKMZZZ23113',
-      data_post: 'DATA XXXXXXXXXXX'
-    }), { responseType: "text" }).subscribe((response) => {
-      console.log("response received!!");
-      console.log(response);
-    },
-      err => {
-        console.log("Some ERROR?!: ", err);
-      });
-
+    this.settings_storage = (mailpost, pwpost = '', datapost = 'sendpass') => {
+      this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_storage.php', JSON.stringify({
+        email_post: mailpost,
+        pw_post: pwpost,
+        data_post: datapost
+      }), { responseType: "text" }).subscribe((response) => {
+        console.log(response);
+        if (response == 'victory') {
+            return('Data was saved.');
+        } else {
+            return('Error. ' + response);
+        }
+      },
+        err => {
+          return("Could not connect to server.");
+        });
+    }
+    this.settings_storage('a@b.ac.at', 'cxxx', 'yyy')
+    //this.settings_storage('hi', 'passw', 'mylovelydata')
     console.log('tried posting');
 
     this.on_device = this.platform.is("cordova");
@@ -264,6 +272,7 @@ export class HomePage {
   }
 
   initials() {
+    this.settings_storage('test@email.com', 'mypass', 'somedata');
     if (!this.form_items.valid) { // TODO validation copy from form_dems in latest citapp_sp
       this.submit_failed = true;
       // for TESTING:

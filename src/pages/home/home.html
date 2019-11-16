@@ -96,7 +96,7 @@
           </ion-item>
           <br />
           <br />
-          <button ion-button type='button' (tap)="default_fillers()" color="light" block>Restore default (empty)</button>
+          <button ion-button type='button' (tap)="default_core()" color="light" block>Restore default (empty)</button>
 
         </ion-slide>
         <ion-slide>
@@ -141,7 +141,7 @@
 
           <br />
           <br />
-          <button ion-button type='button' (tap)="default_refs()" color="light" block>Restore default</button>
+          <button ion-button type='button' (tap)="default_fillers()" color="light" block>Restore default</button>
 
         </ion-slide>
 
@@ -150,9 +150,9 @@
           <ion-item>
             <ion-label style="margin-bottom:0;color:black">Version</ion-label>
             <ion-select [(ngModel)]="cit_type" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;">
-              <ion-option value="2">Enhanced</ion-option>
+              <ion-option value="0">Enhanced</ion-option>
               <ion-option value="1">Standard</ion-option>
-              <ion-option value="0">No-target</ion-option>
+              <ion-option value="2">No-target</ion-option>
             </ion-select>
           </ion-item>
 
@@ -167,12 +167,12 @@
           </ion-item>
 
           <ion-item>
-            <ion-label style="min-width:40vw;color:black;" fixed>Response deadline (ms)</ion-label>
+            <ion-label style="min-width:40vw;color:black;" fixed>Response time limit (ms)</ion-label>
             <ion-input [(ngModel)]="response_deadline_main" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
           </ion-item>
 
           <ion-item>
-            <ion-label style="min-width:65vw;color:black;" fixed>Intertrial interval mininum-maximum (ms)</ion-label>
+            <ion-label style="min-width:65vw;color:black;" fixed>Interstimulus interval min.-max. (ms)</ion-label>
             <ion-input [(ngModel)]="isi_delay_minmax[0]" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
             <ion-input [(ngModel)]="isi_delay_minmax[1]" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
           </ion-item>
@@ -186,12 +186,25 @@
           <button ion-button type='button' (tap)="default_settings()" color="light" block>Restore default</button>
 
         </ion-slide>
-        <ion-slide>
-          <h1>Autofill</h1>
 
-          Email: %% <br />
-          Password: %% <br />
+        <ion-slide>
+          <ion-item>
+            <ion-label style="color:black;" fixed>Identifier</ion-label>
+            <ion-input [(ngModel)]="mailpost" type="text" [ngModelOptions]="{standalone: true}" style="font-style:normal;"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label style="color:black;" fixed>Password</ion-label>
+            <ion-input [(ngModel)]="pwpost" type="text" [ngModelOptions]="{standalone: true}" style="font-style:normal;"></ion-input>
+          </ion-item>
+
+          <br />
+          <span id="feedback_id"></span>
+          <button ion-button type='button' (tap)="settings_storage('loadit')" color="light" block>Load settings</button>
+          <br />
+          <button ion-button type='button' (tap)="settings_storage('yes')" color="light" block>Save current settings</button>
         </ion-slide>
+
         <ion-slide>
           <br />
           <i>

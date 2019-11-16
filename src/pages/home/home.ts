@@ -141,6 +141,9 @@ export class HomePage {
   targetref_words: string[] = JSON.parse(JSON.stringify(this.targetref_words_orig));
   nontargref_words: string[] = JSON.parse(JSON.stringify(this.nontargref_words_orig));
   settings_storage: Function;
+  send_stat: Function;
+  mailpost: string = "";
+  pwpost: string = "";
 
   constructor(
     public navCtrl: NavController,
@@ -159,26 +162,85 @@ export class HomePage {
     private http: HttpClient
   ) {
 
-    this.settings_storage = (mailpost, pwpost = '', datapost = 'sendpass') => {
+    this.settings_storage = function(datapost = 'sendpass') {
+      console.log('settings_storage starts...');
+      if (datapost == 'yes') {
+        datapost = JSON.stringify({
+          'subject_id': this.subj_id,
+          'cit_version': this.cit_type,
+          'num_of_blocks': this.num_of_blocks,
+          'deadline': this.response_deadline_main,
+          'isi_min': this.isi_delay_minmax[0],
+          'isi_max': this.isi_delay_minmax[1],
+          'target': this.cit_items[0],
+          'probe1': this.cit_items[1],
+          'probe2': this.cit_items[2],
+          'probe3': this.cit_items[3],
+          'probe4': this.cit_items[4],
+          'probe5': this.cit_items[5],
+          'filler1': this.targetref_words[0],
+          'filler2': this.targetref_words[1],
+          'filler3': this.targetref_words[2],
+          'filler4': this.nontargref_words[0],
+          'filler5': this.nontargref_words[1],
+          'filler6': this.nontargref_words[2],
+          'filler7': this.nontargref_words[3],
+          'filler8': this.nontargref_words[4],
+          'filler9': this.nontargref_words[5]
+        });
+      }
       this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_storage.php', JSON.stringify({
-        email_post: mailpost,
-        pw_post: pwpost,
+        email_post: this.mailpost,
+        pw_post: this.pwpost,
         data_post: datapost
       }), { responseType: "text" }).subscribe((response) => {
         console.log(response);
-        if (response == 'victory') {
-            return('Data was saved.');
+        let feed;
+        if (response.slice(0, 7) == 'victory') {
+          document.getElementById("feedback_id").style.color = 'green';
+          response = response.slice(7)
+          if (response.slice(0, 6) == 'insert') {
+            response = response.slice(6)
+            feed = "Data saved in database.";
+          } else if (response.slice(0, 6) == 'update') {
+            response = response.slice(6)
+            feed = "Data updated in database.";
+          } else if (response.slice(0, 6) == 'loaded') {
+            response = response.slice(6)
+            feed = "Data loaded from database.";
+            this.load_settings(response);
+          }
         } else {
-            return('Error. ' + response);
+          document.getElementById("feedback_id").style.color = 'red';
+          feed = 'Error. ' + response;
+        }
+        document.getElementById("feedback_id").innerHTML = feed + "<br><br>";
+      },
+        err => {
+          console.log('Request failed: ', err);
+          document.getElementById("feedback_id").style.color = 'red';
+          let feed = 'Could not connect to server. ' + err.message;
+          document.getElementById("feedback_id").innerHTML = feed + "<br><br>";
+        });
+    }
+    let test_date = "datehere";
+    this.send_stat = function(datapost = 'sendpass') {
+      console.log('send_stat starts...');
+      this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_stat.php', JSON.stringify({ "testdate": test_date }), { responseType: "text" }).subscribe((response) => {
+        console.log(response);
+        let feed;
+        if (response == 'victory') {
+          // TODO erase from storage
+          console.log('Victory!!');
+        } else {
+          console.log('Failed SQL:' + response);
         }
       },
         err => {
-          return("Could not connect to server.");
+          console.log('Request failed: ', err);
         });
     }
-    this.settings_storage('a@b.ac.at', 'cxxx', 'yyy')
-    //this.settings_storage('hi', 'passw', 'mylovelydata')
-    console.log('tried posting');
+    this.send_stat();
 
     this.on_device = this.platform.is("cordova");
     if (this.platform.versions().android) {
@@ -270,6 +332,31 @@ export class HomePage {
     this.content.scrollToTop(0);
     this.navigationBar.hideNavigationBar();
   }
+
+  load_settings(loaded_data) {
+    let data_dict = JSON.parse(loaded_data);
+    this.subj_id = data_dict.subject_id || this.subj_id;
+    this.cit_type = data_dict.cit_version || this.cit_type;
+    this.num_of_blocks = data_dict.num_of_blocks || this.num_of_blocks;
+    this.response_deadline_main = data_dict.timelimit || this.response_deadline_main;
+    this.isi_delay_minmax[0] = data_dict.isi_min || this.isi_delay_minmax[0];
+    this.isi_delay_minmax[1] = data_dict.isi_max || this.isi_delay_minmax[1];
+    this.cit_items[0] = data_dict.target || this.cit_items[0];
+    this.cit_items[1] = data_dict.probe1 || this.cit_items[1];
+    this.cit_items[2] = data_dict.probe2 || this.cit_items[2];
+    this.cit_items[3] = data_dict.probe3 || this.cit_items[3];
+    this.cit_items[4] = data_dict.probe4 || this.cit_items[4];
+    this.cit_items[5] = data_dict.probe5 || this.cit_items[5];
+    this.targetref_words[0] = data_dict.filler1 || this.targetref_words[0];
+    this.targetref_words[1] = data_dict.filler2 || this.targetref_words[1];
+    this.targetref_words[2] = data_dict.filler3 || this.targetref_words[2];
+    this.nontargref_words[0] = data_dict.filler4 || this.nontargref_words[0];
+    this.nontargref_words[1] = data_dict.filler5 || this.nontargref_words[1];
+    this.nontargref_words[2] = data_dict.filler6 || this.nontargref_words[2];
+    this.nontargref_words[3] = data_dict.filler7 || this.nontargref_words[3];
+    this.nontargref_words[4] = data_dict.filler8 || this.nontargref_words[4];
+    this.nontargref_words[5] = data_dict.filler9 || this.nontargref_words[5];
+  };
 
   initials() {
     this.settings_storage('test@email.com', 'mypass', 'somedata');

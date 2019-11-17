@@ -190,17 +190,21 @@
         <ion-slide>
           <ion-item>
             <ion-label style="color:black;" fixed>Identifier</ion-label>
-            <ion-input [(ngModel)]="mailpost" type="text" [ngModelOptions]="{standalone: true}" style="font-style:normal;"></ion-input>
+            <ion-input (keypress)="valid_chars2($event)" [(ngModel)]="mailpost" type="text" [ngModelOptions]="{standalone: true}" style="font-style:normal;text-transform:none;"></ion-input>
           </ion-item>
 
           <ion-item>
             <ion-label style="color:black;" fixed>Password</ion-label>
-            <ion-input [(ngModel)]="pwpost" type="text" [ngModelOptions]="{standalone: true}" style="font-style:normal;"></ion-input>
+            <ion-input (keypress)="valid_chars($event)" [(ngModel)]="pwpost" type="text" [ngModelOptions]="{standalone: true}" style="font-style:normal;text-transform:none;"></ion-input>
           </ion-item>
 
           <br />
           <span id="feedback_id"></span>
           <button ion-button type='button' (tap)="settings_storage('loadit')" color="light" block>Load settings</button>
+          <div *ngIf="email_valid==true">
+            <br />
+            <i><button style="flex-flow: column;text-transform:none;" ion-button type='button' (tap)="settings_storage('sendpass')" color="light">SEND PASSWORD TO:<br>{{email_for_pw}}</button></i>
+          </div>
           <br />
           <button ion-button type='button' (tap)="settings_storage('yes')" color="light" block>Save current settings</button>
         </ion-slide>

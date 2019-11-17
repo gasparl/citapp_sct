@@ -144,10 +144,13 @@ export class HomePage {
   send_stat: Function;
   mailpost: string = "";
   pwpost: string = "";
+  email_valid: boolean = false;
+  email_for_pw: string = "";
+
 
   constructor(
     public navCtrl: NavController,
-    private storage: Storage,
+    public storage: Storage,
     private emailComposer: EmailComposer,
     public platform: Platform,
     public formBuilder: FormBuilder,
@@ -161,8 +164,16 @@ export class HomePage {
     public popoverCtrl: PopoverController,
     private http: HttpClient
   ) {
+    // set a key/value
+    storage.set('name', 'Max');
+    storage.set('age', '12399');
 
-    this.settings_storage = function(datapost = 'sendpass') {
+    // Or to get a key/value pair
+    storage.get('age').then((val) => {
+      console.log('Your age is', val);
+    });
+
+    this.settings_storage = function(datapost) {
       console.log('settings_storage starts...');
       if (datapost == 'yes') {
         datapost = JSON.stringify({
@@ -189,8 +200,15 @@ export class HomePage {
           'filler9': this.nontargref_words[5]
         });
       }
+      let themail;
+      if (datapost == "sendpass") {
+        themail = this.email_for_pw;
+      } else {
+        themail = this.mailpost;
+        this.email_valid = false;
+      }
       this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_storage.php', JSON.stringify({
-        email_post: this.mailpost,
+        email_post: themail,
         pw_post: this.pwpost,
         data_post: datapost
       }), { responseType: "text" }).subscribe((response) => {
@@ -207,10 +225,19 @@ export class HomePage {
             feed = "Data updated in database.";
           } else if (response.slice(0, 6) == 'loaded') {
             response = response.slice(6)
-            feed = "Data loaded from database.";
-            this.load_settings(response);
+            feed = this.load_settings(response);
+          } else if (response.slice(0, 5) == 'Email') {
+            feed = response;
+            this.email_valid = false;
           }
         } else {
+          if (response.slice(0, 6) == 'pwfail') {
+            response = response.slice(6);
+            if (/\S+@\S+\.\S+/.test(this.mailpost)) {
+              this.email_valid = true;
+              this.email_for_pw = themail;
+            }
+          }
           document.getElementById("feedback_id").style.color = 'red';
           feed = 'Error. ' + response;
         }
@@ -223,12 +250,10 @@ export class HomePage {
           document.getElementById("feedback_id").innerHTML = feed + "<br><br>";
         });
     }
-    let test_date = "datehere";
+    let test_date = "datehere"; // TODO call this from storage
     this.send_stat = function(datapost = 'sendpass') {
       console.log('send_stat starts...');
       this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_stat.php', JSON.stringify({ "testdate": test_date }), { responseType: "text" }).subscribe((response) => {
-        console.log(response);
-        let feed;
         if (response == 'victory') {
           // TODO erase from storage
           console.log('Victory!!');
@@ -237,10 +262,10 @@ export class HomePage {
         }
       },
         err => {
-          console.log('Request failed: ', err);
+          console.log('Request failed: ' + err);
         });
     }
-    this.send_stat();
+    //this.send_stat();
 
     this.on_device = this.platform.is("cordova");
     if (this.platform.versions().android) {
@@ -267,6 +292,23 @@ export class HomePage {
     ]);
     this.form_items = formBuilder.group(validator_dict);
 
+  }
+
+  valid_chars(event: any) {
+    const pattern = /[a-zA-Z0-9_]/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+      // invalid character, prevent input
+      event.preventDefault();
+    }
+  }
+  valid_chars2(event: any) {
+    const pattern = /[a-zA-Z0-9_@.!]/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+      // invalid character, prevent input
+      event.preventDefault();
+    }
   }
 
   texttrans: boolean = true;
@@ -334,28 +376,34 @@ export class HomePage {
   }
 
   load_settings(loaded_data) {
-    let data_dict = JSON.parse(loaded_data);
-    this.subj_id = data_dict.subject_id || this.subj_id;
-    this.cit_type = data_dict.cit_version || this.cit_type;
-    this.num_of_blocks = data_dict.num_of_blocks || this.num_of_blocks;
-    this.response_deadline_main = data_dict.timelimit || this.response_deadline_main;
-    this.isi_delay_minmax[0] = data_dict.isi_min || this.isi_delay_minmax[0];
-    this.isi_delay_minmax[1] = data_dict.isi_max || this.isi_delay_minmax[1];
-    this.cit_items[0] = data_dict.target || this.cit_items[0];
-    this.cit_items[1] = data_dict.probe1 || this.cit_items[1];
-    this.cit_items[2] = data_dict.probe2 || this.cit_items[2];
-    this.cit_items[3] = data_dict.probe3 || this.cit_items[3];
-    this.cit_items[4] = data_dict.probe4 || this.cit_items[4];
-    this.cit_items[5] = data_dict.probe5 || this.cit_items[5];
-    this.targetref_words[0] = data_dict.filler1 || this.targetref_words[0];
-    this.targetref_words[1] = data_dict.filler2 || this.targetref_words[1];
-    this.targetref_words[2] = data_dict.filler3 || this.targetref_words[2];
-    this.nontargref_words[0] = data_dict.filler4 || this.nontargref_words[0];
-    this.nontargref_words[1] = data_dict.filler5 || this.nontargref_words[1];
-    this.nontargref_words[2] = data_dict.filler6 || this.nontargref_words[2];
-    this.nontargref_words[3] = data_dict.filler7 || this.nontargref_words[3];
-    this.nontargref_words[4] = data_dict.filler8 || this.nontargref_words[4];
-    this.nontargref_words[5] = data_dict.filler9 || this.nontargref_words[5];
+    try {
+      let data_dict = JSON.parse(loaded_data);
+      this.subj_id = data_dict.subject_id || this.subj_id;
+      this.cit_type = data_dict.cit_version || this.cit_type;
+      this.num_of_blocks = data_dict.num_of_blocks || this.num_of_blocks;
+      this.response_deadline_main = data_dict.timelimit || this.response_deadline_main;
+      this.isi_delay_minmax[0] = data_dict.isi_min || this.isi_delay_minmax[0];
+      this.isi_delay_minmax[1] = data_dict.isi_max || this.isi_delay_minmax[1];
+      this.cit_items[0] = data_dict.target || this.cit_items[0];
+      this.cit_items[1] = data_dict.probe1 || this.cit_items[1];
+      this.cit_items[2] = data_dict.probe2 || this.cit_items[2];
+      this.cit_items[3] = data_dict.probe3 || this.cit_items[3];
+      this.cit_items[4] = data_dict.probe4 || this.cit_items[4];
+      this.cit_items[5] = data_dict.probe5 || this.cit_items[5];
+      this.targetref_words[0] = data_dict.filler1 || this.targetref_words[0];
+      this.targetref_words[1] = data_dict.filler2 || this.targetref_words[1];
+      this.targetref_words[2] = data_dict.filler3 || this.targetref_words[2];
+      this.nontargref_words[0] = data_dict.filler4 || this.nontargref_words[0];
+      this.nontargref_words[1] = data_dict.filler5 || this.nontargref_words[1];
+      this.nontargref_words[2] = data_dict.filler6 || this.nontargref_words[2];
+      this.nontargref_words[3] = data_dict.filler7 || this.nontargref_words[3];
+      this.nontargref_words[4] = data_dict.filler8 || this.nontargref_words[4];
+      this.nontargref_words[5] = data_dict.filler9 || this.nontargref_words[5];
+      return ("Data loaded from database");
+    } catch (e) {
+      document.getElementById("feedback_id").style.color = 'red';
+      return ("Error: stored data is not in proper (JSON) format.");
+    }
   };
 
   initials() {

@@ -13,7 +13,8 @@ import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 import { NavigationBar } from '@ionic-native/navigation-bar';
 import { Insomnia } from '@ionic-native/insomnia';
 import { PopoverController } from 'ionic-angular';
-import { PopoverItems } from './menupopover';
+import { PopoverItems } from './popover_menu';
+import { PopoverImg } from './popover_img';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -76,7 +77,7 @@ export class HomePage {
   tooslow_delay: number = 400;
   isi_delay_minmax: number[] = [300, 700];
   isi_delay: number = 99999;
-  cit_type: number = 2;
+  cit_type: number = 0;
   pre_cond: number = 9999;
   subj_id: string;
   response_deadline: number;
@@ -140,8 +141,6 @@ export class HomePage {
   nontargref_words_orig: string[] = ["FOREIGN", "IRRELEVANT", "OTHER", "RANDOM", "THEIRS", "UNFAMILIAR"];
   targetref_words: string[] = JSON.parse(JSON.stringify(this.targetref_words_orig));
   nontargref_words: string[] = JSON.parse(JSON.stringify(this.nontargref_words_orig));
-  settings_storage: Function;
-  send_stat: Function;
   mailpost: string = "";
   pwpost: string = "";
   email_valid: boolean = false;
@@ -162,111 +161,9 @@ export class HomePage {
     private navigationBar: NavigationBar,
     private insomnia: Insomnia,
     public popoverCtrl: PopoverController,
-    private http: HttpClient
+    public http: HttpClient
   ) {
-    // set a key/value
-    storage.set('name', 'Max');
-    storage.set('age', '12399');
-
-    // Or to get a key/value pair
-    storage.get('age').then((val) => {
-      console.log('Your age is', val);
-    });
-
-    this.settings_storage = function(datapost) {
-      console.log('settings_storage starts...');
-      if (datapost == 'yes') {
-        datapost = JSON.stringify({
-          'subject_id': this.subj_id,
-          'cit_version': this.cit_type,
-          'num_of_blocks': this.num_of_blocks,
-          'deadline': this.response_deadline_main,
-          'isi_min': this.isi_delay_minmax[0],
-          'isi_max': this.isi_delay_minmax[1],
-          'target': this.cit_items[0],
-          'probe1': this.cit_items[1],
-          'probe2': this.cit_items[2],
-          'probe3': this.cit_items[3],
-          'probe4': this.cit_items[4],
-          'probe5': this.cit_items[5],
-          'filler1': this.targetref_words[0],
-          'filler2': this.targetref_words[1],
-          'filler3': this.targetref_words[2],
-          'filler4': this.nontargref_words[0],
-          'filler5': this.nontargref_words[1],
-          'filler6': this.nontargref_words[2],
-          'filler7': this.nontargref_words[3],
-          'filler8': this.nontargref_words[4],
-          'filler9': this.nontargref_words[5]
-        });
-      }
-      let themail;
-      if (datapost == "sendpass") {
-        themail = this.email_for_pw;
-      } else {
-        themail = this.mailpost;
-        this.email_valid = false;
-      }
-      this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_storage.php', JSON.stringify({
-        email_post: themail,
-        pw_post: this.pwpost,
-        data_post: datapost
-      }), { responseType: "text" }).subscribe((response) => {
-        console.log(response);
-        let feed;
-        if (response.slice(0, 7) == 'victory') {
-          document.getElementById("feedback_id").style.color = 'green';
-          response = response.slice(7)
-          if (response.slice(0, 6) == 'insert') {
-            response = response.slice(6)
-            feed = "Data saved in database.";
-          } else if (response.slice(0, 6) == 'update') {
-            response = response.slice(6)
-            feed = "Data updated in database.";
-          } else if (response.slice(0, 6) == 'loaded') {
-            response = response.slice(6)
-            feed = this.load_settings(response);
-          } else if (response.slice(0, 5) == 'Email') {
-            feed = response;
-            this.email_valid = false;
-          }
-        } else {
-          if (response.slice(0, 6) == 'pwfail') {
-            response = response.slice(6);
-            if (/\S+@\S+\.\S+/.test(this.mailpost)) {
-              this.email_valid = true;
-              this.email_for_pw = themail;
-            }
-          }
-          document.getElementById("feedback_id").style.color = 'red';
-          feed = 'Error. ' + response;
-        }
-        document.getElementById("feedback_id").innerHTML = feed + "<br><br>";
-      },
-        err => {
-          console.log('Request failed: ', err);
-          document.getElementById("feedback_id").style.color = 'red';
-          let feed = 'Could not connect to server. ' + err.message;
-          document.getElementById("feedback_id").innerHTML = feed + "<br><br>";
-        });
-    }
-    let test_date = "datehere"; // TODO call this from storage
-    this.send_stat = function(datapost = 'sendpass') {
-      console.log('send_stat starts...');
-      this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_stat.php', JSON.stringify({ "testdate": test_date }), { responseType: "text" }).subscribe((response) => {
-        if (response == 'victory') {
-          // TODO erase from storage
-          console.log('Victory!!');
-        } else {
-          console.log('Failed SQL:' + response);
-        }
-      },
-        err => {
-          console.log('Request failed: ' + err);
-        });
-    }
-    //this.send_stat();
-
+    this.load_from_device();
     this.on_device = this.platform.is("cordova");
     if (this.platform.versions().android) {
       this.versionnum = this.platform.versions().android.num.toString();
@@ -292,6 +189,175 @@ export class HomePage {
     ]);
     this.form_items = formBuilder.group(validator_dict);
 
+  }
+
+  send_single_stat = function(test_date, key_to_del) {
+    this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_stat.php', JSON.stringify({ "testdate": test_date }), { responseType: "text" }).subscribe((response) => {
+      if (response == 'victory') {
+        console.log('Saved to stats: ', key_to_del);
+        this.storage.remove(key_to_del);
+      } else {
+        console.log('Failed SQL:' + response);
+      }
+    },
+      err => {
+        console.log('Request failed: ' + err);
+      });
+  }
+
+  // this.store_stat(); // TODO add this where CIT is ended
+  store_stat = function() {
+    let somecode = Math.random().toString(36).slice(2);
+    this.storage.set('test-' + somecode, this.neat_date().slice(0, 8));
+    this.send_stat();
+  }
+
+  send_stat = function() {
+    this.storage.forEach((value, key) => {
+      if (key.slice(0, 4) == 'test') {
+        this.send_single_stat(value, key);
+      }
+    });
+  }
+
+  store_on_device = function() {
+    this.storage.set('local', {
+      'subject_id': this.subj_id,
+      'cit_version': this.cit_type,
+      'num_of_blocks': this.num_of_blocks,
+      'deadline': this.response_deadline_main,
+      'isi_min': this.isi_delay_minmax[0],
+      'isi_max': this.isi_delay_minmax[1],
+      'target': this.cit_items[0],
+      'probe1': this.cit_items[1],
+      'probe2': this.cit_items[2],
+      'probe3': this.cit_items[3],
+      'probe4': this.cit_items[4],
+      'probe5': this.cit_items[5],
+      'filler1': this.targetref_words[0],
+      'filler2': this.targetref_words[1],
+      'filler3': this.targetref_words[2],
+      'filler4': this.nontargref_words[0],
+      'filler5': this.nontargref_words[1],
+      'filler6': this.nontargref_words[2],
+      'filler7': this.nontargref_words[3],
+      'filler8': this.nontargref_words[4],
+      'filler9': this.nontargref_words[5]
+    });
+    document.getElementById("storefeed_id2").style.color = 'green';
+    setTimeout(() => {
+      document.getElementById("storefeed_id2").style.color = 'white';
+    }, 1500);
+  }
+  green
+  load_from_device = function() {
+    try {
+      this.storage.get('local').then((cntent) => {
+        let data_dict = cntent;
+        this.subj_id = data_dict.subject_id;
+        this.cit_type = data_dict.cit_version;
+        this.num_of_blocks = data_dict.num_of_blocks;
+        this.response_deadline_main = data_dict.timelimit;
+        this.isi_delay_minmax[0] = data_dict.isi_min;
+        this.isi_delay_minmax[1] = data_dict.isi_max;
+        this.cit_items[0] = data_dict.target;
+        this.cit_items[1] = data_dict.probe1;
+        this.cit_items[2] = data_dict.probe2;
+        this.cit_items[3] = data_dict.probe3;
+        this.cit_items[4] = data_dict.probe4;
+        this.cit_items[5] = data_dict.probe5;
+        this.targetref_words[0] = data_dict.filler1;
+        this.targetref_words[1] = data_dict.filler2;
+        this.targetref_words[2] = data_dict.filler3;
+        this.nontargref_words[0] = data_dict.filler4;
+        this.nontargref_words[1] = data_dict.filler5;
+        this.nontargref_words[2] = data_dict.filler6;
+        this.nontargref_words[3] = data_dict.filler7;
+        this.nontargref_words[4] = data_dict.filler8;
+        this.nontargref_words[5] = data_dict.filler9;
+        console.log('Locally saved data loaded.');
+      });
+    } catch (e) {
+      console.log('(No locally saved data.)');
+    }
+  }
+
+  settings_storage = function(datapost) {
+    console.log('settings_storage starts...');
+    if (datapost == 'yes') {
+      datapost = JSON.stringify({
+        'subject_id': this.subj_id,
+        'cit_version': this.cit_type,
+        'num_of_blocks': this.num_of_blocks,
+        'deadline': this.response_deadline_main,
+        'isi_min': this.isi_delay_minmax[0],
+        'isi_max': this.isi_delay_minmax[1],
+        'target': this.cit_items[0],
+        'probe1': this.cit_items[1],
+        'probe2': this.cit_items[2],
+        'probe3': this.cit_items[3],
+        'probe4': this.cit_items[4],
+        'probe5': this.cit_items[5],
+        'filler1': this.targetref_words[0],
+        'filler2': this.targetref_words[1],
+        'filler3': this.targetref_words[2],
+        'filler4': this.nontargref_words[0],
+        'filler5': this.nontargref_words[1],
+        'filler6': this.nontargref_words[2],
+        'filler7': this.nontargref_words[3],
+        'filler8': this.nontargref_words[4],
+        'filler9': this.nontargref_words[5]
+      });
+    }
+    let themail;
+    if (datapost == "sendpass") {
+      themail = this.email_for_pw;
+    } else {
+      themail = this.mailpost;
+      this.email_valid = false;
+    }
+    this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_storage.php', JSON.stringify({
+      email_post: themail,
+      pw_post: this.pwpost,
+      data_post: datapost
+    }), { responseType: "text" }).subscribe((response) => {
+      console.log(response);
+      let feed;
+      if (response.slice(0, 7) == 'victory') {
+        document.getElementById("storefeed_id").style.color = 'green';
+        response = response.slice(7)
+        if (response.slice(0, 6) == 'insert') {
+          response = response.slice(6)
+          feed = "Data saved in database.";
+        } else if (response.slice(0, 6) == 'update') {
+          response = response.slice(6)
+          feed = "Data updated in database.";
+        } else if (response.slice(0, 6) == 'loaded') {
+          response = response.slice(6)
+          feed = this.load_settings(response);
+        } else if (response.slice(0, 5) == 'Email') {
+          feed = response;
+          this.email_valid = false;
+        }
+      } else {
+        if (response.slice(0, 6) == 'pwfail') {
+          response = response.slice(6);
+          if (/\S+@\S+\.\S+/.test(this.mailpost)) {
+            this.email_valid = true;
+            this.email_for_pw = themail;
+          }
+        }
+        document.getElementById("storefeed_id").style.color = 'red';
+        feed = 'Error. ' + response;
+      }
+      document.getElementById("storefeed_id").innerHTML = feed + "<br><br>";
+    },
+      err => {
+        console.log('Request failed: ', err);
+        document.getElementById("storefeed_id").style.color = 'red';
+        let feed = 'Could not connect to server. ' + err.message;
+        document.getElementById("storefeed_id").innerHTML = feed + "<br><br>";
+      });
   }
 
   valid_chars(event: any) {
@@ -321,12 +387,10 @@ export class HomePage {
     console.log(this.cit_items);
   };
 
-
-  internet_on: boolean = true;
+  internet_on: boolean = false;
   ionViewDidLoad() {
 
     if (this.on_device) {
-
       setInterval(() => {
         if (this.network.type) {
           if (this.network.type != "none") {
@@ -336,7 +400,6 @@ export class HomePage {
           }
         }
       }, 500);
-
       this.statusBar.hide();
       this.navigationBar.hideNavigationBar();
       this.navigationBar.setUp(true);
@@ -352,7 +415,7 @@ export class HomePage {
   seg_values: string[] = ['main', 'fillers', 'settings', 'autofill', 'start'];
   current_segment: string = '';
   current_menu: string = '';
-  menu_pop(myEvent) {
+  pop_menu(myEvent) {
     let popover = this.popoverCtrl.create(PopoverItems);
     popover.present({
       ev: myEvent
@@ -365,6 +428,17 @@ export class HomePage {
     })
   }
 
+  pop_imgs(myEvent) {
+    let popover = this.popoverCtrl.create(PopoverImg);
+    popover.present({
+      ev: myEvent
+    });
+    popover.onDidDismiss(pop_data => {
+      if (pop_data != null) {
+        console.log("pop_data",pop_data);
+      }
+    })
+  }
   switch_divs(div_to_show) {
     this.current_div = div_to_show;
     Object.keys(this.pointev).forEach(ky => this.pointev[ky] = "none");
@@ -401,14 +475,14 @@ export class HomePage {
       this.nontargref_words[5] = data_dict.filler9 || this.nontargref_words[5];
       return ("Data loaded from database");
     } catch (e) {
-      document.getElementById("feedback_id").style.color = 'red';
+      document.getElementById("storefeed_id").style.color = 'red';
       return ("Error: stored data is not in proper (JSON) format.");
     }
   };
 
   initials() {
-    this.settings_storage('test@email.com', 'mypass', 'somedata');
-    if (!this.form_items.valid) { // TODO validation copy from form_dems in latest citapp_sp
+    this.send_stat();
+    if (!this.form_items.valid) {
       this.submit_failed = true;
       // for TESTING:
       console.log('testing');
@@ -435,7 +509,7 @@ export class HomePage {
   }
   default_settings() {
     this.texttrans = true;
-    this.cit_type = 2;
+    this.cit_type = 0;
     this.num_of_blocks = 1;
     this.isi_delay_minmax = [300, 700];
     this.response_deadline_main = 900;

@@ -7,8 +7,11 @@ html {
   text-align: justify;
 }
 
+ion-label {
+  font-size: 3.3vw !important;
+}
+
 ion-label[fixed] {
-  font-size: 3.0vw !important;
   margin-bottom: 0;
 }
 

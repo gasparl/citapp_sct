@@ -1,7 +1,7 @@
 <ion-header *ngIf="current_div == 'div_settings'">
   <ion-toolbar>
     <ion-segment [(ngModel)]='current_segment'>
-      <ion-segment-button value="menus" icon-only (tap)="menu_pop($event)">
+      <ion-segment-button value="menus" icon-only (tap)="pop_menu($event)">
         <ion-icon name="menu"></ion-icon>
       </ion-segment-button>
       <ion-segment-button value="main" (tap)="current_menu = '';slides.slideTo(0);content.scrollToTop(0);">
@@ -14,7 +14,7 @@
         Settings
       </ion-segment-button>
       <ion-segment-button value="autofill" (tap)="current_menu = '';slides.slideTo(3);content.scrollToTop(0);">
-        Autofill
+        Storing
       </ion-segment-button>
       <ion-segment-button value="start" (tap)="current_menu = '';slides.slideTo(4);content.scrollToTop(0);">
         Start
@@ -62,6 +62,11 @@
 
       <ion-slides (ionSlideWillChange)='current_segment = seg_values[slides.getActiveIndex()];'>
         <ion-slide>
+
+          <button ion-button type="button" icon-only (tap)="pop_imgs($event)">
+            <ion-icon name="images"></ion-icon>
+          </button>
+          <div id=preview></div>
 
           <ion-item>
             <ion-label style="min-width:21vw;" fixed><b>Subject ID:</b></ion-label>
@@ -188,6 +193,11 @@
         </ion-slide>
 
         <ion-slide>
+
+          <div style="font-weight:bold;font-size:130%;text-align:left;padding-left: 16px;">
+            Current settings can be stored in an online database, which can be reloaded using the given Identifier and Password. (See documentation for details.)
+          </div>
+
           <ion-item>
             <ion-label style="color:black;" fixed>Identifier</ion-label>
             <ion-input (keypress)="valid_chars2($event)" [(ngModel)]="mailpost" type="text" [ngModelOptions]="{standalone: true}" style="font-style:normal;text-transform:none;"></ion-input>
@@ -199,22 +209,38 @@
           </ion-item>
 
           <br />
-          <span id="feedback_id"></span>
+          <span id="storefeed_id" style="font-size:110%;"></span>
+
           <button ion-button type='button' (tap)="settings_storage('loadit')" color="light" block>Load settings</button>
+
           <div *ngIf="email_valid==true">
             <br />
             <i><button style="flex-flow: column;text-transform:none;" ion-button type='button' (tap)="settings_storage('sendpass')" color="light">SEND PASSWORD TO:<br>{{email_for_pw}}</button></i>
           </div>
+
           <br />
-          <button ion-button type='button' (tap)="settings_storage('yes')" color="light" block>Save current settings</button>
+          <button ion-button type='button' (tap)="settings_storage('yes')" color="light" block>Save settings online</button>
+
+          <br />
+          <hr />
+          <br />
+
+          <div style="font-weight:bold;font-size:130%;text-align:left;padding-left: 16px;">
+            Local offline storage on this device will simply reload current settings whenever the app starts. (Default values remain unchanged and can be reset anytime.)
+          </div>
+
+          <span id="storefeed_id2" style="color:white;font-size:110%;">Settings were saved.</span>
+          <button ion-button type='button' (tap)="store_on_device()" color="light" block>Save settings locally</button>
+
         </ion-slide>
 
         <ion-slide>
+          <br /><span *ngIf="subj_id!=''" style="font-size:120%">Initiate test with Subject ID <b>{{subj_id}}</b>.</span>
+          <br />
           <br />
           <i>
             <p *ngIf="internet_on" style="color: red;">Warning: it seems you are connected to the internet. It is best to turn it off to avoid interruptions.</p>
           </i>
-          <br />
           <p *ngIf="!form_items.valid && submit_failed" style="color: red;">Please fill in all necessary details.</p>
           <button ion-button type="submit">Start test</button>
 

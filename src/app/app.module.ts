@@ -13,14 +13,16 @@ import { File } from '@ionic-native/file';
 import { Network } from '@ionic-native/network';
 import { NavigationBar } from '@ionic-native/navigation-bar';
 import { Insomnia } from '@ionic-native/insomnia';
-import { PopoverItems } from '../pages/home/menupopover';
+import { PopoverItems } from '../pages/home/popover_menu';
+import { PopoverImg } from '../pages/home/popover_img';
 import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    PopoverItems
+    PopoverItems,
+    PopoverImg
   ],
   imports: [
     BrowserModule,
@@ -32,7 +34,8 @@ import { HttpClientModule } from '@angular/common/http';
   entryComponents: [
     MyApp,
     HomePage,
-    PopoverItems
+    PopoverItems,
+    PopoverImg
   ],
   providers: [
     StatusBar,

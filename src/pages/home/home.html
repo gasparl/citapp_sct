@@ -63,10 +63,9 @@
       <ion-slides (ionSlideWillChange)='current_segment = seg_values[slides.getActiveIndex()];'>
         <ion-slide>
 
-          <button ion-button type="button" icon-only (tap)="pop_imgs($event)">
-            <ion-icon name="images"></ion-icon>
-          </button>
+
           <div id=preview></div>
+
 
           <ion-item>
             <ion-label style="min-width:21vw;" fixed><b>Subject ID:</b></ion-label>
@@ -75,10 +74,18 @@
           <br /><br />
           <div style="font-weight:bold;font-size:130%;text-align:left;padding-left: 16px;">
             Main items in the test</div>
-          <ion-item>
+          <ion-item id='target_img_id'>
             <ion-label fixed>Target:</ion-label>
             <ion-input [(ngModel)]="cit_items[0]" formControlName="target" type="text" [class.invalid]="!form_items.controls.target.valid && submit_failed"></ion-input>
+
+
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event)">
+              <ion-icon name="images" color='dark'></ion-icon>
+            </button>
+
           </ion-item>
+
+
           <ion-item>
             <ion-label fixed>Probe 1:</ion-label>
             <ion-input [(ngModel)]="cit_items[1]" formControlName="probe1" type="text" [class.invalid]="!form_items.controls.probe1.valid && submit_failed"></ion-input>

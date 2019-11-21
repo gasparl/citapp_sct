@@ -145,7 +145,7 @@ export class HomePage {
   pwpost: string = "";
   email_valid: boolean = false;
   email_for_pw: string = "";
-  stored_images: object[] = [];
+  stored_images: any = {};
 
 
   constructor(
@@ -442,11 +442,16 @@ export class HomePage {
         this.stored_images = pop_data.images;
 
         if (pop_data.selected != null) {
-          var img = new Image;
-          img.style.height = "20px";
-          img.src = URL.createObjectURL(pop_data.selected);
+          let img = new Image;
+          img.style.height = "9vw";
+          img.src = URL.createObjectURL(this.stored_images[pop_data.selected]);
           document.querySelector('#preview').innerHTML = '';
-          document.querySelector('#preview').appendChild(img);
+          //document.querySelector('#preview').appendChild(img);
+
+          let element = document.getElementById('target_img_id');
+          console.log(element);
+          element.appendChild(img);
+
         }
         this.storage.set('imgs', this.stored_images);
       }

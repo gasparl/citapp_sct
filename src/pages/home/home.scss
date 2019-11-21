@@ -24,6 +24,11 @@ hr {
   padding: 0;
 }
 
+.popover_class .popover-content {
+  min-width: 30vw;
+  width: auto;
+}
+
 page-home {
   ion-input {
     font-size: 3.1vw;

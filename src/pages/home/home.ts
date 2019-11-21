@@ -145,6 +145,7 @@ export class HomePage {
   pwpost: string = "";
   email_valid: boolean = false;
   email_for_pw: string = "";
+  stored_images: object[] = [];
 
 
   constructor(
@@ -168,9 +169,7 @@ export class HomePage {
     if (this.platform.versions().android) {
       this.versionnum = this.platform.versions().android.num.toString();
     }
-
     this.visib.start_text = true;
-
     let validator_dict = {
       sub_id: [
         "",
@@ -178,7 +177,6 @@ export class HomePage {
         Validators.pattern("[a-zA-Z0-9_]*"), Validators.required])
       ]
     }
-
     let input_names = ['target', 'probe1', 'probe2', 'probe3', 'probe4', 'probe5', 'filler1', 'filler2', 'filler3', 'filler4', 'filler5', 'filler6', 'filler7', 'filler8', 'filler9'];
     input_names.forEach(ky => validator_dict[ky] = [
       "",
@@ -188,7 +186,11 @@ export class HomePage {
       ])
     ]);
     this.form_items = formBuilder.group(validator_dict);
-
+    this.storage.get('imgs').then((cntent) => {
+      if (cntent) {
+        this.stored_images = cntent;
+      }
+    });
   }
 
   send_single_stat = function(test_date, key_to_del) {
@@ -429,16 +431,29 @@ export class HomePage {
   }
 
   pop_imgs(myEvent) {
-    let popover = this.popoverCtrl.create(PopoverImg);
+    let popover = this.popoverCtrl.create(PopoverImg,
+      { 'stored_imgs': this.stored_images },
+      { cssClass: 'popover_class' });
     popover.present({
       ev: myEvent
     });
     popover.onDidDismiss(pop_data => {
       if (pop_data != null) {
-        console.log("pop_data",pop_data);
+        this.stored_images = pop_data.images;
+
+        if (pop_data.selected != null) {
+          var img = new Image;
+          img.style.height = "20px";
+          img.src = URL.createObjectURL(pop_data.selected);
+          document.querySelector('#preview').innerHTML = '';
+          document.querySelector('#preview').appendChild(img);
+        }
+        this.storage.set('imgs', this.stored_images);
       }
-    })
+
+    });
   }
+
   switch_divs(div_to_show) {
     this.current_div = div_to_show;
     Object.keys(this.pointev).forEach(ky => this.pointev[ky] = "none");

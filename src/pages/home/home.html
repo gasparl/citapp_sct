@@ -63,10 +63,6 @@
       <ion-slides (ionSlideWillChange)='current_segment = seg_values[slides.getActiveIndex()];'>
         <ion-slide>
 
-
-          <div id=preview></div>
-
-
           <ion-item>
             <ion-label style="min-width:21vw;" fixed><b>Subject ID:</b></ion-label>
             <ion-input style="text-transform:none;" [(ngModel)]="subj_id" formControlName="sub_id" type="text" [class.invalid]="!form_items.controls.sub_id.valid && submit_failed"></ion-input>
@@ -74,21 +70,24 @@
           <br /><br />
           <div style="font-weight:bold;font-size:130%;text-align:left;padding-left: 16px;">
             Main items in the test</div>
-          <ion-item id='target_img_id'>
+
+          <ion-item id='target'>
             <ion-label fixed>Target:</ion-label>
-            <ion-input [(ngModel)]="cit_items[0]" formControlName="target" type="text" [class.invalid]="!form_items.controls.target.valid && submit_failed"></ion-input>
+            <ion-input [(ngModel)]="cit_items[0]" formControlName="target" type="text" [class.invalid]="!form_items.controls.target.valid && submit_failed" (tap)="remove_img_el('target');"></ion-input>
 
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event)">
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'target')">
               <ion-icon name="images" color='dark'></ion-icon>
             </button>
-
           </ion-item>
 
 
-          <ion-item>
+          <ion-item id='probe1'>
             <ion-label fixed>Probe 1:</ion-label>
-            <ion-input [(ngModel)]="cit_items[1]" formControlName="probe1" type="text" [class.invalid]="!form_items.controls.probe1.valid && submit_failed"></ion-input>
+            <ion-input [(ngModel)]="cit_items[1]" formControlName="probe1" type="text" [class.invalid]="!form_items.controls.probe1.valid && submit_failed" (tap)="remove_img_el('probe1');"></ion-input>
+
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'probe1')">
+              <ion-icon name="images" color='dark'></ion-icon>
+            </button>
           </ion-item>
           <ion-item>
             <ion-label fixed>Probe 2:</ion-label>

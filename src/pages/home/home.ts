@@ -146,8 +146,7 @@ export class HomePage {
   pwpost: string = "";
   email_valid: boolean = false;
   email_for_pw: string = "";
-  stored_images: any = {};
-
+  img_dict: any = {};
 
   constructor(
     public navCtrl: NavController,
@@ -166,11 +165,6 @@ export class HomePage {
     public http: HttpClient,
     public dataShare: DataShareProvider
   ) {
-
-    console.log('dataShare.shared_data', dataShare.shared_data);
-    console.log('dataShare.shared_data2', dataShare.shared_data2);
-    dataShare.shared_data2 = 'new shared DATA'
-    console.log('dataShare.shared_data2 modified', dataShare.shared_data2);
 
     this.load_from_device();
     this.on_device = this.platform.is("cordova");
@@ -196,7 +190,7 @@ export class HomePage {
     this.form_items = formBuilder.group(validator_dict);
     this.storage.get('imgs').then((cntent) => {
       if (cntent) {
-        this.stored_images = cntent;
+        dataShare.stored_images = cntent;
       }
     });
   }
@@ -253,14 +247,15 @@ export class HomePage {
       'filler6': this.nontargref_words[2],
       'filler7': this.nontargref_words[3],
       'filler8': this.nontargref_words[4],
-      'filler9': this.nontargref_words[5]
+      'filler9': this.nontargref_words[5],
+      'img_dict': this.img_dict
     });
     document.getElementById("storefeed_id2").style.color = 'green';
     setTimeout(() => {
       document.getElementById("storefeed_id2").style.color = 'white';
     }, 1500);
   }
-  green
+
   load_from_device = function() {
     try {
       this.storage.get('local').then((cntent) => {
@@ -286,6 +281,7 @@ export class HomePage {
         this.nontargref_words[3] = data_dict.filler7;
         this.nontargref_words[4] = data_dict.filler8;
         this.nontargref_words[5] = data_dict.filler9;
+        this.img_dict = data_dict.img_dict;
         console.log('Locally saved data loaded.');
       });
     } catch (e) {
@@ -439,33 +435,67 @@ export class HomePage {
     })
   }
 
-  pop_imgs(myEvent) {
+  pop_imgs(myEvent, parent_id) {
     let popover = this.popoverCtrl.create(PopoverImg,
-      { 'stored_imgs': this.stored_images },
+      {}, // nothing to pass
       { cssClass: 'popover_class' });
     popover.present({
       ev: myEvent
     });
-    popover.onDidDismiss(pop_data => {
-      if (pop_data != null) {
-        this.stored_images = pop_data.images;
-
-        if (pop_data.selected != null) {
-          let img = new Image;
-          img.style.height = "9vw";
-          img.src = URL.createObjectURL(this.stored_images[pop_data.selected]);
-          document.querySelector('#preview').innerHTML = '';
-          //document.querySelector('#preview').appendChild(img);
-
-          let element = document.getElementById('target_img_id');
-          console.log(element);
-          element.appendChild(img);
-
-        }
-        this.storage.set('imgs', this.stored_images);
+    popover.onDidDismiss(selected_img => {
+      if (selected_img != null) {
+        this.img_dict[parent_id] = selected_img;
+        this.image_names();
+        this.img_dict[parent_id + '_img'] = this.dataShare.stored_images[selected_img];
+        this.display_thumbnail(parent_id);
       }
-
     });
+  }
+
+  display_thumbnail(img_key) {
+    let img = new Image;
+    img.style.height = "9vw";
+    console.log(this.img_dict);
+    console.log(img_key);
+    img.id = img_key + '_img';
+    img.src = URL.createObjectURL(this.img_dict[img.id]);
+    try {
+      let img_elem = document.getElementById(img.id);
+      img_elem.parentNode.removeChild(img_elem);
+    } catch { }
+    let element = document.getElementById(img_key);
+    element.appendChild(img);
+  }
+
+  remove_img_el(parent_id) {
+    try {
+      this.img_dict[parent_id] = '';
+      this.image_names();
+      let img_elem = document.getElementById(parent_id + '_img');
+      img_elem.parentNode.removeChild(img_elem);
+      delete this.img_dict[parent_id];
+      delete this.img_dict[parent_id + '_img'];
+    } catch {
+      console.log('No image found. ', parent_id);
+    }
+  }
+
+  image_names() {
+    this.cit_items[0] = (this.img_dict.target === undefined) ? this.cit_items[0] : this.img_dict.target;
+    this.cit_items[1] = (this.img_dict.probe1 === undefined) ? this.cit_items[1] : this.img_dict.probe1;
+    this.cit_items[2] = (this.img_dict.probe2 === undefined) ? this.cit_items[2] : this.img_dict.probe2;
+    this.cit_items[3] = (this.img_dict.probe3 === undefined) ? this.cit_items[3] : this.img_dict.probe3;
+    this.cit_items[4] = (this.img_dict.probe4 === undefined) ? this.cit_items[4] : this.img_dict.probe4;
+    this.cit_items[5] = (this.img_dict.probe5 === undefined) ? this.cit_items[5] : this.img_dict.probe5;
+    this.targetref_words[0] = (this.img_dict.filler1 === undefined) ? this.targetref_words[0] : this.img_dict.filler1;
+    this.targetref_words[1] = (this.img_dict.filler2 === undefined) ? this.targetref_words[1] : this.img_dict.filler2;
+    this.targetref_words[2] = (this.img_dict.filler3 === undefined) ? this.targetref_words[2] : this.img_dict.filler3;
+    this.nontargref_words[0] = (this.img_dict.filler4 === undefined) ? this.nontargref_words[0] : this.img_dict.filler4;
+    this.nontargref_words[1] = (this.img_dict.filler5 === undefined) ? this.nontargref_words[1] : this.img_dict.filler5;
+    this.nontargref_words[2] = (this.img_dict.filler6 === undefined) ? this.nontargref_words[2] : this.img_dict.filler6;
+    this.nontargref_words[3] = (this.img_dict.filler7 === undefined) ? this.nontargref_words[3] : this.img_dict.filler7;
+    this.nontargref_words[4] = (this.img_dict.filler8 === undefined) ? this.nontargref_words[4] : this.img_dict.filler8;
+    this.nontargref_words[5] = (this.img_dict.filler9 === undefined) ? this.nontargref_words[5] : this.img_dict.filler9;
   }
 
   switch_divs(div_to_show) {

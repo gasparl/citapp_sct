@@ -16,6 +16,7 @@ import { Insomnia } from '@ionic-native/insomnia';
 import { PopoverItems } from '../pages/home/popover_menu';
 import { PopoverImg } from '../pages/home/popover_img';
 import { HttpClientModule } from '@angular/common/http';
+import { DataShareProvider } from '../providers/data-share/data-share';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { HttpClientModule } from '@angular/common/http';
     BackgroundMode,
     EmailComposer,
     File,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    DataShareProvider
   ]
 })
 export class AppModule {}

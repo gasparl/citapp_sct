@@ -16,6 +16,7 @@ import { PopoverController } from 'ionic-angular';
 import { PopoverItems } from './popover_menu';
 import { PopoverImg } from './popover_img';
 import { HttpClient } from '@angular/common/http';
+import { DataShareProvider } from '../../providers/data-share/data-share';
 
 @Component({
   selector: "page-home",
@@ -162,8 +163,15 @@ export class HomePage {
     private navigationBar: NavigationBar,
     private insomnia: Insomnia,
     public popoverCtrl: PopoverController,
-    public http: HttpClient
+    public http: HttpClient,
+    public dataShare: DataShareProvider
   ) {
+
+    console.log('dataShare.shared_data', dataShare.shared_data);
+    console.log('dataShare.shared_data2', dataShare.shared_data2);
+    dataShare.shared_data2 = 'new shared DATA'
+    console.log('dataShare.shared_data2 modified', dataShare.shared_data2);
+
     this.load_from_device();
     this.on_device = this.platform.is("cordova");
     if (this.platform.versions().android) {
@@ -192,6 +200,7 @@ export class HomePage {
       }
     });
   }
+
 
   send_single_stat = function(test_date, key_to_del) {
     this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_stat.php', JSON.stringify({ "testdate": test_date }), { responseType: "text" }).subscribe((response) => {

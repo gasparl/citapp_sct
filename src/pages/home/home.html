@@ -33,11 +33,11 @@
 
     <br /><br />
     <div>
-      <button ion-button type="button">Demo (%with redirect to Autofill%)</button>
+      <button ion-button type="button">Information (brief intro with link to full README file)</button>
     </div>
     <br /><br />
     <div>
-      <button ion-button type="button">Information (brief intro with link to full README file)</button>
+      <button ion-button type="button">Demo (%with redirect to Autofill%)</button>
     </div>
     <br /><br />
     <div>
@@ -51,9 +51,9 @@
 
     <div [hidden]="current_menu == ''">
 
+      <p [hidden]="current_menu != 'm_info'">this test is blah</p>
       <p [hidden]="current_menu != 'm_demo'">
         Fill in demo items: %Autofill demo% <br /></p>
-      <p [hidden]="current_menu != 'm_info'">this test is blah</p>
       <p [hidden]="current_menu != 'm_prevs'">here are the previous results</p>
 
     </div>
@@ -89,65 +89,131 @@
               <ion-icon name="images" color='dark'></ion-icon>
             </button>
           </ion-item>
-          <ion-item>
+
+          <ion-item id='probe2'>
             <ion-label fixed>Probe 2:</ion-label>
-            <ion-input [(ngModel)]="cit_items[2]" formControlName="probe2" type="text" [class.invalid]="!form_items.controls.probe2.valid && submit_failed"></ion-input>
+            <ion-input [(ngModel)]="cit_items[2]" formControlName="probe2" type="text" [class.invalid]="!form_items.controls.probe2.valid && submit_failed" (tap)="remove_img_el('probe2');"></ion-input>
+
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'probe2')">
+              <ion-icon name="images" color='dark'></ion-icon>
+            </button>
           </ion-item>
-          <ion-item>
+
+          <ion-item id='probe3'>
             <ion-label fixed>Probe 3:</ion-label>
-            <ion-input [(ngModel)]="cit_items[3]" formControlName="probe3" type="text" [class.invalid]="!form_items.controls.probe3.valid && submit_failed"></ion-input>
+            <ion-input [(ngModel)]="cit_items[3]" formControlName="probe3" type="text" [class.invalid]="!form_items.controls.probe3.valid && submit_failed" (tap)="remove_img_el('probe3');"></ion-input>
+
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'probe3')">
+              <ion-icon name="images" color='dark'></ion-icon>
+            </button>
           </ion-item>
-          <ion-item>
+
+          <ion-item id='probe4'>
             <ion-label fixed>Probe 4:</ion-label>
-            <ion-input [(ngModel)]="cit_items[4]" formControlName="probe4" type="text" [class.invalid]="!form_items.controls.probe4.valid && submit_failed"></ion-input>
+            <ion-input [(ngModel)]="cit_items[4]" formControlName="probe4" type="text" [class.invalid]="!form_items.controls.probe4.valid && submit_failed" (tap)="remove_img_el('probe4');"></ion-input>
+
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'probe4')">
+              <ion-icon name="images" color='dark'></ion-icon>
+            </button>
           </ion-item>
-          <ion-item>
+
+          <ion-item id='probe5'>
             <ion-label fixed>Probe 5:</ion-label>
-            <ion-input [(ngModel)]="cit_items[5]" formControlName="probe5" type="text" [class.invalid]="!form_items.controls.probe5.valid && submit_failed"></ion-input>
+            <ion-input [(ngModel)]="cit_items[5]" formControlName="probe5" type="text" [class.invalid]="!form_items.controls.probe5.valid && submit_failed" (tap)="remove_img_el('probe5');"></ion-input>
+
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'probe5')">
+              <ion-icon name="images" color='dark'></ion-icon>
+            </button>
           </ion-item>
           <br />
           <br />
           <button ion-button type='button' (tap)="default_core()" color="light" block>Restore default (empty)</button>
+          <br />
+          <span id="imgfeed_id" style="color:white;font-size:110%;"></span>
+          <button ion-button type='button' (tap)="auto_img()" color="light" block>Autofill all images</button>
 
         </ion-slide>
         <ion-slide>
 
-          <ion-item>
+          <ion-item id='filler1'>
             <ion-label style="min-width:28vw;" fixed>Target filler 1:</ion-label>
-            <ion-input [(ngModel)]="targetref_words[0]" type="text" formControlName="filler1"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label style="min-width:28vw;" fixed>Target filler 2:</ion-label>
-            <ion-input [(ngModel)]="targetref_words[1]" type="text" formControlName="filler2"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label style="min-width:28vw;" fixed>Target filler 3:</ion-label>
-            <ion-input [(ngModel)]="targetref_words[2]" type="text" formControlName="filler3"></ion-input>
+            <ion-input [(ngModel)]="targetref_words[0]" type="text" formControlName="filler1" [class.invalid]="!form_items.controls.filler1.valid && submit_failed" (tap)="remove_img_el('filler1');"></ion-input>
+
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler1')">
+              <ion-icon name="images" color='dark'></ion-icon>
+            </button>
           </ion-item>
 
-          <ion-item>
+          <ion-item id='filler2'>
+            <ion-label style="min-width:28vw;" fixed>Target filler 2:</ion-label>
+            <ion-input [(ngModel)]="targetref_words[1]" type="text" formControlName="filler2" [class.invalid]="!form_items.controls.filler2.valid && submit_failed" (tap)="remove_img_el('filler2');"></ion-input>
+
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler2')">
+              <ion-icon name="images" color='dark'></ion-icon>
+            </button>
+          </ion-item>
+
+          <ion-item id='filler3'>
+            <ion-label style="min-width:28vw;" fixed>Target filler 3:</ion-label>
+            <ion-input [(ngModel)]="targetref_words[2]" type="text" formControlName="filler3" [class.invalid]="!form_items.controls.filler3.valid && submit_failed" (tap)="remove_img_el('filler3');"></ion-input>
+
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler3')">
+              <ion-icon name="images" color='dark'></ion-icon>
+            </button>
+          </ion-item>
+
+          <ion-item id='filler4'>
             <ion-label style="min-width:28vw;" fixed>Nontarget filler 1:</ion-label>
-            <ion-input [(ngModel)]="nontargref_words[0]" type="text" formControlName="filler4"></ion-input>
+            <ion-input [(ngModel)]="nontargref_words[0]" type="text" formControlName="filler4" [class.invalid]="!form_items.controls.filler4.valid && submit_failed" (tap)="remove_img_el('filler4');"></ion-input>
+
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler4')">
+              <ion-icon name="images" color='dark'></ion-icon>
+            </button>
           </ion-item>
-          <ion-item>
+
+          <ion-item id='filler5'>
             <ion-label style="min-width:28vw;" fixed>Nontarget filler 2:</ion-label>
-            <ion-input [(ngModel)]="nontargref_words[1]" type="text" formControlName="filler5"></ion-input>
+            <ion-input [(ngModel)]="nontargref_words[1]" type="text" formControlName="filler5" [class.invalid]="!form_items.controls.filler5.valid && submit_failed" (tap)="remove_img_el('filler5');"></ion-input>
+
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler5')">
+              <ion-icon name="images" color='dark'></ion-icon>
+            </button>
           </ion-item>
-          <ion-item>
+
+          <ion-item id='filler6'>
             <ion-label style="min-width:28vw;" fixed>Nontarget filler 3:</ion-label>
-            <ion-input [(ngModel)]="nontargref_words[2]" type="text" formControlName="filler6"></ion-input>
+            <ion-input [(ngModel)]="nontargref_words[2]" type="text" formControlName="filler6" [class.invalid]="!form_items.controls.filler6.valid && submit_failed" (tap)="remove_img_el('filler6');"></ion-input>
+
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler6')">
+              <ion-icon name="images" color='dark'></ion-icon>
+            </button>
           </ion-item>
-          <ion-item>
+
+          <ion-item id='filler7'>
             <ion-label style="min-width:28vw;" fixed>Nontarget filler 4:</ion-label>
-            <ion-input [(ngModel)]="nontargref_words[3]" type="text" formControlName="filler7"></ion-input>
+            <ion-input [(ngModel)]="nontargref_words[3]" type="text" formControlName="filler7" [class.invalid]="!form_items.controls.filler7.valid && submit_failed" (tap)="remove_img_el('filler7');"></ion-input>
+
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler7')">
+              <ion-icon name="images" color='dark'></ion-icon>
+            </button>
           </ion-item>
-          <ion-item>
+
+          <ion-item id='filler8'>
             <ion-label style="min-width:28vw;" fixed>Nontarget filler 5:</ion-label>
-            <ion-input [(ngModel)]="nontargref_words[4]" type="text" formControlName="filler8"></ion-input>
+            <ion-input [(ngModel)]="nontargref_words[4]" type="text" formControlName="filler8" [class.invalid]="!form_items.controls.filler8.valid && submit_failed" (tap)="remove_img_el('filler8');"></ion-input>
+
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler8')">
+              <ion-icon name="images" color='dark'></ion-icon>
+            </button>
           </ion-item>
-          <ion-item>
+
+          <ion-item id='filler9'>
             <ion-label style="min-width:28vw;" fixed>Nontarget filler 6:</ion-label>
-            <ion-input [(ngModel)]="nontargref_words[5]" type="text" formControlName="filler9"></ion-input>
+            <ion-input [(ngModel)]="nontargref_words[5]" type="text" formControlName="filler9" [class.invalid]="!form_items.controls.filler9.valid && submit_failed" (tap)="remove_img_el('filler9');"></ion-input>
+
+            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler9')">
+              <ion-icon name="images" color='dark'></ion-icon>
+            </button>
           </ion-item>
 
           <br />

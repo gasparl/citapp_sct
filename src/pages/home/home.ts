@@ -444,19 +444,21 @@ export class HomePage {
     });
     popover.onDidDismiss(selected_img => {
       if (selected_img != null) {
-        this.img_dict[parent_id] = selected_img;
-        this.image_names();
-        this.img_dict[parent_id + '_img'] = this.dataShare.stored_images[selected_img];
-        this.display_thumbnail(parent_id);
+        this.add_img(parent_id, selected_img);
       }
     });
+  }
+
+  add_img(img_key, filename) {
+    this.img_dict[img_key] = filename;
+    this.image_names();
+    this.img_dict[img_key + '_img'] = this.dataShare.stored_images[filename];
+    this.display_thumbnail(img_key);
   }
 
   display_thumbnail(img_key) {
     let img = new Image;
     img.style.height = "9vw";
-    console.log(this.img_dict);
-    console.log(img_key);
     img.id = img_key + '_img';
     img.src = URL.createObjectURL(this.img_dict[img.id]);
     try {
@@ -468,15 +470,13 @@ export class HomePage {
   }
 
   remove_img_el(parent_id) {
-    try {
+    if (this.img_dict[parent_id] !== undefined) {
       this.img_dict[parent_id] = '';
       this.image_names();
       let img_elem = document.getElementById(parent_id + '_img');
       img_elem.parentNode.removeChild(img_elem);
       delete this.img_dict[parent_id];
       delete this.img_dict[parent_id + '_img'];
-    } catch {
-      console.log('No image found. ', parent_id);
     }
   }
 
@@ -559,10 +559,20 @@ export class HomePage {
 
 
   default_fillers() {
+    Object.keys(this.img_dict).map((key) => {
+      if (key.slice(0, 6) === 'filler') {
+        this.remove_img_el(key);
+      }
+    });
     this.targetref_words = JSON.parse(JSON.stringify(this.targetref_words_orig));
     this.nontargref_words = JSON.parse(JSON.stringify(this.nontargref_words_orig));
   }
   default_core() {
+    Object.keys(this.img_dict).map((key) => {
+      if (key.slice(0, 6) === 'target' || key.slice(0, 5) === 'probe') {
+        this.remove_img_el(key);
+      }
+    });
     this.cit_items.map((x, i) => this.cit_items[i] = '');
     this.subj_id = '';
   }
@@ -572,6 +582,35 @@ export class HomePage {
     this.num_of_blocks = 1;
     this.isi_delay_minmax = [300, 700];
     this.response_deadline_main = 900;
+  }
+
+  auto_img() {
+    let feed;
+    let added = [];
+    document.getElementById("imgfeed_id").style.color = 'red';
+    if (Object.keys(this.dataShare.stored_images).length === 0) {
+      feed = 'No images are loaded.'
+    } else {
+      let all_ids = ['target', 'probe1', 'probe2', 'probe3', 'probe4', 'probe5', 'filler1', 'filler2', 'filler3', 'filler4', 'filler5', 'filler6', 'filler7', 'filler8', 'filler9'];
+      Object.keys(this.dataShare.stored_images).map((filename) => {
+        all_ids.map((img_id) => {
+          if (filename.includes(img_id)) {
+            this.add_img(img_id, filename)
+            added.push(filename);
+          }
+        });
+      });
+      if (added.length === 0) {
+        feed = 'No image names match the item names.'
+      } else {
+        document.getElementById("imgfeed_id").style.color = 'green';
+        feed = 'Images added. (' + added.length + ' images: ' + added.join(', ') + '.)';
+      }
+    }
+    document.getElementById("imgfeed_id").innerHTML = feed;
+    setTimeout(() => {
+      document.getElementById("imgfeed_id").innerHTML = '';
+    }, 3000);
   }
 
   task_start() {

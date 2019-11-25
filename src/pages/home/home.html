@@ -1,4 +1,4 @@
-<ion-header *ngIf="current_div == 'div_settings'">
+<ion-header *ngIf="citP.current_div == 'div_settings'">
   <ion-toolbar>
     <ion-segment [(ngModel)]='current_segment'>
       <ion-segment-button value="menus" icon-only (tap)="pop_menu($event)">
@@ -49,12 +49,57 @@
 
   <div *ngSwitchCase="'div_settings'">
 
-    <div [hidden]="current_menu == ''">
+    <div [hidden]="current_menu == ''" style="line-height: 150%;">
 
-      <p [hidden]="current_menu != 'm_info'">this test is blah</p>
-      <p [hidden]="current_menu != 'm_demo'">
-        Fill in demo items: %Autofill demo% <br /></p>
-      <p [hidden]="current_menu != 'm_prevs'">here are the previous results</p>
+      <div [hidden]="current_menu != 'm_info'">
+        <div style="font-size:110%;">
+          <b>Info about this application</b>
+        </div>
+        <br />
+        Below you find a very brief summary about the Concealed Information Test that is implemented in this app. To properly understand the test, please refer to the <a href="https://github.com/gasparl/citapp_pc/blob/master/README.md" target="_blank">online documentation</a>.
+        <br /><br />
+        The <i>standard</i> and <i>enhanced</i> versions aim to reveal whether or not a certain information detail – the "probe" – is known to the tested person. The "irrelevant" and "target" items must be similar to the probe, and indistinguishable for a person who does not know the relevance of the probe (e.g. the probe is a stolen suitcase, and the irrelevant and targets are other suitcases). In this app, the input requires no designated "irrelevant" items: all items are potential probes, and the real probe can be given as any of these items. In the end, all items (except the target) will each be automatically evaluated as potential probes.
+        <br /><br />
+        The <i>enhanced</i> version is much more effective than the <i>standard</i>; the latter is only for experimental purposes. The <i>no-target</i> version is a tentative approach in development to make the test applicable in cases where the probe is actually known to the participant.
+        <br /><br />
+
+      </div>
+
+      <div [hidden]="current_menu != 'm_demo'">
+        <div style="font-size:110%;">
+          <b>Demo</b>
+        </div>
+        <br />
+        For demonstration's sake, take a situation in which you want to reveal whether a person is aware of a certain date. For example, someone is suspected to be concealing the knowledge of an upcoming terrorist attack on <i>May 9</i>. In this
+        case, five
+        different, additional dates should be chosen randomly. For example, <i>June 14</i>, <i>December 5</i>, <i>August 25</i>, <i>February 12</i>, and <i>March 29</i>. From among these, one should be chosen randomly as target, for example, <i>August
+          25</i>. These should be filled in
+        accordingly on the starting page: <i>AUG 25</i> as Target, and the other dates as Probes (1-5). (In this case, the real "probe" is <i>MAY 09</i>, but the app automatically evaluates all items as potential probes.) The Subject ID could be "<i>CIT_demo_suspect_01</i>".
+        <br /><br />
+        All these data can be filled in automatically for a demonstration using the following button:
+        <br />
+        <div id="demofeed_id" style="color:white;text-align:center;">
+          Demo data loaded.
+        </div>
+        <button ion-button type='button' (tap)="fill_demo()" color="light" block>Fill in demo data</button>
+        <br />
+        <hr /><br />
+        If you would like to do a pilot test to see that the method truly detects a relevant detail, one good way is to enter your own personal name (e.g. family name) as one probe and, as target and other probes, enter other, randomly chosen names.
+        If you then
+        complete the test in the enhanced version with, say, two blocks, it is very likely that you will be detected. (Personal names are typically highly personally relevant, and thus appear highly salient in the task.) For a control test, to show
+        a no effect (simulating innocence), you may enter random names for all items. Note that, in this case, the person tested should not know which item is the presumed real probe item! The mere knowledge of the
+        relevance of this item (as the probe to be tested) can cause different responding.
+        <br />
+      </div>
+
+      <div [hidden]="current_menu != 'm_prevs'">
+        <div style="font-size:110%;">
+          <b>Results of previous tests</b>
+        </div>
+        <br />
+        List of results...
+
+      </div>
 
     </div>
 

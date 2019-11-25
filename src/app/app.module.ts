@@ -17,6 +17,7 @@ import { PopoverItems } from '../pages/home/popover_menu';
 import { PopoverImg } from '../pages/home/popover_img';
 import { HttpClientModule } from '@angular/common/http';
 import { DataShareProvider } from '../providers/data-share/data-share';
+import { CitProvider } from '../providers/cit/cit';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { DataShareProvider } from '../providers/data-share/data-share';
     EmailComposer,
     File,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    DataShareProvider
+    DataShareProvider,
+    CitProvider
   ]
 })
 export class AppModule {}

@@ -1,5 +1,5 @@
 import { Component, ViewChild } from "@angular/core";
-import { Slides } from 'ionic-angular';
+import { Slides, Content } from 'ionic-angular';
 import { NavController } from "ionic-angular";
 import { Storage } from "@ionic/storage";
 import { StatusBar } from '@ionic-native/status-bar';
@@ -20,6 +20,55 @@ import { CitProvider } from '../../providers/cit/cit';
 })
 export class HomePage {
   @ViewChild(Slides) slides: Slides;
+  @ViewChild(Content) cntent_temp: Content;
+
+
+  // /*
+  to_exec: any;
+  onChange(ee) {
+    if (ee.keyCode === 13) {
+      console.log(eval(this.to_exec))
+    }
+  }
+  touchsim() {
+    var info = this.citP.trial_stim.type + " (" + this.citP.trial_stim.word + ")";
+    var rt_sim = this.citP.randomdigit(600, 830);
+    if (this.citP.trial_stim.type == "probe") {
+      rt_sim = rt_sim;// + 10;
+    }
+    var correct_chance1 = 1;
+    var correct_chance2 = 0.95;
+    var correct_chance, sim_key, corr_code, incor_code, chosen_response;
+    setTimeout(function() {
+      if (this.blocknum == 1) {
+        correct_chance = correct_chance1;
+      } else {
+        correct_chance = correct_chance2;
+      }
+      if (this.correct_resp == "resp_a") {
+        corr_code = "resp_a";
+        incor_code = "resp_b";
+      } else {
+        corr_code = "resp_b";
+        incor_code = "resp_a";
+      }
+      if (Math.random() < correct_chance) { // e.g. 95% correctly right key
+        sim_key = corr_code;
+      } else {
+        sim_key = incor_code;
+      }
+      if (sim_key == "resp_a") {
+        chosen_response = "Response: resp_a (LEFT)";
+      } else {
+        chosen_response = "Response: resp_b (RIGHT)";
+      }
+      info += "\n--len(stims): " + this.teststim.length + ", trialnum: " + this.block_trialnum + "\n";
+      this.touchstart("", sim_key);
+      info += chosen_response + " preset " + rt_sim + ", actual " + Math.round(performance.now() - this.start) + "\n";
+      console.log(info);
+    }.bind(this), rt_sim);
+  }
+  //*/
 
 
   cit_items: string[] = [];
@@ -49,7 +98,6 @@ export class HomePage {
     public dataShare: DataShareProvider,
     public citP: CitProvider
   ) {
-
     this.load_from_device();
     this.on_device = this.platform.is("cordova");
 
@@ -75,6 +123,32 @@ export class HomePage {
       }
     });
   }
+  internet_on: boolean = false;
+  ionViewDidLoad() {
+    this.citP.content = this.cntent_temp;
+    if (this.on_device) {
+      setInterval(() => {
+        if (this.network.type) {
+          if (this.network.type != "none") {
+            this.internet_on = true;
+          } else {
+            this.internet_on = false;
+          }
+        }
+      }, 500);
+      this.statusBar.hide();
+      this.citP.navigationBar.hideNavigationBar();
+      this.citP.navigationBar.setUp(true);
+      this.citP.backgroundMode.enable();
+      this.citP.backgroundMode.setDefaults({
+        title: "Concealed Information Test App active",
+        text: "",
+        silent: true
+      });
+      this.citP.path = this.citP.file.externalDataDirectory;
+    }
+  }
+
 
 
   send_single_stat = function(test_date, key_to_del) {
@@ -274,31 +348,7 @@ export class HomePage {
     console.log(this.cit_items);
   };
 
-  internet_on: boolean = false;
-  ionViewDidLoad() {
 
-    if (this.on_device) {
-      setInterval(() => {
-        if (this.network.type) {
-          if (this.network.type != "none") {
-            this.internet_on = true;
-          } else {
-            this.internet_on = false;
-          }
-        }
-      }, 500);
-      this.statusBar.hide();
-      this.citP.navigationBar.hideNavigationBar();
-      this.citP.navigationBar.setUp(true);
-      this.citP.backgroundMode.enable();
-      this.citP.backgroundMode.setDefaults({
-        title: "Concealed Information Test App active",
-        text: "",
-        silent: true
-      });
-      this.citP.path = this.citP.file.externalDataDirectory;
-    }
-  }
   seg_values: string[] = ['main', 'fillers', 'settings', 'autofill', 'start'];
   current_segment: string = '';
   current_menu: string = '';
@@ -311,6 +361,7 @@ export class HomePage {
       if (pop_data != null) {
         this.current_menu = pop_data;
         this.current_segment = 'menus';
+        this.citP.content.scrollToTop(0);
       }
     })
   }
@@ -457,9 +508,9 @@ export class HomePage {
     this.citP.subj_id = 'CIT_demo_suspect_01';
     this.cit_items[0] = 'AUG 25';
     this.cit_items[1] = 'FEB 12';
-    this.cit_items[2] = 'MAR 29';
-    this.cit_items[3] = 'MAY 09';
-    this.cit_items[4] = 'JUN 14';
+    this.cit_items[2] = 'MAY 09';
+    this.cit_items[3] = 'JUN 14';
+    this.cit_items[4] = 'OCT 23';
     this.cit_items[5] = 'DEC 05';
     document.getElementById("demofeed_id").style.color = 'green';
     setTimeout(() => {
@@ -496,6 +547,26 @@ export class HomePage {
     }, 3000);
   }
 
+  // item generation
+
+  create_stim_base() {
+    var stim_base_temp = [];
+    var words_array = JSON.parse(JSON.stringify(this.cit_items));
+    words_array.forEach(function(word, num) {
+      stim_base_temp.push({
+        'word': word
+      });
+      if (0 === num) {
+        stim_base_temp[num]["type"] = "target";
+        this.the_targets.push(stim_base_temp[num].word);
+      } else {
+        stim_base_temp[num]["type"] = "probe" + num;
+      }
+    }, this);
+    this.citP.stim_base = stim_base_temp;
+    this.citP.set_block_texts();
+    this.citP.set_cit_types();
+  }
 
   send_mail() {
     if (this.on_device) {

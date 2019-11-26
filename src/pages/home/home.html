@@ -4,19 +4,19 @@
       <ion-segment-button value="menus" icon-only (tap)="pop_menu($event)">
         <ion-icon name="menu"></ion-icon>
       </ion-segment-button>
-      <ion-segment-button value="main" (tap)="current_menu = '';slides.slideTo(0);content.scrollToTop(0);">
+      <ion-segment-button value="main" (tap)="current_menu = '';slides.slideTo(0);citP.content.scrollToTop(0);">
         Core
       </ion-segment-button>
-      <ion-segment-button value="fillers" (tap)="current_menu = '';slides.slideTo(1);content.scrollToTop(0);">
+      <ion-segment-button value="fillers" (tap)="current_menu = '';slides.slideTo(1);citP.content.scrollToTop(0);">
         Fillers
       </ion-segment-button>
-      <ion-segment-button value="settings" (tap)="current_menu = '';slides.slideTo(2);content.scrollToTop(0);">
+      <ion-segment-button value="settings" (tap)="current_menu = '';slides.slideTo(2);citP.content.scrollToTop(0);">
         Settings
       </ion-segment-button>
-      <ion-segment-button value="autofill" (tap)="current_menu = '';slides.slideTo(3);content.scrollToTop(0);">
+      <ion-segment-button value="autofill" (tap)="current_menu = '';slides.slideTo(3);citP.content.scrollToTop(0);">
         Storing
       </ion-segment-button>
-      <ion-segment-button value="start" (tap)="current_menu = '';slides.slideTo(4);content.scrollToTop(0);">
+      <ion-segment-button value="start" (tap)="current_menu = '';slides.slideTo(4);citP.content.scrollToTop(0);">
         Start
       </ion-segment-button>
     </ion-segment>
@@ -24,12 +24,12 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding [ngSwitch]="current_div" [ngStyle]="{ 'background-color': bg_color }" text-wrap>
+<ion-content padding [ngSwitch]="citP.current_div" [ngStyle]="{ 'background-color': bg_color }" text-wrap>
 
   <div *ngSwitchCase="'div_start'">
 
     <div>
-      <button ion-button type="button" (tap)="switch_divs('div_settings');">Start new test</button></div>
+      <button ion-button type="button" (tap)="citP.switch_divs('div_settings');">Start new test</button></div>
 
     <br /><br />
     <div>
@@ -56,11 +56,15 @@
           <b>Info about this application</b>
         </div>
         <br />
-        Below you find a very brief summary about the Concealed Information Test that is implemented in this app. To properly understand the test, please refer to the <a href="https://github.com/gasparl/citapp_pc/blob/master/README.md" target="_blank">online documentation</a>.
+        Below you find a very brief summary about the Concealed Information Test that is implemented in this app. To properly understand the test, please read the <a href="https://github.com/gasparl/citapp_pc/blob/master/README.md" target="_blank">online
+          documentation</a>.
         <br /><br />
-        The <i>standard</i> and <i>enhanced</i> versions aim to reveal whether or not a certain information detail – the "probe" – is known to the tested person. The "irrelevant" and "target" items must be similar to the probe, and indistinguishable for a person who does not know the relevance of the probe (e.g. the probe is a stolen suitcase, and the irrelevant and targets are other suitcases). In this app, the input requires no designated "irrelevant" items: all items are potential probes, and the real probe can be given as any of these items. In the end, all items (except the target) will each be automatically evaluated as potential probes.
+        The <i>standard</i> and <i>enhanced</i> versions aim to reveal whether or not a certain information detail – the "probe" – is known to the tested person. The "irrelevant" and "target" items must be similar to the probe, and indistinguishable
+        for a person who does not know the relevance of the probe (e.g. the probe is a stolen suitcase, and the irrelevant and targets are other suitcases). In this app, the input requires no designated "irrelevant" items: all items are potential
+        probes, and the real probe can be given as any of these items. In the end, all items (except the target) will each be automatically evaluated as potential probes.
         <br /><br />
-        The <i>enhanced</i> version is much more effective than the <i>standard</i>; the latter is only for experimental purposes. The <i>no-target</i> version is a tentative approach in development to make the test applicable in cases where the probe is actually known to the participant.
+        The <i>enhanced</i> version is much more effective than the <i>standard</i>; the latter is only for experimental purposes. The <i>no-target</i> version is a tentative approach in development to make the test applicable in cases where the
+        probe is actually known to the participant.
         <br /><br />
 
       </div>
@@ -72,7 +76,7 @@
         <br />
         For demonstration's sake, take a situation in which you want to reveal whether a person is aware of a certain date. For example, someone is suspected to be concealing the knowledge of an upcoming terrorist attack on <i>May 9</i>. In this
         case, five
-        different, additional dates should be chosen randomly. For example, <i>June 14</i>, <i>December 5</i>, <i>August 25</i>, <i>February 12</i>, and <i>March 29</i>. From among these, one should be chosen randomly as target, for example, <i>August
+        different, additional dates should be chosen randomly. For example, <i>June 14</i>, <i>December 5</i>, <i>August 25</i>, <i>February 12</i>, and <i>October 23</i>. From among these, one should be chosen randomly as target, for example, <i>August
           25</i>. These should be filled in
         accordingly on the starting page: <i>AUG 25</i> as Target, and the other dates as Probes (1-5). (In this case, the real "probe" is <i>MAY 09</i>, but the app automatically evaluates all items as potential probes.) The Subject ID could be "<i>CIT_demo_suspect_01</i>".
         <br /><br />
@@ -110,7 +114,7 @@
 
           <ion-item>
             <ion-label style="min-width:21vw;" fixed><b>Subject ID:</b></ion-label>
-            <ion-input style="text-transform:none;" [(ngModel)]="subj_id" formControlName="sub_id" type="text" [class.invalid]="!form_items.controls.sub_id.valid && submit_failed"></ion-input>
+            <ion-input style="text-transform:none;" [(ngModel)]="citP.subj_id" formControlName="sub_id" type="text" [class.invalid]="!form_items.controls.sub_id.valid && submit_failed"></ion-input>
           </ion-item>
           <br /><br />
           <div style="font-weight:bold;font-size:130%;text-align:left;padding-left: 16px;">
@@ -271,7 +275,7 @@
 
           <ion-item>
             <ion-label style="margin-bottom:0;color:black">Version</ion-label>
-            <ion-select [(ngModel)]="cit_type" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;">
+            <ion-select [(ngModel)]="citP.cit_type" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;">
               <ion-option value="0">Enhanced</ion-option>
               <ion-option value="1">Standard</ion-option>
               <ion-option value="2">No-target</ion-option>
@@ -280,7 +284,7 @@
 
           <ion-item>
             <ion-label style="margin-bottom:0;color:black">Number of blocks</ion-label>
-            <ion-select [(ngModel)]="num_of_blocks" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;">
+            <ion-select [(ngModel)]="citP.num_of_blocks" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;">
               <ion-option value="1">1</ion-option>
               <ion-option value="2">2</ion-option>
               <ion-option value="3">3</ion-option>
@@ -290,13 +294,13 @@
 
           <ion-item>
             <ion-label style="min-width:40vw;color:black;" fixed>Response time limit (ms)</ion-label>
-            <ion-input [(ngModel)]="response_deadline_main" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
+            <ion-input [(ngModel)]="citP.response_deadline_main" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
           </ion-item>
 
           <ion-item>
             <ion-label style="min-width:65vw;color:black;" fixed>Interstimulus interval min.-max. (ms)</ion-label>
-            <ion-input [(ngModel)]="isi_delay_minmax[0]" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
-            <ion-input [(ngModel)]="isi_delay_minmax[1]" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
+            <ion-input [(ngModel)]="citP.isi_delay_minmax[0]" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
+            <ion-input [(ngModel)]="citP.isi_delay_minmax[1]" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
           </ion-item>
 
           <ion-item>
@@ -352,7 +356,7 @@
         </ion-slide>
 
         <ion-slide>
-          <br /><span *ngIf="subj_id!=''" style="font-size:120%">Initiate test with Subject ID <b>{{subj_id}}</b>.</span>
+          <br /><span *ngIf="citP.subj_id != ''" style="font-size:120%">Initiate test with Subject ID <b>{{citP.subj_id}}</b>.</span>
           <br />
           <br />
           <i>
@@ -380,55 +384,19 @@
       zum Antippen!
       <span [innerHTML]="task_instruction"></span></p>
     <div text-center>
-      <button ion-button type="button" (tap)="nextblock();">OK</button>
+      <button ion-button type="button" (tap)="citP.nextblock();">OK</button>
     </div>
-  </div>
-
-  <div *ngSwitchCase="'div_target_check'" [ngStyle]="{'pointer-events': pointev.div_target_check || 'none' }">
-
-    <span><b>Um sicherzustellen, dass Sie sich die Details, auf die Sie mit JA antworten sollen, genau einprägen, geben Sie diese bitte hier ein.</b>
-    </span>
-
-    <ion-grid>
-      <ion-row>
-        <ion-col>
-          <br /><span style="padding-left: 16px;"> Vorname:</span>
-          <ion-item text-uppercase>
-            <ion-input [(ngModel)]="targ_check_inp[0]" type="text" text-uppercase>
-            </ion-input>
-          </ion-item>
-        </ion-col>
-
-        <ion-col>
-          <br /><span style="padding-left: 16px;">Nachname:</span>
-          <ion-item>
-            <ion-input [(ngModel)]="targ_check_inp[1]" type="text" text-uppercase>
-            </ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-
-    <br />
-    <div text-center>
-      <button ion-button (tap)="target_check();">OK</button>
-    </div>
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
   </div>
 
 
   <div *ngSwitchCase="'div_blockstart'">
-    <p [innerHTML]="block_texts[blocknum]"></p>
+    <p [innerHTML]="citP.block_texts[citP.blocknum]"></p>
     <i>(Bitte stellen Sie sicher, dass Sie Ihre <b>{{crrnt_handpos}}</b> zum Antippen benutzen.)</i><br /><br />
     <div text-center>
-      <button ion-button (tap)="runblock();">Start</button>
+      <button ion-button (tap)="citP.runblock();">Start</button>
       <br /><br />
       <hr />
-      <button ion-button style="text-transform: none;background-color:#5e749d;" (tap)="switch_divs('div_instructions');">Anweisungen erneut anzeigen</button>
+      <button ion-button style="text-transform: none;background-color:#5e749d;" (tap)="citP.switch_divs('div_instructions');">Anweisungen erneut anzeigen</button>
     </div>
   </div>
 
@@ -436,13 +404,13 @@
   <div id="div_cit_main" *ngSwitchCase="'div_cit_main'">
     <p id="feed_id"><b>{{feed_text}}</b></p>
 
-    <p (touchstart)="touchstart($event, 'resp_a');" (touchend)="touchend($event, 'resp_a');" id="resp_left" class="resp_buttons"></p>
+    <p (touchstart)="citP.touchstart($event, 'resp_a');" (touchend)="citP.touchend($event, 'resp_a');" id="resp_left" class="resp_buttons"></p>
 
-    <p (touchstart)="touchstart($event, 'resp_b');" (touchend)="touchend($event, 'resp_b');" id="resp_right" class="resp_buttons"></p>
+    <p (touchstart)="citP.touchstart($event, 'resp_b');" (touchend)="citP.touchend($event, 'resp_b');" id="resp_right" class="resp_buttons"></p>
 
     <p id="stimulus">{{stimulus_text}}</p>
 
-    <p id="start_text" (tap)="visib.start_text = false; start_trials();" *ngIf="visib.start_text">Tippen Sie hier, um zu beginnen.</p>
+    <p id="start_text" (tap)="citP.visib.start_text = false; citP.start_trials();" *ngIf="citP.visib.start_text">Tippen Sie hier, um zu beginnen.</p>
   </div>
 
   <div *ngSwitchCase="'div_end'">
@@ -484,7 +452,7 @@
   </div>
 
 
-  <ion-input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;"></ion-input>
+  <input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;">
   <!-- app console for testing -->
 
 </ion-content>

@@ -9,6 +9,47 @@ import { NavigationBar } from '@ionic-native/navigation-bar';
 export class CitProvider {
   content: any;
 
+  // /*
+  touchsim() {
+    var info = this.trial_stim.type + " (" + this.trial_stim.word + ")";
+    var rt_sim = this.randomdigit(600, 830);
+    if (this.trial_stim.type == "probe") {
+      rt_sim = rt_sim;// + 10;
+    }
+    var correct_chance1 = 1;
+    var correct_chance2 = 0.95;
+    var correct_chance, sim_key, corr_code, incor_code, chosen_response;
+    setTimeout(function() {
+      if (this.blocknum == 1) {
+        correct_chance = correct_chance1;
+      } else {
+        correct_chance = correct_chance2;
+      }
+      if (this.correct_resp == "resp_a") {
+        corr_code = "resp_a";
+        incor_code = "resp_b";
+      } else {
+        corr_code = "resp_b";
+        incor_code = "resp_a";
+      }
+      if (Math.random() < correct_chance) { // e.g. 95% correctly right key
+        sim_key = corr_code;
+      } else {
+        sim_key = incor_code;
+      }
+      if (sim_key == "resp_a") {
+        chosen_response = "Response: resp_a (LEFT)";
+      } else {
+        chosen_response = "Response: resp_b (RIGHT)";
+      }
+      info += "\n--len(stims): " + this.teststim.length + ", trialnum: " + this.block_trialnum + "\n";
+      this.touchstart("", sim_key);
+      info += chosen_response + " preset " + rt_sim + ", actual " + Math.round(performance.now() - this.start) + "\n";
+      console.log(info);
+    }.bind(this), rt_sim);
+  }
+  //*/
+
   subj_id: string = '';
   personal_feedback: string = '';
   false_delay: number = 400;
@@ -21,10 +62,9 @@ export class CitProvider {
   response_deadline_main: number = 900;
   bg_color: string = "#fff";
   feed_text: string = "";
-  task_instruction: string;
   current_div: string = "div_settings"; // ddd default: "div_start", div_settings, div_dems, div_cit_main, div_end
   visib: any = { start_text: true };
-  block_texts: string[] = [];
+  block_texts: string[] = [''];
   teststim: any[];
   tooslow: number;
   incorrect: number;
@@ -65,8 +105,8 @@ export class CitProvider {
   the_probes: string[] = [];
   stimulus_text: string = "";
   to_display: string = "";
-  targetrefs: string[] = [];
-  nontargrefs: string[] = [];
+  targetrefs: object[] = [];
+  nontargrefs: object[] = [];
   f_name: string;
   path: any = "";
 
@@ -97,56 +137,54 @@ export class CitProvider {
     // this.switch_divs("div_instructions");
   }
 
-  inducers_instructions: string;
   the_nontargs: string[];
   targs_names: string;
   nontargs_names: string;
-  set_cit_type() {
-    this.inducers_instructions =
-      'You have to categorize each word that appears during the test by pressing the key "E" on the left or the key "I" on the right.</br></br>Press the right ("I") key, when you see a familiar-referring word. These words are: ' + this.targetrefs + '. Press the left ("E") key, when you see an unfamiliar-referring word. These words are: ' + this.nontargrefs + '.';
-    if (this.cit_type == 0) {
-      // standard CIT
-      this.task_instruction = 'You will see country names appearing in the middle of the screen. You have to press the key "I" to the following target country: <b>' +
-        this.the_targets.sort().join("</b>, <b>").toUpperCase() +
-        '</b><br>You have to press the key "E" to all other details.<br><br>';
-    } else if (this.cit_type == 1) {
-      // fillers (no target)
-      this.task_instruction = 'Press the right ("I") key when you see the following target country: <b>' +
-        this.the_targets.sort().join("</b>, <b>").toUpperCase() +
-        '.</b><br>Press the left ("E") key to all other countries (<b>' +
-        this.the_nontargs.sort().join("</b>, <b>").toUpperCase() +
-        '</b>). </br></br>' +
-        this.inducers_instructions;
-    } else if (this.cit_type == 2) {
-      // fillers & target
-      this.task_instruction = 'Press the right ("I") key when you see the following target country: <b>' +
-        this.the_targets.sort().join("</b>, <b>").toUpperCase() +
-        '.</b><br>Press the left ("E") key to all other countries (<b>' +
-        this.the_nontargs.sort().join("</b>, <b>").toUpperCase() +
-        '</b>). </br></br>' +
-        this.inducers_instructions;
-    }
-    this.targs_names = '<b>' + this.the_targets.sort().join("</b>, <b>").toUpperCase() + '</b>';
-    this.nontargs_names = '<b>' + this.the_nontargs.sort().join("</b>, <b>").toUpperCase() + '</b>';
-  }
 
   set_block_texts() {
-    var target_reminder;
+    let trefs = '<b>' + this.targetrefs.map(e => {
+      return e['word'];
+    }).sort().join("</b>, <b>") + '</b>';
+    let nontrefs = '<b>' + this.nontargrefs.map(e => {
+      return e['word'];
+    }).sort().join("</b>, <b>") + '</b>';
+    let targs_names = '<b>' + this.the_targets.sort().join("</b>, <b>").toUpperCase() + '</b>';
+    let nontargs_names = '<b>' + this.the_nontargs.sort().join("</b>, <b>").toUpperCase() + '</b>';
+
+    var numprac;
     if (this.cit_type == 1) {
-      target_reminder = "";
+      numprac = 'three';
     } else {
-      target_reminder = this.stim_base[0][1].word.toUpperCase();
+      numprac = 'two';
     }
-    this.block_texts[0] = "";
-    this.block_texts[1] =
-      'During the experiment, various words will appear in the middle of the screen. You have to categorize each word by pressing the key "E" on the left or the key "I" on the right.</br></br>There will be three short practice rounds. In this first practice round, you have to categorize expressions that refer to familiarity or unfamiliarity. ' + this.inducers_instructions +
-      '<br><br><span id="feedback_id1">In each category of words, you need to respond to at least 80% correctly and in time (within 1 second).<br><br></span><p id="chances_id"></p>';
-    this.block_texts[2] =
-      'Now, in this second practice round, we just want to see that you clearly understand the task. Therefore, you will have a lot of time to choose each of your responses, just make sure you choose accurately. <b>You must respond to each item correctly.</b> If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice round.<br><br>If needed, click <b>show full instructions again</b> to reread the details.<span id="feedback_id2"></span><p id="chances_id"></p>';
-    this.block_texts[3] =
-      "<span id='feedback_id3'>You passed the second practice round. In this third and last practice round, you will again have to respond fast, but a certain rate of error is allowed. (Also, the reminder labels at the bottom will not be displayed anymore. But the task is the same.)<br><br>The task is difficult, so don't be surprised if you make mistakes, but do your best: <b>try to be as accurate and as fast as possible</b>.<br></span><p id='chances_id'></p>";
-    this.block_texts[4] =
-      "Good job. Now begins the actual test. The task is the same.<br><br>There will be %% blocks, with breaks in-between. <b>Again: try to be as accurate and as fast as possible.</b><br><br>When you are ready, click on <b>Start</b> to start the first block of the main test.";
+    let intro = 'During the test, various items will appear in the middle of the screen. You have to categorize each item by touching a button on the left or another button on the right. ';
+    let intro_end = 'There will be ' + numprac + ' short practice rounds.';
+    let inducers_instructions =
+      '</br></br>Touch the <i>right</i> button when you see any of the following items: ' + trefs + '. Touch the </i>left</i> button when you see any other item. These other items are: ' + nontrefs + '.';
+    let main_instruction = 'Touch the <i>right</i> button when you see the following target item: <b>' +
+      targs_names +
+      '.</b><br>Touch the </i>left</i> button when you see any other item. (These other items are: <b>' +
+      nontargs_names +
+      '</b>.) </br></br>In this practice round, you will have a lot of time to choose each response, but <b>you must respond to each item correctly</b>. If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice round.<br><br><span id="feedback_id2"></span><p id="chances_id"></p>';
+    // 0: fillers & target, 1: fillers (no target), 2: standard CIT
+    if (this.cit_type !== 1) {
+      this.block_texts.push(
+        intro + intro_end + '</br></br>In this first practice round, you have to categorize two kinds of items. ' + inducers_instructions +
+        '<br><br><span id="feedback_id1">In each category, you need at least 80% correct responses in time.<br><br></span>');
+      if (this.cit_type === 0) {
+        this.block_texts.push('In this second practice round, you have to categorize the main test items. ' + main_instruction);
+        this.block_texts.push(
+          "<span id='feedback_id3'>In this third and last practice round all items are present. You again have to respond fast, but a certain rate of error is allowed.</span>");
+      } else {
+        this.block_texts.push('Now, in this second and last practice round, you also have to categorize the main test items: ' + nontargs_names + '. These all have to be categorized by touching the </i>left</i> button.');
+      }
+    } else {
+      this.block_texts.push(intro + main_instruction + intro_end);
+        this.block_texts.push("<span id='feedback_id3'>Now, in this second and last practice round, you have to respond fast, but a certain rate of error is allowed. The task is the same.");
+    }
+
+    this.block_texts.push(
+      "Now begins the actual test. The task is the same: touch the left button when you see %%image here?%; touch the right button for everything else ().<br><br>Try to be as accurate and as fast as possible.");
   }
 
   capitalize(str1) {
@@ -275,32 +313,6 @@ export class CitProvider {
     }
   }
 
-  set_cit_types() {
-    var inducers_instructions =
-      '<br><br>As continual reminders, there will also appear words that belong to one of the two categories (FAMILIAR or UNFAMILIAR). <br><br>Words belonging to the FAMILIAR category need the answer FAMILIAR (<i>right</i> button). These words are:<br> <b>FAMILIAR</b>, <b>RECOGNIZED</b>, <b>MINE</b><br><br>Words belonging to the UNFAMILIAR category need the answer UNFAMILIAR (<i>left</i> button). These words are:<br> <b>UNFAMILIAR</b>, <b>UNKNOWN</b>, <b>OTHER</b>, <b>THEIRS</b>, <b>THEM</b>, <b>FOREIGN</b></br></br>';
-    if (this.cit_type == 0 || this.cit_type == 3) {
-      // standard CIT
-      this.task_instruction =
-        'Antippen der <i>rechten</i> Schaltfläche bedeutet "JA, ich nehme dieses Item als relevant wahr". Antippen der <i>linken</i> Schaltfläche bedeutet "Nein, ich nehme dieses Item nicht als relevant wahr". <br> Sie werden Wörter (Vornamen, Nachnamen) sehen, die in der Mitte des Bildschirms auftauchen. Sie sollten diese wahrnehmen und mit JA auf die folgenden Details antworten: <b>' +
-        this.the_targets.join("</b>, <b>").toUpperCase() +
-        "</b><br/><br/>Auf alle anderen Details (andere Namen) sollten Sie mit NEIN antworten. Zur Erinnerung: Sie leugnen, irgendwelche der anderen Details als relevant für Sie wahrzunehmen, also sollten Sie auf alle mit NEIN antworten.<br/><br/>"
-        ;
-    } else if (this.cit_type == 1 || this.cit_type == 4) {
-      // induced & target
-      this.task_instruction =
-        'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (forenames, surnames) appearing in the middle of the screen. You have to say FAMILIAR to the following target details: <b>' +
-        this.the_targets.join("</b>, <b>").toUpperCase() +
-        "</b><br><br>You have to say UNFAMILIAR to all other actual details (other forenames, surnames). Remember: you are denying that you recognize any of these other details as relevant to you, so you you have to say UNFAMILIAR to all of them. " +
-        inducers_instructions
-        ;
-    } else if (this.cit_type == 2 || this.cit_type == 5) {
-      // induced - nontarget
-      this.task_instruction =
-        'Tapping the <i>right</i> button means that the displayed item is "FAMILIAR" to you. Tapping the <i>left</i> button means that the item is "UNFAMILIAR" to you. You will see words (forenames, surnames) appearing in the middle of the screen. You have to say UNFAMILIAR to all these details. Remember: you are denying that you recognize any of these details as relevant to you, so you you have to say UNFAMILIAR to all of them. ' +
-        inducers_instructions;
-    }
-  }
-
   item_display() {
     if (this.trial_stim.type == "target" || this.trial_stim.type == "selfrefitem") {
       this.correct_resp = "resp_b";
@@ -358,27 +370,6 @@ export class CitProvider {
         ".<br><br>Bitte geben Sie genaue und im Zeitlimit liegende Antworten.<br><br>";
     }
     return is_valid;
-  }
-  main_eval() {
-    //at least 50% on each item. if not, warn accordingly. kickout below 40%
-    var verylow = false;
-    var types_failed = [];
-    for (var it_type in this.rt_data_dict) {
-      var rts_correct = this.rt_data_dict[it_type].filter(function(rt_item) {
-        return rt_item > 150;
-      });
-      var corr_ratio = rts_correct.length / this.rt_data_dict[it_type].length;
-      if (corr_ratio < 0.5) {
-        verylow = true;
-        types_failed.push(
-          " " +
-          this.it_type_feed_dict[it_type] +
-          " (" +
-          Math.floor(corr_ratio * 10000) / 100 +
-          "% correct)"
-        );
-      }
-    }
   }
 
   start_trials() {

@@ -363,29 +363,12 @@
             <p *ngIf="internet_on" style="color: red;">Warning: it seems you are connected to the internet. It is best to turn it off to avoid interruptions.</p>
           </i>
           <p *ngIf="!form_items.valid && submit_failed" style="color: red;">Please fill in all necessary details.</p>
-          <button ion-button type="submit">Start test</button>
+          <button ion-button type="submit">Start CIT</button>
 
         </ion-slide>
 
-
       </ion-slides>
-
-
     </form>
-  </div>
-
-
-  <div *ngSwitchCase="'div_instructions'">
-
-    <ion-title>
-      Instruktionen für die Aufgabe
-    </ion-title>
-    <p>Während der Aufgabe werden Sie im unteren Bereich des Displays zwei Schaltflächen sehen: Eine auf der <i>linken Seite</i> und eine auf der <i>rechten</i>. In diesem aktuellen Teil benutzen Sie bitte nur Ihren linken und rechten <b>{{crrnt_handpos}}</b>
-      zum Antippen!
-      <span [innerHTML]="task_instruction"></span></p>
-    <div text-center>
-      <button ion-button type="button" (tap)="citP.nextblock();">OK</button>
-    </div>
   </div>
 
 
@@ -394,9 +377,7 @@
     <i>(Bitte stellen Sie sicher, dass Sie Ihre <b>{{crrnt_handpos}}</b> zum Antippen benutzen.)</i><br /><br />
     <div text-center>
       <button ion-button (tap)="citP.runblock();">Start</button>
-      <br /><br />
-      <hr />
-      <button ion-button style="text-transform: none;background-color:#5e749d;" (tap)="citP.switch_divs('div_instructions');">Anweisungen erneut anzeigen</button>
+      <br />
     </div>
   </div>
 

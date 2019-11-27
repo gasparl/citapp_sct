@@ -22,7 +22,6 @@ export class HomePage {
   @ViewChild(Slides) slides: Slides;
   @ViewChild(Content) cntent_temp: Content;
 
-
   // /*
   to_exec: any;
   onChange(ee) {
@@ -30,46 +29,7 @@ export class HomePage {
       console.log(eval(this.to_exec))
     }
   }
-  touchsim() {
-    var info = this.citP.trial_stim.type + " (" + this.citP.trial_stim.word + ")";
-    var rt_sim = this.citP.randomdigit(600, 830);
-    if (this.citP.trial_stim.type == "probe") {
-      rt_sim = rt_sim;// + 10;
-    }
-    var correct_chance1 = 1;
-    var correct_chance2 = 0.95;
-    var correct_chance, sim_key, corr_code, incor_code, chosen_response;
-    setTimeout(function() {
-      if (this.blocknum == 1) {
-        correct_chance = correct_chance1;
-      } else {
-        correct_chance = correct_chance2;
-      }
-      if (this.correct_resp == "resp_a") {
-        corr_code = "resp_a";
-        incor_code = "resp_b";
-      } else {
-        corr_code = "resp_b";
-        incor_code = "resp_a";
-      }
-      if (Math.random() < correct_chance) { // e.g. 95% correctly right key
-        sim_key = corr_code;
-      } else {
-        sim_key = incor_code;
-      }
-      if (sim_key == "resp_a") {
-        chosen_response = "Response: resp_a (LEFT)";
-      } else {
-        chosen_response = "Response: resp_b (RIGHT)";
-      }
-      info += "\n--len(stims): " + this.teststim.length + ", trialnum: " + this.block_trialnum + "\n";
-      this.touchstart("", sim_key);
-      info += chosen_response + " preset " + rt_sim + ", actual " + Math.round(performance.now() - this.start) + "\n";
-      console.log(info);
-    }.bind(this), rt_sim);
-  }
   //*/
-
 
   cit_items: string[] = [];
   form_items: FormGroup;
@@ -148,8 +108,6 @@ export class HomePage {
       this.citP.path = this.citP.file.externalDataDirectory;
     }
   }
-
-
 
   send_single_stat = function(test_date, key_to_del) {
     this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_stat.php', JSON.stringify({ "testdate": test_date }), { responseType: "text" }).subscribe((response) => {
@@ -404,7 +362,8 @@ export class HomePage {
     if (this.img_dict[parent_id] !== undefined) {
       this.img_dict[parent_id] = '';
       this.image_names();
-      let img_elem = document.getElementById(parent_id + '_img');
+      let img_elem: HTMLImageElement = document.querySelector(parent_id + '_img');
+      img_elem.src = null;
       img_elem.parentNode.removeChild(img_elem);
       delete this.img_dict[parent_id];
       delete this.img_dict[parent_id + '_img'];
@@ -467,13 +426,14 @@ export class HomePage {
       this.submit_failed = true;
       // for TESTING:
       console.log('testing');
-      this.citP.subj_id = "189";
+      this.fill_demo();
     } else {
       if (this.texttrans === true) {
         this.cit_items = this.cit_items.map(w => w.toUpperCase())
         this.targetref_words = this.targetref_words.map(w => w.toUpperCase())
         this.nontargref_words = this.nontargref_words.map(w => w.toUpperCase())
       }
+      this.create_stim_base();
       this.citP.switch_divs('div_instructions');
     }
   }
@@ -550,38 +510,63 @@ export class HomePage {
   // item generation
 
   create_stim_base() {
+    var disp_mode;
     var stim_base_temp = [];
     var words_array = JSON.parse(JSON.stringify(this.cit_items));
     words_array.forEach(function(word, num) {
+      if (Object.keys(this.img_dict).map(e => {
+        return this.img_dict[e]
+      }).indexOf(word) === -1) {
+        disp_mode = 'text';
+      } else {
+        disp_mode = 'image';
+      }
       stim_base_temp.push({
-        'word': word
+        'word': word,
+        'mode': disp_mode
       });
       if (0 === num) {
         stim_base_temp[num]["type"] = "target";
-        this.the_targets.push(stim_base_temp[num].word);
+        this.citP.the_targets.push(stim_base_temp[num].word);
       } else {
         stim_base_temp[num]["type"] = "probe" + num;
+        this.citP.the_nontargs.push(stim_base_temp[num].word);
       }
     }, this);
     this.citP.stim_base = stim_base_temp;
+
+    this.targetref_words.forEach(function(ref_word) {
+      if (Object.keys(this.img_dict).map(e => {
+        return this.img_dict[e]
+      }).indexOf(ref_word) === -1) {
+        disp_mode = 'text';
+      } else {
+        disp_mode = 'image';
+      }
+      this.citP.targetrefs.push({
+        'word': ref_word,
+        'type': 'targetflr',
+        'cat': 'filler',
+        'mode': disp_mode
+      });
+    });
+    this.nontargref_words.forEach(function(ref_word) {
+      if (Object.keys(this.img_dict).map(e => {
+        return this.img_dict[e]
+      }).indexOf(ref_word) === -1) {
+        disp_mode = 'text';
+      } else {
+        disp_mode = 'image';
+      }
+      this.citP.nontargrefs.push({
+        'word': ref_word,
+        'type': 'nontargflr',
+        'cat': 'filler',
+        'mode': disp_mode
+      });
+    });
     this.citP.set_block_texts();
-    this.citP.set_cit_types();
   }
 
-  send_mail() {
-    if (this.on_device) {
-      let email = {
-        to: "lkcsgaspar@gmail.com",
-        cc: "melissa-kunzi@web.de",
-        subject: "CITapp data " + this.citP.subj_id + " ",
-        body: "",
-        attachments: [
-          this.citP.path //+ this.f_name
-        ]
-      };
-      this.emailComposer.open(email);
-    } else {
-      console.log("These are native plugins - only works on the phone.");
-    }
-  }
+
 }

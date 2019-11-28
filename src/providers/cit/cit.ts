@@ -141,15 +141,27 @@ export class CitProvider {
   targs_names: string;
   nontargs_names: string;
 
+
+
+  list_items(dicts) {
+    let textitems = dicts.map(dct => {
+      if (dct.mode === 'text') {
+        return '<li>' + dct.item + '</li>';
+      }
+    }).sort().join('<br>');
+    let imgitems = dicts.map(dct => {
+      if (dct.mode === 'image') {
+        return '<li><img ' + URL.createObjectURL(dct.imgfile) + '></li>';
+      }
+    }).sort().join('<br>');
+    return '<b><ul>' + textitems.concat(imgitems) + '</ul></b>';
+  }
+
   set_block_texts() {
-    let trefs = '<b>' + this.targetrefs.map(e => {
-      return e['word'];
-    }).sort().join("</b>, <b>") + '</b>';
-    let nontrefs = '<b>' + this.nontargrefs.map(e => {
-      return e['word'];
-    }).sort().join("</b>, <b>") + '</b>';
-    let targs_names = '<b>' + this.the_targets.sort().join("</b>, <b>").toUpperCase() + '</b>';
-    let nontargs_names = '<b>' + this.the_nontargs.sort().join("</b>, <b>").toUpperCase() + '</b>';
+    let trefs = this.list_items(this.targetrefs);
+    let nontrefs = this.list_items(this.nontargrefs);
+    let targs = this.list_items(this.the_targets);
+    let nontargs = this.list_items(this.the_nontargs);
 
     var numprac;
     if (this.cit_type == 1) {
@@ -160,12 +172,12 @@ export class CitProvider {
     let intro = 'During the test, various items will appear in the middle of the screen. You have to categorize each item by touching a button on the left or another button on the right. ';
     let intro_end = 'There will be ' + numprac + ' short practice rounds.';
     let inducers_instructions =
-      '</br></br>Touch the <i>right</i> button when you see any of the following items: ' + trefs + '. Touch the </i>left</i> button when you see any other item. These other items are: ' + nontrefs + '.';
-    let main_instruction = 'Touch the <i>right</i> button when you see the following target item: <b>' +
-      targs_names +
-      '.</b><br>Touch the </i>left</i> button when you see any other item. (These other items are: <b>' +
-      nontargs_names +
-      '</b>.) </br></br>In this practice round, you will have a lot of time to choose each response, but <b>you must respond to each item correctly</b>. If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice round.<br><br><span id="feedback_id2"></span><p id="chances_id"></p>';
+      '</br></br>Touch the <i>right</i> button when you see any of the following items:<br>' + trefs + '<br>Touch the </i>left</i> button when you see any other item. These other items are:<br>' + nontrefs;
+    let main_instruction = 'Touch the <i>right</i> button when you see the following target item:<br>' +
+      targs +
+      '<br>Touch the </i>left</i> button when you see any other item. These other items are:<br>' +
+      nontargs +
+      '</br></br>In this practice round, you will have a lot of time to choose each response, but <b>you must respond to each item correctly</b>. If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice round.<br><br><span id="feedback_id2"></span><p id="chances_id"></p>';
     // 0: fillers & target, 1: fillers (no target), 2: standard CIT
     if (this.cit_type !== 1) {
       this.block_texts.push(
@@ -176,15 +188,16 @@ export class CitProvider {
         this.block_texts.push(
           "<span id='feedback_id3'>In this third and last practice round all items are present. You again have to respond fast, but a certain rate of error is allowed.</span>");
       } else {
-        this.block_texts.push('Now, in this second and last practice round, you also have to categorize the main test items: ' + nontargs_names + '. These all have to be categorized by touching the </i>left</i> button.');
+        this.block_texts.push('Now, in this second and last practice round, you also have to categorize the main test items: ' + nontargs + '. These all have to be categorized by touching the </i>left</i> button.');
       }
     } else {
+      targs = '';
       this.block_texts.push(intro + main_instruction + intro_end);
-        this.block_texts.push("<span id='feedback_id3'>Now, in this second and last practice round, you have to respond fast, but a certain rate of error is allowed. The task is the same.");
+      this.block_texts.push("<span id='feedback_id3'>Now, in this second and last practice round, you have to respond fast, but a certain rate of error is allowed. The task is the same.");
     }
 
     this.block_texts.push(
-      "Now begins the actual test. The task is the same: touch the left button when you see %%image here?%; touch the right button for everything else ().<br><br>Try to be as accurate and as fast as possible.");
+      "Now begins the actual test. The task is the same, touch the left button when you see the following items: " + targs + trefs + "<br>Touch the right button for everything else.<br><br>Try to be as accurate and as fast as possible.");
   }
 
   capitalize(str1) {
@@ -504,6 +517,10 @@ export class CitProvider {
       this.basic_times.blocks += "\nBlock " + this.blocknum + " end_last " + Date();
       this.switch_divs("div_end")
       this.store_data();
+      // refresh after ending:
+      // this.navCtrl.setRoot(this.navCtrl.getActive().component);
+
+
 
       this.backgroundMode.setDefaults({
         silent: true

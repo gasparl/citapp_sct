@@ -509,61 +509,83 @@ export class HomePage {
 
   // item generation
 
+
+  load_img(img_key) {
+    let img = new Image;
+    img.style.height = "9vw";
+    img.id = img_key + '_img';
+    img.src = URL.createObjectURL(this.img_dict[img.id]);
+    try {
+      let img_elem = document.getElementById(img.id);
+      img_elem.parentNode.removeChild(img_elem);
+    } catch { }
+    let element = document.getElementById(img_key);
+    element.appendChild(img);
+  }
+
   create_stim_base() {
     var disp_mode;
     var stim_base_temp = [];
-    var words_array = JSON.parse(JSON.stringify(this.cit_items));
-    words_array.forEach(function(word, num) {
-      if (Object.keys(this.img_dict).map(e => {
-        return this.img_dict[e]
-      }).indexOf(word) === -1) {
-        disp_mode = 'text';
-      } else {
-        disp_mode = 'image';
-      }
+    var items_array = JSON.parse(JSON.stringify(this.cit_items));
+    items_array.forEach(function(item, num) {
       stim_base_temp.push({
-        'word': word,
+        'item': item,
+        'cat': 'main',
         'mode': disp_mode
       });
       if (0 === num) {
-        stim_base_temp[num]["type"] = "target";
-        this.citP.the_targets.push(stim_base_temp[num].word);
+        stim_base_temp[num].type = "target";
+        if (Object.keys(this.img_dict).indexOf('target') !== -1) {
+          stim_base_temp[num].mode = 'image';
+          stim_base_temp[num].imgfile = this.img_dict['target_img'];
+        } else {
+          stim_base_temp[num].mode = 'text';
+          stim_base_temp[num].imgfile = null;
+        }
+        this.citP.the_targets.push(JSON.parse(JSON.stringify(stim_base_temp[num])));
       } else {
-        stim_base_temp[num]["type"] = "probe" + num;
-        this.citP.the_nontargs.push(stim_base_temp[num].word);
+        stim_base_temp[num].type = "probe" + num;
+        if (Object.keys(this.img_dict).indexOf('probe' + num) !== -1) {
+          stim_base_temp[num].mode = 'image';
+          stim_base_temp[num].imgfile = this.img_dict["probe" + num + '_img'];
+        } else {
+          stim_base_temp[num].mode = 'text';
+          stim_base_temp[num].imgfile = null;
+        }
+        this.citP.the_nontargs.push(JSON.parse(JSON.stringify(stim_base_temp[num])));
       }
     }, this);
     this.citP.stim_base = stim_base_temp;
 
-    this.targetref_words.forEach(function(ref_word) {
-      if (Object.keys(this.img_dict).map(e => {
-        return this.img_dict[e]
-      }).indexOf(ref_word) === -1) {
-        disp_mode = 'text';
-      } else {
-        disp_mode = 'image';
+    this.targetref_words.forEach(function(ref_item, num) {
+      let tempdict = {
+        'item': ref_item,
+        'type': 'targetflr' + num,
+        'cat': 'filler'
       }
-      this.citP.targetrefs.push({
-        'word': ref_word,
-        'type': 'targetflr',
-        'cat': 'filler',
-        'mode': disp_mode
-      });
+      if (Object.keys(this.img_dict).indexOf('filler' + num) !== -1) {
+        tempdict[num].mode = 'image';
+        tempdict[num].imgfile = this.img_dict["filler" + num + '_img'];
+      } else {
+        tempdict[num].mode = 'text';
+        tempdict[num].imgfile = null;
+      }
+      this.citP.targetrefs.push(tempdict);
     });
-    this.nontargref_words.forEach(function(ref_word) {
-      if (Object.keys(this.img_dict).map(e => {
-        return this.img_dict[e]
-      }).indexOf(ref_word) === -1) {
-        disp_mode = 'text';
-      } else {
-        disp_mode = 'image';
+    this.nontargref_words.forEach(function(ref_item, num) {
+      let tempdict = {
+        'item': ref_item,
+        'type': 'nontargflr' + num,
+        'cat': 'filler'
       }
-      this.citP.nontargrefs.push({
-        'word': ref_word,
-        'type': 'nontargflr',
-        'cat': 'filler',
-        'mode': disp_mode
-      });
+      if (Object.keys(this.img_dict).indexOf('filler' + num) !== -1) {
+        tempdict[num].mode = 'image';
+        tempdict[num].imgfile = this.img_dict["filler" + num + '_img'];
+      } else {
+        tempdict[num].mode = 'text';
+        tempdict[num].imgfile = null;
+      }
+      this.citP.nontargrefs.push(tempdict);
     });
     this.citP.set_block_texts();
   }

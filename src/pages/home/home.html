@@ -24,7 +24,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding [ngSwitch]="citP.current_div" [ngStyle]="{ 'background-color': bg_color }" text-wrap>
+<ion-content hide-nav-bar="true" padding [ngSwitch]="citP.current_div" [ngStyle]="{ 'background-color': bg_color }" text-wrap>
 
   <div *ngSwitchCase="'div_start'">
 
@@ -373,9 +373,16 @@
 
 
   <div *ngSwitchCase="'div_blockstart'">
-    <p [innerHTML]="citP.block_text"></p>
-    <br />
+    <span [innerHTML]="san_html(citP.block_text)"></span>
+
+        SPAN:
+        <span id='test1'>
+        </span>
+
+
     <div text-center>
+      <br />
+      <br />
       <button ion-button (tap)="citP.runblock();">Start</button>
       <br />
     </div>

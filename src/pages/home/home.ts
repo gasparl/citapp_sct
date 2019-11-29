@@ -14,6 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { DataShareProvider } from '../../providers/data-share/data-share';
 import { CitProvider } from '../../providers/cit/cit';
 import { TranslationProvider } from '../../providers/translations/translations';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: "page-home",
@@ -58,7 +59,8 @@ export class HomePage {
     public http: HttpClient,
     public dataShare: DataShareProvider,
     public citP: CitProvider,
-    public trP: TranslationProvider
+    public trP: TranslationProvider,
+    protected _sanitizer: DomSanitizer
   ) {
     this.load_from_device();
     this.on_device = this.platform.is("cordova");
@@ -109,6 +111,10 @@ export class HomePage {
       });
       this.citP.path = this.citP.file.externalDataDirectory;
     }
+  }
+
+  san_html(html) {
+    return this._sanitizer.bypassSecurityTrustHtml(html);
   }
 
   send_single_stat = function(test_date, key_to_del) {
@@ -198,12 +204,26 @@ export class HomePage {
           this.nontargref_words[4] = data_dict.filler8;
           this.nontargref_words[5] = data_dict.filler9;
           this.img_dict = data_dict.img_dict;
+          this.show_imgs();
         } catch (e) {
           console.log('(No locally saved data.)');
         }
       });
     } catch (e) {
       console.log('(No locally saved data.)');
+    }
+  }
+
+  show_imgs() {
+    if (Object.keys(this.img_dict).length !== 0) {
+      let all_ids = ['target', 'probe1', 'probe2', 'probe3', 'probe4', 'probe5', 'filler1', 'filler2', 'filler3', 'filler4', 'filler5', 'filler6', 'filler7', 'filler8', 'filler9'];
+      Object.keys(this.img_dict).map((filename) => {
+        all_ids.map((img_id) => {
+          if (filename.includes(img_id)) {
+            this.display_thumbnail(img_id)
+          }
+        });
+      });
     }
   }
 
@@ -309,7 +329,6 @@ export class HomePage {
     } else {
       document.documentElement.style.setProperty('--inputcase', 'none');
     }
-    console.log(this.cit_items);
   };
 
 
@@ -432,6 +451,7 @@ export class HomePage {
       this.submit_failed = true;
       // for TESTING:
       console.log('testing');
+      this.auto_img();
       this.fill_demo();
     } else {
       if (this.texttrans === true) {
@@ -441,6 +461,7 @@ export class HomePage {
       }
       this.create_stim_base();
       this.citP.switch_divs('div_blockstart');
+      this.citP.content.resize();
     }
   }
 
@@ -517,53 +538,37 @@ export class HomePage {
 
   // item generation
 
-
-  load_img(img_key) {
-    let img = new Image;
-    img.style.height = "9vw";
-    img.id = img_key + '_img';
-    img.src = URL.createObjectURL(this.img_dict[img.id]);
-    try {
-      let img_elem = document.getElementById(img.id);
-      img_elem.parentNode.removeChild(img_elem);
-    } catch { }
-    let element = document.getElementById(img_key);
-    element.appendChild(img);
-  }
-
   create_stim_base() {
-    var disp_mode;
-    var stim_base_temp = [];
+    this.citP.stim_base = [];
     var items_array = JSON.parse(JSON.stringify(this.cit_items));
     items_array.forEach((item, num) => {
-      stim_base_temp.push({
+      let tempdict: any = {
         'item': item,
-        'cat': 'main',
-        'mode': disp_mode
-      });
-      if (0 === num) {
-        stim_base_temp[num].type = "target";
-        if (Object.keys(this.img_dict).indexOf('target') !== -1) {
-          stim_base_temp[num].mode = 'image';
-          stim_base_temp[num].imgfile = this.img_dict['target_img'];
-        } else {
-          stim_base_temp[num].mode = 'text';
-          stim_base_temp[num].imgfile = null;
-        }
-        this.citP.the_targets.push(JSON.parse(JSON.stringify(stim_base_temp[num])));
-      } else {
-        stim_base_temp[num].type = "probe" + num;
-        if (Object.keys(this.img_dict).indexOf('probe' + num) !== -1) {
-          stim_base_temp[num].mode = 'image';
-          stim_base_temp[num].imgfile = this.img_dict["probe" + num + '_img'];
-        } else {
-          stim_base_temp[num].mode = 'text';
-          stim_base_temp[num].imgfile = null;
-        }
-        this.citP.the_nontargs.push(JSON.parse(JSON.stringify(stim_base_temp[num])));
+        'cat': 'main'
       }
+      if (0 === num) {
+        tempdict.type = "target";
+        if (Object.keys(this.img_dict).indexOf('target') !== -1) {
+          tempdict.mode = 'image';
+          tempdict.imgfile = this.img_dict['target_img'];
+        } else {
+          tempdict.mode = 'text';
+          tempdict.imgfile = null;
+        }
+        this.citP.the_targets.push(tempdict);
+      } else {
+        tempdict.type = "probe" + num;
+        if (Object.keys(this.img_dict).indexOf('probe' + num) !== -1) {
+          tempdict.mode = 'image';
+          tempdict.imgfile = this.img_dict["probe" + num + '_img'];
+        } else {
+          tempdict.mode = 'text';
+          tempdict.imgfile = null;
+        }
+        this.citP.the_nontargs.push(tempdict);
+      }
+      this.citP.stim_base.push(tempdict);
     }, this);
-    this.citP.stim_base = stim_base_temp;
 
     this.targetref_words.forEach((ref_item, num) => {
       let tempdict: any = {
@@ -571,9 +576,9 @@ export class HomePage {
         'type': 'targetflr' + num,
         'cat': 'filler'
       }
-      if (Object.keys(this.img_dict).indexOf('filler' + num) !== -1) {
+      if (Object.keys(this.img_dict).indexOf('filler' + (num + 1)) !== -1) {
         tempdict.mode = 'image';
-        tempdict.imgfile = this.img_dict["filler" + num + '_img'];
+        tempdict.imgfile = this.img_dict["filler" + (num + 1) + '_img'];
       } else {
         tempdict.mode = 'text';
         tempdict.imgfile = null;
@@ -586,9 +591,9 @@ export class HomePage {
         'type': 'nontargflr' + num,
         'cat': 'filler'
       }
-      if (Object.keys(this.img_dict).indexOf('filler' + num) !== -1) {
+      if (Object.keys(this.img_dict).indexOf('filler' + (num + 4)) !== -1) {
         tempdict.mode = 'image';
-        tempdict.imgfile = this.img_dict["filler" + num + '_img'];
+        tempdict.imgfile = this.img_dict["filler" + (num + 4) + '_img'];
       } else {
         tempdict.mode = 'text';
         tempdict.imgfile = null;

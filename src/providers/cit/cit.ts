@@ -65,7 +65,7 @@ export class CitProvider {
   feed_text: string = "";
   current_div: string = "div_settings"; // ddd default: "div_start", div_settings, div_dems, div_cit_main, div_end
   visib: any = { start_text: true };
-  block_texts: string[] = [''];
+  block_texts: string[];
   teststim: any[];
   tooslow: number;
   incorrect: number;
@@ -142,17 +142,15 @@ export class CitProvider {
 
 
   list_items(dicts) {
-    let textitems = dicts.map(dct => {
-      if (dct.mode === 'text') {
-        return '<li>' + dct.item + '</li>';
-      }
+    console.log(dicts);
+    let textitems = dicts.filter(dct => dct.mode === 'text').map(dct => {
+      return '<li>' + dct.item + '</li>';
     }).sort().join('<br>');
-    let imgitems = dicts.map(dct => {
-      if (dct.mode === 'image') {
-        return '<li><img ' + URL.createObjectURL(dct.imgfile) + '></li>';
-      }
+    let imgitems = dicts.filter(dct => dct.mode === 'image').map(dct => {
+      console.log(dct);
+      return '<li><span id="' + dct.type + '_info"></span></li>';
     }).sort().join('<br>');
-    return '<b><ul>' + textitems.concat(imgitems) + '</ul></b>';
+    return '<b><ul>' + textitems.concat(imgitems) + '</ul></b><br>';
   }
 
   set_block_texts() {
@@ -161,7 +159,37 @@ export class CitProvider {
     let targs = this.list_items(this.the_targets);
     let nontargs = this.list_items(this.the_nontargs);
     this.block_texts = this.trP.blck_texts[this.trP.lang](targs, nontargs, trefs, nontrefs, this.cit_type);
-    this.block_text = this.block_texts[1];
+    this.setblcktxt(1);
+  }
+
+  setblcktxt(blocknum) {
+    this.block_text = this.block_texts[blocknum];
+    console.log(this.block_text);
+
+    let dicts: any = this.targetrefs.concat(
+      this.nontargrefs, this.the_targets, this.the_nontargs);
+
+    dicts.filter(dct => dct.mode === 'image').map(dct => {
+      let img = new Image;
+      img.style.height = "9vw";
+      img.src = URL.createObjectURL(dct.imgfile);
+      requestAnimationFrame(() => {
+        try {
+          console.log('X dct.type', dct.type);
+          let elem = document.getElementById(dct.type + '_info');
+          elem.appendChild(img);
+          console.log('elem: ', elem);
+          console.log('dct.imgfile', dct.imgfile);
+          console.log('success', img);
+
+          // let elem2 = document.getElementById('test1');
+          // console.log('elem2: ', elem2);
+          // elem2.appendChild(img);
+
+
+        } catch { console.log('fail', dct.type); }
+      });
+    })
   }
 
   capitalize(str1) {

@@ -373,13 +373,14 @@
 
 
   <div *ngSwitchCase="'div_blockstart'">
-    <p [innerHTML]="citP.block_texts[citP.blocknum]"></p>
-    <i>(Bitte stellen Sie sicher, dass Sie Ihre <b>{{crrnt_handpos}}</b> zum Antippen benutzen.)</i><br /><br />
+    <p [innerHTML]="citP.block_text"></p>
+    <br />
     <div text-center>
       <button ion-button (tap)="citP.runblock();">Start</button>
       <br />
     </div>
   </div>
+
 
 
   <div id="div_cit_main" *ngSwitchCase="'div_cit_main'">

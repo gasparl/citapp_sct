@@ -18,6 +18,7 @@ import { PopoverImg } from '../pages/home/popover_img';
 import { HttpClientModule } from '@angular/common/http';
 import { DataShareProvider } from '../providers/data-share/data-share';
 import { CitProvider } from '../providers/cit/cit';
+import { TranslationsProvider } from '../providers/translations/translations';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { CitProvider } from '../providers/cit/cit';
     File,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     DataShareProvider,
-    CitProvider
+    CitProvider,
+    TranslationsProvider
   ]
 })
 export class AppModule {}

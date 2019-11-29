@@ -13,6 +13,7 @@ import { PopoverImg } from './popover_img';
 import { HttpClient } from '@angular/common/http';
 import { DataShareProvider } from '../../providers/data-share/data-share';
 import { CitProvider } from '../../providers/cit/cit';
+import { TranslationProvider } from '../../providers/translations/translations';
 
 @Component({
   selector: "page-home",
@@ -56,7 +57,8 @@ export class HomePage {
     public popoverCtrl: PopoverController,
     public http: HttpClient,
     public dataShare: DataShareProvider,
-    public citP: CitProvider
+    public citP: CitProvider,
+    public trP: TranslationProvider
   ) {
     this.load_from_device();
     this.on_device = this.platform.is("cordova");
@@ -173,28 +175,32 @@ export class HomePage {
     try {
       this.storage.get('local').then((cntent) => {
         let data_dict = cntent;
-        this.citP.subj_id = data_dict.subject_id;
-        this.citP.cit_type = data_dict.cit_version;
-        this.num_of_blocks = data_dict.num_of_blocks;
-        this.citP.response_deadline_main = data_dict.timelimit;
-        this.citP.isi_delay_minmax[0] = data_dict.isi_min;
-        this.citP.isi_delay_minmax[1] = data_dict.isi_max;
-        this.cit_items[0] = data_dict.target;
-        this.cit_items[1] = data_dict.probe1;
-        this.cit_items[2] = data_dict.probe2;
-        this.cit_items[3] = data_dict.probe3;
-        this.cit_items[4] = data_dict.probe4;
-        this.cit_items[5] = data_dict.probe5;
-        this.targetref_words[0] = data_dict.filler1;
-        this.targetref_words[1] = data_dict.filler2;
-        this.targetref_words[2] = data_dict.filler3;
-        this.nontargref_words[0] = data_dict.filler4;
-        this.nontargref_words[1] = data_dict.filler5;
-        this.nontargref_words[2] = data_dict.filler6;
-        this.nontargref_words[3] = data_dict.filler7;
-        this.nontargref_words[4] = data_dict.filler8;
-        this.nontargref_words[5] = data_dict.filler9;
-        this.img_dict = data_dict.img_dict;
+        try {
+          this.citP.subj_id = data_dict.subject_id;
+          this.citP.cit_type = data_dict.cit_version;
+          this.num_of_blocks = data_dict.num_of_blocks;
+          this.citP.response_deadline_main = data_dict.timelimit;
+          this.citP.isi_delay_minmax[0] = data_dict.isi_min;
+          this.citP.isi_delay_minmax[1] = data_dict.isi_max;
+          this.cit_items[0] = data_dict.target;
+          this.cit_items[1] = data_dict.probe1;
+          this.cit_items[2] = data_dict.probe2;
+          this.cit_items[3] = data_dict.probe3;
+          this.cit_items[4] = data_dict.probe4;
+          this.cit_items[5] = data_dict.probe5;
+          this.targetref_words[0] = data_dict.filler1;
+          this.targetref_words[1] = data_dict.filler2;
+          this.targetref_words[2] = data_dict.filler3;
+          this.nontargref_words[0] = data_dict.filler4;
+          this.nontargref_words[1] = data_dict.filler5;
+          this.nontargref_words[2] = data_dict.filler6;
+          this.nontargref_words[3] = data_dict.filler7;
+          this.nontargref_words[4] = data_dict.filler8;
+          this.nontargref_words[5] = data_dict.filler9;
+          this.img_dict = data_dict.img_dict;
+        } catch (e) {
+          console.log('(No locally saved data.)');
+        }
       });
     } catch (e) {
       console.log('(No locally saved data.)');
@@ -434,7 +440,7 @@ export class HomePage {
         this.nontargref_words = this.nontargref_words.map(w => w.toUpperCase())
       }
       this.create_stim_base();
-      this.citP.switch_divs('div_instructions');
+      this.citP.switch_divs('div_blockstart');
     }
   }
 
@@ -474,7 +480,9 @@ export class HomePage {
     this.cit_items[5] = 'DEC 05';
     document.getElementById("demofeed_id").style.color = 'green';
     setTimeout(() => {
-      document.getElementById("demofeed_id").style.color = 'white';
+      try {
+        document.getElementById("demofeed_id").style.color = 'white';
+      } catch { };
     }, 2000);
   }
 
@@ -527,7 +535,7 @@ export class HomePage {
     var disp_mode;
     var stim_base_temp = [];
     var items_array = JSON.parse(JSON.stringify(this.cit_items));
-    items_array.forEach(function(item, num) {
+    items_array.forEach((item, num) => {
       stim_base_temp.push({
         'item': item,
         'cat': 'main',
@@ -557,33 +565,33 @@ export class HomePage {
     }, this);
     this.citP.stim_base = stim_base_temp;
 
-    this.targetref_words.forEach(function(ref_item, num) {
-      let tempdict = {
+    this.targetref_words.forEach((ref_item, num) => {
+      let tempdict: any = {
         'item': ref_item,
         'type': 'targetflr' + num,
         'cat': 'filler'
       }
       if (Object.keys(this.img_dict).indexOf('filler' + num) !== -1) {
-        tempdict[num].mode = 'image';
-        tempdict[num].imgfile = this.img_dict["filler" + num + '_img'];
+        tempdict.mode = 'image';
+        tempdict.imgfile = this.img_dict["filler" + num + '_img'];
       } else {
-        tempdict[num].mode = 'text';
-        tempdict[num].imgfile = null;
+        tempdict.mode = 'text';
+        tempdict.imgfile = null;
       }
       this.citP.targetrefs.push(tempdict);
     });
-    this.nontargref_words.forEach(function(ref_item, num) {
-      let tempdict = {
+    this.nontargref_words.forEach((ref_item, num) => {
+      let tempdict: any = {
         'item': ref_item,
         'type': 'nontargflr' + num,
         'cat': 'filler'
       }
       if (Object.keys(this.img_dict).indexOf('filler' + num) !== -1) {
-        tempdict[num].mode = 'image';
-        tempdict[num].imgfile = this.img_dict["filler" + num + '_img'];
+        tempdict.mode = 'image';
+        tempdict.imgfile = this.img_dict["filler" + num + '_img'];
       } else {
-        tempdict[num].mode = 'text';
-        tempdict[num].imgfile = null;
+        tempdict.mode = 'text';
+        tempdict.imgfile = null;
       }
       this.citP.nontargrefs.push(tempdict);
     });

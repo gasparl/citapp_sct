@@ -4,6 +4,7 @@ import { BackgroundMode } from '@ionic-native/background-mode';
 import { Clipboard } from '@ionic-native/clipboard';
 import { File } from '@ionic-native/file';
 import { NavigationBar } from '@ionic-native/navigation-bar';
+import { TranslationProvider } from '../../providers/translations/translations';
 
 @Injectable()
 export class CitProvider {
@@ -102,6 +103,7 @@ export class CitProvider {
   nums: any[];
   stim_base: any[];
   the_targets: string[] = [];
+  the_nontargs: string[] = [];
   the_probes: string[] = [];
   stimulus_text: string = "";
   to_display: string = "";
@@ -115,7 +117,8 @@ export class CitProvider {
     private clipboard: Clipboard,
     public file: File,
     public navigationBar: NavigationBar,
-    public backgroundMode: BackgroundMode) { }
+    public backgroundMode: BackgroundMode,
+    public trP: TranslationProvider) { }
 
   pointev: any = {};
   switch_divs(div_to_show) {
@@ -137,11 +140,6 @@ export class CitProvider {
     // this.switch_divs("div_instructions");
   }
 
-  the_nontargs: string[];
-  targs_names: string;
-  nontargs_names: string;
-
-
 
   list_items(dicts) {
     let textitems = dicts.map(dct => {
@@ -162,42 +160,8 @@ export class CitProvider {
     let nontrefs = this.list_items(this.nontargrefs);
     let targs = this.list_items(this.the_targets);
     let nontargs = this.list_items(this.the_nontargs);
-
-    var numprac;
-    if (this.cit_type == 1) {
-      numprac = 'three';
-    } else {
-      numprac = 'two';
-    }
-    let intro = 'During the test, various items will appear in the middle of the screen. You have to categorize each item by touching a button on the left or another button on the right. ';
-    let intro_end = 'There will be ' + numprac + ' short practice rounds.';
-    let inducers_instructions =
-      '</br></br>Touch the <i>right</i> button when you see any of the following items:<br>' + trefs + '<br>Touch the </i>left</i> button when you see any other item. These other items are:<br>' + nontrefs;
-    let main_instruction = 'Touch the <i>right</i> button when you see the following target item:<br>' +
-      targs +
-      '<br>Touch the </i>left</i> button when you see any other item. These other items are:<br>' +
-      nontargs +
-      '</br></br>In this practice round, you will have a lot of time to choose each response, but <b>you must respond to each item correctly</b>. If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice round.<br><br><span id="feedback_id2"></span><p id="chances_id"></p>';
-    // 0: fillers & target, 1: fillers (no target), 2: standard CIT
-    if (this.cit_type !== 1) {
-      this.block_texts.push(
-        intro + intro_end + '</br></br>In this first practice round, you have to categorize two kinds of items. ' + inducers_instructions +
-        '<br><br><span id="feedback_id1">In each category, you need at least 80% correct responses in time.<br><br></span>');
-      if (this.cit_type === 0) {
-        this.block_texts.push('In this second practice round, you have to categorize the main test items. ' + main_instruction);
-        this.block_texts.push(
-          "<span id='feedback_id3'>In this third and last practice round all items are present. You again have to respond fast, but a certain rate of error is allowed.</span>");
-      } else {
-        this.block_texts.push('Now, in this second and last practice round, you also have to categorize the main test items: ' + nontargs + '. These all have to be categorized by touching the </i>left</i> button.');
-      }
-    } else {
-      targs = '';
-      this.block_texts.push(intro + main_instruction + intro_end);
-      this.block_texts.push("<span id='feedback_id3'>Now, in this second and last practice round, you have to respond fast, but a certain rate of error is allowed. The task is the same.");
-    }
-
-    this.block_texts.push(
-      "Now begins the actual test. The task is the same, touch the left button when you see the following items: " + targs + trefs + "<br>Touch the right button for everything else.<br><br>Try to be as accurate and as fast as possible.");
+    this.block_texts = this.trP.blck_texts[this.trP.lang](targs, nontargs, trefs, nontrefs, this.cit_type);
+    this.block_text = this.block_texts[1];
   }
 
   capitalize(str1) {
@@ -377,11 +341,12 @@ export class CitProvider {
       }
     }
     if (is_valid == false && this.blocknum != 1) {
-      this.block_texts[this.blocknum] =
+      this.block_text =
         "Sie müssen diese Übungsrunde wiederholen, da Sie zu wenige richtige Antworten gegeben haben. <br><br>Sie benötigen mindestens 60% richtige Antworten für jeden der beiden Antworttypen, jedoch gaben Sie nicht genügend richtige Antworten für folgende(n) Antworttyp(en):" +
         types_failed.join(",") +
-        ".<br><br>Bitte geben Sie genaue und im Zeitlimit liegende Antworten.<br><br>";
+        ".<br><br>Bitte geben Sie genaue und im Zeitlimit liegende Antworten.<br><br><button ion-button style='text-transform: none;' (tap)='this.citP.block_text = this.citP.block_texts[this.citP.blocknum]' color='light' block>show instructions again</button>";
     }
+    //;
     return is_valid;
   }
 
@@ -390,6 +355,8 @@ export class CitProvider {
       this.next_trial()
     }.bind(this), this.isi_delay_minmax[0]);
   }
+
+  block_text: string = '';
   next_trial() {
     if (this.teststim.length > 0) {
       this.tooslow = 0;
@@ -408,17 +375,9 @@ export class CitProvider {
         //   this.main_eval();
         // }
         this.blocknum++;
+        this.block_text = this.block_texts[this.blocknum];
         this.nextblock();
       } else {
-        if (this.blocknum == 1) {
-          this.practice_repeated.block1 += 1;
-        } else if (this.blocknum == 2) {
-          this.practice_repeated.block2 += 1;
-        } else if (this.blocknum == 3) {
-          this.practice_repeated.block3 += 1;
-        } else if (this.blocknum == 6) {
-          this.practice_repeated.block6 += 1;
-        }
         this.nextblock();
       }
     }

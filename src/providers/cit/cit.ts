@@ -148,9 +148,14 @@ export class CitProvider {
     }).sort().join('<br>');
     let imgitems = dicts.filter(dct => dct.mode === 'image').map(dct => {
       console.log(dct);
-      return '<li><span id="' + dct.type + '_info"></span></li>';
+      let props = 'style="max-height:50%;max-width:50%;vertical-align: middle;"';
+      return '<li><img ' + props + ' src="' + URL.createObjectURL(dct.imgfile) + '"></li>';
     }).sort().join('<br>');
-    return '<b><ul>' + textitems.concat(imgitems) + '</ul></b><br>';
+    if (textitems.length > 0 && imgitems.length > 0) {
+      return '<b><ul>' + textitems + '<br>' + imgitems + '</ul></b><br>';
+    } else {
+      return '<b><ul>' + textitems + imgitems + '</ul></b><br>';
+    }
   }
 
   set_block_texts() {
@@ -159,37 +164,7 @@ export class CitProvider {
     let targs = this.list_items(this.the_targets);
     let nontargs = this.list_items(this.the_nontargs);
     this.block_texts = this.trP.blck_texts[this.trP.lang](targs, nontargs, trefs, nontrefs, this.cit_type);
-    this.setblcktxt(1);
-  }
-
-  setblcktxt(blocknum) {
-    this.block_text = this.block_texts[blocknum];
-    console.log(this.block_text);
-
-    let dicts: any = this.targetrefs.concat(
-      this.nontargrefs, this.the_targets, this.the_nontargs);
-
-    dicts.filter(dct => dct.mode === 'image').map(dct => {
-      let img = new Image;
-      img.style.height = "9vw";
-      img.src = URL.createObjectURL(dct.imgfile);
-      requestAnimationFrame(() => {
-        try {
-          console.log('X dct.type', dct.type);
-          let elem = document.getElementById(dct.type + '_info');
-          elem.appendChild(img);
-          console.log('elem: ', elem);
-          console.log('dct.imgfile', dct.imgfile);
-          console.log('success', img);
-
-          // let elem2 = document.getElementById('test1');
-          // console.log('elem2: ', elem2);
-          // elem2.appendChild(img);
-
-
-        } catch { console.log('fail', dct.type); }
-      });
-    })
+    this.block_text = this.block_texts[1];
   }
 
   capitalize(str1) {

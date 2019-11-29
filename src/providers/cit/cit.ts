@@ -142,12 +142,10 @@ export class CitProvider {
 
 
   list_items(dicts) {
-    console.log(dicts);
     let textitems = dicts.filter(dct => dct.mode === 'text').map(dct => {
       return '<li>' + dct.item + '</li>';
     }).sort().join('<br>');
     let imgitems = dicts.filter(dct => dct.mode === 'image').map(dct => {
-      console.log(dct);
       let props = 'style="max-height:50%;max-width:50%;vertical-align: middle;"';
       return '<li><img ' + props + ' src="' + URL.createObjectURL(dct.imgfile) + '"></li>';
     }).sort().join('<br>');

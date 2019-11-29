@@ -217,12 +217,10 @@ export class HomePage {
   show_imgs() {
     if (Object.keys(this.img_dict).length !== 0) {
       let all_ids = ['target', 'probe1', 'probe2', 'probe3', 'probe4', 'probe5', 'filler1', 'filler2', 'filler3', 'filler4', 'filler5', 'filler6', 'filler7', 'filler8', 'filler9'];
-      Object.keys(this.img_dict).map((filename) => {
-        all_ids.map((img_id) => {
-          if (filename.includes(img_id)) {
-            this.display_thumbnail(img_id)
-          }
-        });
+      Object.keys(this.img_dict).map((dkey) => {
+        if (!dkey.includes('_img')) {
+          this.display_thumbnail(dkey)
+        }
       });
     }
   }
@@ -387,8 +385,8 @@ export class HomePage {
     if (this.img_dict[parent_id] !== undefined) {
       this.img_dict[parent_id] = '';
       this.image_names();
-      let img_elem: HTMLImageElement = document.querySelector(parent_id + '_img');
-      img_elem.src = null;
+      let img_elem: HTMLImageElement = document.querySelector('#' + parent_id + '_img');
+      img_elem.src = '';
       img_elem.parentNode.removeChild(img_elem);
       delete this.img_dict[parent_id];
       delete this.img_dict[parent_id + '_img'];

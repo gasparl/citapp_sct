@@ -1,6 +1,6 @@
 import { Component, ViewChild } from "@angular/core";
 import { Slides, Content } from 'ionic-angular';
-import { NavController } from "ionic-angular";
+import { NavController, NavParams } from "ionic-angular";
 import { Storage } from "@ionic/storage";
 import { StatusBar } from '@ionic-native/status-bar';
 import { Network } from '@ionic-native/network';
@@ -60,7 +60,8 @@ export class HomePage {
     public dataShare: DataShareProvider,
     public citP: CitProvider,
     public trP: TranslationProvider,
-    protected _sanitizer: DomSanitizer
+    protected _sanitizer: DomSanitizer,
+    public navParams: NavParams
   ) {
     this.load_from_device();
     this.on_device = this.platform.is("cordova");
@@ -86,12 +87,18 @@ export class HomePage {
         dataShare.stored_images = cntent;
       }
     });
+    if (navParams.get('refreshed')) {
+      this.current_menu = 'm_prevs';
+      this.current_segment = 'menus';
+      this.citP.content.scrollToTop(0);
+    }
   }
   internet_on: boolean = false;
+  checknet: any;
   ionViewDidLoad() {
     this.citP.content = this.cntent_temp;
     if (this.on_device) {
-      setInterval(() => {
+      this.checknet = setInterval(() => {
         if (this.network.type) {
           if (this.network.type != "none") {
             this.internet_on = true;
@@ -171,10 +178,13 @@ export class HomePage {
       'filler9': this.nontargref_words[5],
       'img_dict': this.img_dict
     });
-    document.getElementById("storefeed_id2").style.color = 'green';
-    setTimeout(() => {
-      document.getElementById("storefeed_id2").style.color = 'white';
-    }, 2000);
+    try {
+      let el = document.getElementById("storefeed_id2")
+      el.style.color = 'green';
+      setTimeout(() => {
+        el.style.color = 'white';
+      }, 2000);
+    } catch { }
   }
 
   load_from_device = function() {
@@ -443,6 +453,7 @@ export class HomePage {
     }
   };
 
+  save_on_citstart: boolean = true;
   initials() {
     this.send_stat();
     if (!this.form_items.valid) {
@@ -452,10 +463,14 @@ export class HomePage {
       this.auto_img();
       this.fill_demo();
     } else {
+      clearInterval(this.checknet);
       if (this.texttrans === true) {
         this.cit_items = this.cit_items.map(w => w.toUpperCase())
         this.targetref_words = this.targetref_words.map(w => w.toUpperCase())
         this.nontargref_words = this.nontargref_words.map(w => w.toUpperCase())
+      }
+      if (this.save_on_citstart === true) {
+        this.store_on_device();
       }
       this.create_stim_base();
       this.citP.switch_divs('div_blockstart');
@@ -599,6 +614,11 @@ export class HomePage {
       this.citP.nontargrefs.push(tempdict);
     });
     this.citP.set_block_texts();
+  }
+
+  refresh_page() {
+    //refresh after ending:
+    this.navCtrl.setRoot(this.navCtrl.getActive().component, { 'refreshed': true });
   }
 
 

@@ -477,10 +477,6 @@ export class CitProvider {
       this.basic_times.blocks += "\nBlock " + this.blocknum + " end_last " + Date();
       this.switch_divs("div_end")
       this.store_data();
-      // refresh after ending:
-      // this.navCtrl.setRoot(this.navCtrl.getActive().component);
-
-
 
       this.backgroundMode.setDefaults({
         silent: true

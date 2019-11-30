@@ -24,7 +24,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content hide-nav-bar="true" padding [ngSwitch]="citP.current_div" [ngStyle]="{ 'background-color': bg_color }" text-wrap>
+<ion-content hide-nav-bar="true" padding [ngSwitch]="citP.current_div" [ngStyle]="{ 'background-color': citP.bg_color }" text-wrap>
 
   <div *ngSwitchCase="'div_start'">
 
@@ -356,6 +356,10 @@
         </ion-slide>
 
         <ion-slide>
+          <ion-item>
+            <ion-label style="margin-bottom:0;color:black">"START CIT" also saves current settings</ion-label>
+            <ion-toggle [(ngModel)]='store_on_device' [ngModelOptions]="{standalone: true}"></ion-toggle>
+          </ion-item>
           <br /><span *ngIf="citP.subj_id != ''" style="font-size:120%">Initiate test with Subject ID <b>{{citP.subj_id}}</b>.</span>
           <br />
           <br />
@@ -394,8 +398,9 @@
 
     <p id="stimulus">{{stimulus_text}}</p>
 
-    <p id="start_text" (tap)="citP.visib.start_text = false; citP.start_trials();" *ngIf="citP.visib.start_text">Tippen Sie hier, um zu beginnen.</p>
+    <p id="start_text" (tap)="citP.visib.start_text = false; citP.start_trials();" *ngIf="citP.visib.start_text">TAP HERE TO START</p>
   </div>
+
 
   <div *ngSwitchCase="'div_end'">
     <header>

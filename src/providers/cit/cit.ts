@@ -1,10 +1,10 @@
 import { Injectable, Component } from '@angular/core';
-import { Insomnia } from '@ionic-native/insomnia';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import { Clipboard } from '@ionic-native/clipboard';
 import { File } from '@ionic-native/file';
 import { NavigationBar } from '@ionic-native/navigation-bar';
 import { TranslationProvider } from '../../providers/translations/translations';
+import { ItemgenProvider } from '../../providers/itemgen/itemgen';
 
 @Injectable()
 export class CitProvider {
@@ -13,7 +13,7 @@ export class CitProvider {
   // /*
   touchsim() {
     var info = this.trial_stim.type + " (" + this.trial_stim.word + ")";
-    var rt_sim = this.randomdigit(600, 830);
+    var rt_sim = this.itemgenP.randomdigit(600, 830);
     if (this.trial_stim.type == "probe") {
       rt_sim = rt_sim;// + 10;
     }
@@ -52,6 +52,7 @@ export class CitProvider {
   //*/
 
   subj_id: string = '';
+  current_div: string = "div_settings"; // ddd default: "div_start", div_settings, div_dems, div_cit_main, div_end
   personal_feedback: string = '';
   false_delay: number = 400;
   tooslow_delay: number = 400;
@@ -63,7 +64,6 @@ export class CitProvider {
   response_deadline_main: number = 900;
   bg_color: string = "#fff";
   feed_text: string = "";
-  current_div: string = "div_settings"; // ddd default: "div_start", div_settings, div_dems, div_cit_main, div_end
   visib: any = { start_text: true };
   block_texts: string[];
   teststim: any[];
@@ -111,14 +111,17 @@ export class CitProvider {
   nontargrefs: object[] = [];
   f_name: string;
   path: any = "";
+  show_eval: boolean = true;
+  crrnt_phase: string;
 
   constructor(
-    private insomnia: Insomnia,
     private clipboard: Clipboard,
     public file: File,
     public navigationBar: NavigationBar,
     public backgroundMode: BackgroundMode,
-    public trP: TranslationProvider) { }
+    public trP: TranslationProvider,
+    public itemgenP: ItemgenProvider
+  ) { }
 
   pointev: any = {};
   switch_divs(div_to_show) {
@@ -132,12 +135,11 @@ export class CitProvider {
   }
 
   task_start() {
-    this.insomnia.keepAwake();
     this.backgroundMode.setDefaults({
       text: "Test in progress!",
       silent: false
     })
-    // this.switch_divs("div_instructions");
+    this.itemgenP.stim_base_p = this.stim_base;
   }
 
 
@@ -193,37 +195,7 @@ export class CitProvider {
   seconds_between_dates(startDate, endDate) {
     return Math.abs(+new Date(startDate) - +new Date(endDate)) / 1000;
   }
-  randomdigit(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
 
-  shuffle(array) {
-    var newarr = [];
-    var currentIndex = array.length,
-      temporaryValue,
-      randomIndex;
-    while (0 !== currentIndex) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      newarr[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-    return newarr;
-  }
-
-  rchoice(array) {
-    return array[Math.floor(array.length * Math.random())];
-  }
-
-  range(start, end) {
-    var r = [];
-    for (var i = start; i < end; i++) {
-      r.push(i);
-    }
-    return r;
-  }
 
   neat_date() {
     var m = new Date();
@@ -310,26 +282,30 @@ export class CitProvider {
     });
   }
   isi() {
-    this.isi_delay = this.randomdigit(1, this.isi_delay_minmax[1] - this.isi_delay_minmax[0]);
+    this.isi_delay = this.itemgenP.randomdigit(1, this.isi_delay_minmax[1] - this.isi_delay_minmax[0]);
     setTimeout(function() {
       this.item_display();
     }.bind(this), this.isi_delay);
   }
 
-  practice_eval() {
-    //at least 60% on each item. if not, warn accordingly
+  practice_eval(min_correct) {
+    //at least min_correct% on each item. if not, warn accordingly
     var is_valid = true;
     var types_failed = [];
     if (this.blocknum == 1) {
       is_valid = this.first_correct;
       this.first_correct = true;
+      if (is_valid == false) {
+        this.block_text =
+          "You need to repeat this practice round due to no correct response in time.<br><br><button ion-button style='text-transform: none;' (tap)='this.citP.block_text = this.citP.block_texts[this.citP.blocknum]' color='light' block>show instructions again</button>";
+      }
     } else {
       for (var it_type in this.rt_data_dict) {
         var rts_correct = this.rt_data_dict[it_type].filter(function(rt_item) {
           return rt_item > 150;
         });
         var corr_ratio = rts_correct.length / this.rt_data_dict[it_type].length;
-        if (corr_ratio < 0.6) {
+        if (corr_ratio < min_correct) {
           is_valid = false;
           types_failed.push(
             " " +
@@ -340,14 +316,13 @@ export class CitProvider {
           );
         }
       }
+      if (is_valid == false) {
+        this.block_text =
+          "Sie müssen diese Übungsrunde wiederholen, da Sie zu wenige richtige Antworten gegeben haben. <br><br>Sie benötigen mindestens 60% richtige Antworten für jeden der beiden Antworttypen, jedoch gaben Sie nicht genügend richtige Antworten für folgende(n) Antworttyp(en):" +
+          types_failed.join(",") +
+          ".<br><br>Bitte geben Sie genaue und im Zeitlimit liegende Antworten.<br><br><button ion-button style='text-transform: none;' (tap)='this.citP.block_text = this.citP.block_texts[this.citP.blocknum]' color='light' block>show instructions again</button>";
+      }
     }
-    if (is_valid == false && this.blocknum != 1) {
-      this.block_text =
-        "Sie müssen diese Übungsrunde wiederholen, da Sie zu wenige richtige Antworten gegeben haben. <br><br>Sie benötigen mindestens 60% richtige Antworten für jeden der beiden Antworttypen, jedoch gaben Sie nicht genügend richtige Antworten für folgende(n) Antworttyp(en):" +
-        types_failed.join(",") +
-        ".<br><br>Bitte geben Sie genaue und im Zeitlimit liegende Antworten.<br><br><button ion-button style='text-transform: none;' (tap)='this.citP.block_text = this.citP.block_texts[this.citP.blocknum]' color='light' block>show instructions again</button>";
-    }
-    //;
     return is_valid;
   }
 
@@ -371,10 +346,7 @@ export class CitProvider {
       this.isi();
     } else {
       this.basic_times.blocks += "\nBlock " + this.blocknum + " end " + Date();
-      if ((this.blocknum > 3 && this.blocknum != 6) || this.practice_eval()) {
-        // if (this.blocknum == 4 || this.blocknum == 5) {
-        //   this.main_eval();
-        // }
+      if ((this.blocknum > 3) || (this.blocknum == 4 && this.practice_eval(0.8)) || this.practice_eval(0.5)) {
         this.blocknum++;
         this.block_text = this.block_texts[this.blocknum];
         this.nextblock();
@@ -449,43 +421,37 @@ export class CitProvider {
     this.teststim.shift();
     this.next_trial();
   }
-  call_practice_stim() {
-    //this.teststim = this.prac_teststim; TODO
 
-    this.practice_num++;
-  }
   nextblock() {
+    this.crrnt_phase = 'practice';
     this.bg_color = "#fff";
-    if (this.blocknum <= (this.stim_base.length + 3)) {
+    if (this.stim_base.length > 0) {
       this.block_trialnum = 0;
       if (this.blocknum == 1) {
-        this.response_deadline = 10500;
-        this.first_practice_stim();
-      } else if (this.blocknum == 2) {
-        this.response_deadline = 2000;
-        this.call_practice_stim();
-      } else if (this.blocknum == 3 || this.blocknum == 6) {
         this.response_deadline = this.response_deadline_main;
-        this.call_practice_stim();
+        this.teststim = this.itemgenP.inducer_items();
+      } else if (this.blocknum == 2) {
+        this.response_deadline = this.response_deadline_main;
+        this.teststim = this.itemgenP.main_items();
+      } else if (this.blocknum == 3) {
+        this.response_deadline = this.response_deadline_main;
+        this.teststim = this.itemgenP.practice_items();
       } else {
         this.response_deadline = this.response_deadline_main;
-        // this.main_stim();
+        this.teststim = this.itemgenP.fulltest_items();
       }
       this.rt_data_dict = {};
-      // this.switch_divs(this.div_after_instr)
+      this.switch_divs('div_blockstart');
     } else {
-      this.basic_times.blocks += "\nBlock " + this.blocknum + " end_last " + Date();
-      this.switch_divs("div_end")
+      this.switch_divs('div_end')
       this.store_data();
-
       this.backgroundMode.setDefaults({
         silent: true
       })
-      this.insomnia.allowSleepAgain()
     }
   }
+
   runblock() {
-    this.basic_times.blocks += "\nBlock " + this.blocknum + " start " + Date();
     this.bg_color = "#000";
     this.switch_divs('div_cit_main')
     this.visib.start_text = true;

@@ -176,7 +176,10 @@ export class HomePage {
       'filler7': this.nontargref_words[3],
       'filler8': this.nontargref_words[4],
       'filler9': this.nontargref_words[5],
-      'img_dict': this.img_dict
+      'img_dict': this.img_dict,
+      'texttrans': this.texttrans,
+      'save_on_citstart': this.save_on_citstart,
+      'show_eval': this.citP.show_eval
     });
     try {
       let el = document.getElementById("storefeed_id2")
@@ -215,6 +218,10 @@ export class HomePage {
           this.nontargref_words[5] = data_dict.filler9;
           this.img_dict = data_dict.img_dict;
           this.show_imgs();
+          this.texttrans = data_dict.texttrans;
+          this.save_on_citstart = data_dict.save_on_citstart;
+          this.citP.show_eval = data_dict.show_eval;
+          this.change_texttrans();
         } catch (e) {
           console.log('(No locally saved data.)');
         }
@@ -473,6 +480,8 @@ export class HomePage {
         this.store_on_device();
       }
       this.create_stim_base();
+      this.citP.set_block_texts();
+      this.citP.task_start();
       this.citP.switch_divs('div_blockstart');
       this.citP.content.resize();
     }
@@ -613,7 +622,6 @@ export class HomePage {
       }
       this.citP.nontargrefs.push(tempdict);
     });
-    this.citP.set_block_texts();
   }
 
   refresh_page() {

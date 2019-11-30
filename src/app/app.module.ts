@@ -19,6 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { DataShareProvider } from '../providers/data-share/data-share';
 import { CitProvider } from '../providers/cit/cit';
 import { TranslationProvider } from '../providers/translations/translations';
+import { ItemgenProvider } from '../providers/itemgen/itemgen';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { TranslationProvider } from '../providers/translations/translations';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     DataShareProvider,
     CitProvider,
-    TranslationProvider
+    TranslationProvider,
+    ItemgenProvider
   ]
 })
 export class AppModule {}

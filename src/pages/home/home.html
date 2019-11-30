@@ -360,6 +360,10 @@
             <ion-label style="margin-bottom:0;color:black">"START CIT" also saves current settings</ion-label>
             <ion-toggle [(ngModel)]='store_on_device' [ngModelOptions]="{standalone: true}"></ion-toggle>
           </ion-item>
+          <ion-item>
+            <ion-label style="margin-bottom:0;color:black">Show evaluation immediately after completion</ion-label>
+            <ion-toggle [(ngModel)]='citP.show_eval' [ngModelOptions]="{standalone: true}"></ion-toggle>
+          </ion-item>
           <br /><span *ngIf="citP.subj_id != ''" style="font-size:120%">Initiate test with Subject ID <b>{{citP.subj_id}}</b>.</span>
           <br />
           <br />
@@ -378,7 +382,6 @@
 
   <div *ngSwitchCase="'div_blockstart'">
     <span [innerHTML]="san_html(citP.block_text)"></span>
-
     <div text-center>
       <br />
       <br />
@@ -386,7 +389,6 @@
       <br />
     </div>
   </div>
-
 
 
   <div id="div_cit_main" *ngSwitchCase="'div_cit_main'">

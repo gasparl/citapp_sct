@@ -14,10 +14,6 @@ export class TranslationProvider {
       } else {
         numprac = 'two';
       }
-      console.log('targs', targs);
-      console.log('nontargs', nontargs);
-      console.log('trefs', trefs);
-      console.log('nontrefs', nontrefs);
       let intro = 'During the test, various items will appear in the middle of the screen. You have to categorize each item by touching a button on the left or another button on the right. ';
       let intro_end = 'There will be ' + numprac + ' short practice rounds.';
       let inducers_instructions =

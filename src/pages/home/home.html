@@ -294,7 +294,7 @@
 
           <ion-item>
             <ion-label style="min-width:40vw;color:black;" fixed>Response time limit (ms)</ion-label>
-            <ion-input [(ngModel)]="citP.response_deadline_main" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
+            <ion-input [(ngModel)]="citP.response_timelimit_main" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
           </ion-item>
 
           <ion-item>
@@ -386,19 +386,24 @@
       <br />
       <br />
       <button ion-button (tap)="citP.runblock();">Start</button>
+      <div *ngIf='citP.block_text.slice(0, 13) === "<span></span>"'>
+        <br />
+        <br />
+        <button ion-button style='text-transform: none;' (tap)='this.citP.block_text = this.citP.block_texts[this.citP.blocknum]' color='light' block>show instructions again</button>
+      </div>
       <br />
     </div>
   </div>
 
 
   <div id="div_cit_main" *ngSwitchCase="'div_cit_main'">
-    <p id="feed_id"><b>{{feed_text}}</b></p>
+    <p id="feed_id"><b>{{citP.feed_text}}</b></p>
 
     <p (touchstart)="citP.touchstart($event, 'resp_a');" (touchend)="citP.touchend($event, 'resp_a');" id="resp_left" class="resp_buttons"></p>
 
     <p (touchstart)="citP.touchstart($event, 'resp_b');" (touchend)="citP.touchend($event, 'resp_b');" id="resp_right" class="resp_buttons"></p>
 
-    <p id="stimulus">{{stimulus_text}}</p>
+    <p id="stimulus">{{citP.stimulus_text}}</p>
 
     <p id="start_text" (tap)="citP.visib.start_text = false; citP.start_trials();" *ngIf="citP.visib.start_text">TAP HERE TO START</p>
   </div>

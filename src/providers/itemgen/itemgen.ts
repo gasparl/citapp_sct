@@ -81,7 +81,7 @@ export class ItemgenProvider {
         'type': '-'
       }]; // dummy dict to the end
       var stim_dicts_f_d = stim_dicts_f.concat(dummy_dict);
-      stim_dicts_f_d.forEach(function(f_item, f_index) {
+      stim_dicts_f_d.forEach((f_item, f_index) => {
         if (!this.diginto_dict(stim_dicts_f, f_index, 'item', 4).includes(dict_item.item)) {
           good_indexes.push(f_index); // if fine, do add as good index
         }
@@ -131,7 +131,7 @@ export class ItemgenProvider {
       }]; // dummy dict to the end; if the item is to be inserted to the end, there is no following dict that could cause an unwanted repetition
 
       var stim_dicts_f_d = stim_dicts_f.concat(dummy_dict);
-      stim_dicts_f_d.forEach(function(f_item, f_index) {
+      stim_dicts_f_d.forEach((f_item, f_index) => {
         if (!this.diginto_dict(stim_dicts_f, f_index, 'type', 1).includes(dict_item.type)) {
           good_indexes.push(f_index); // if fine, do add as good index
         }

@@ -158,7 +158,7 @@ export class HomePage {
       'subject_id': this.citP.subj_id,
       'cit_version': this.citP.cit_type,
       'num_of_blocks': this.citP.num_of_blocks,
-      'deadline': this.citP.response_deadline_main,
+      'timelimit': this.citP.response_timelimit_main,
       'isi_min': this.citP.isi_delay_minmax[0],
       'isi_max': this.citP.isi_delay_minmax[1],
       'target': this.cit_items[0],
@@ -194,11 +194,12 @@ export class HomePage {
     try {
       this.storage.get('local').then((cntent) => {
         let data_dict = cntent;
+
         try {
           this.citP.subj_id = data_dict.subject_id;
           this.citP.cit_type = data_dict.cit_version;
           this.num_of_blocks = data_dict.num_of_blocks;
-          this.citP.response_deadline_main = data_dict.timelimit;
+          this.citP.response_timelimit_main = data_dict.timelimit;
           this.citP.isi_delay_minmax[0] = data_dict.isi_min;
           this.citP.isi_delay_minmax[1] = data_dict.isi_max;
           this.cit_items[0] = data_dict.target;
@@ -249,7 +250,7 @@ export class HomePage {
         'subject_id': this.citP.subj_id,
         'cit_version': this.citP.cit_type,
         'num_of_blocks': this.num_of_blocks,
-        'deadline': this.citP.response_deadline_main,
+        'timelimit': this.citP.response_timelimit_main,
         'isi_min': this.citP.isi_delay_minmax[0],
         'isi_max': this.citP.isi_delay_minmax[1],
         'target': this.cit_items[0],
@@ -435,7 +436,7 @@ export class HomePage {
       this.citP.subj_id = data_dict.subject_id || this.citP.subj_id;
       this.citP.cit_type = data_dict.cit_version || this.citP.cit_type;
       this.citP.num_of_blocks = data_dict.num_of_blocks || this.citP.num_of_blocks;
-      this.citP.response_deadline_main = data_dict.timelimit || this.citP.response_deadline_main;
+      this.citP.response_timelimit_main = data_dict.timelimit || this.citP.response_timelimit_main;
       this.citP.isi_delay_minmax[0] = data_dict.isi_min || this.citP.isi_delay_minmax[0];
       this.citP.isi_delay_minmax[1] = data_dict.isi_max || this.citP.isi_delay_minmax[1];
       this.cit_items[0] = data_dict.target || this.cit_items[0];
@@ -510,7 +511,7 @@ export class HomePage {
     this.citP.cit_type = 0;
     this.citP.num_of_blocks = 1;
     this.citP.isi_delay_minmax = [300, 700];
-    this.citP.response_deadline_main = 900;
+    this.citP.response_timelimit_main = 900;
   }
 
   fill_demo = function() {
@@ -572,20 +573,20 @@ export class HomePage {
         tempdict.type = "target";
         if (Object.keys(this.img_dict).indexOf('target') !== -1) {
           tempdict.mode = 'image';
-          tempdict.imgfile = this.img_dict['target_img'];
+          tempdict.imgurl =  URL.createObjectURL(this.img_dict['target_img']);
         } else {
           tempdict.mode = 'text';
-          tempdict.imgfile = null;
+          tempdict.imgurl = null;
         }
         this.citP.the_targets.push(tempdict);
       } else {
         tempdict.type = "probe" + num;
         if (Object.keys(this.img_dict).indexOf('probe' + num) !== -1) {
           tempdict.mode = 'image';
-          tempdict.imgfile = this.img_dict["probe" + num + '_img'];
+          tempdict.imgurl = URL.createObjectURL(this.img_dict["probe" + num + '_img']);
         } else {
           tempdict.mode = 'text';
-          tempdict.imgfile = null;
+          tempdict.imgurl = null;
         }
         this.citP.the_nontargs.push(tempdict);
       }
@@ -600,10 +601,10 @@ export class HomePage {
       }
       if (Object.keys(this.img_dict).indexOf('filler' + (num + 1)) !== -1) {
         tempdict.mode = 'image';
-        tempdict.imgfile = this.img_dict["filler" + (num + 1) + '_img'];
+        tempdict.imgurl = URL.createObjectURL(this.img_dict["filler" + (num + 1) + '_img']);
       } else {
         tempdict.mode = 'text';
-        tempdict.imgfile = null;
+        tempdict.imgurl = null;
       }
       this.citP.targetrefs.push(tempdict);
     });
@@ -615,10 +616,10 @@ export class HomePage {
       }
       if (Object.keys(this.img_dict).indexOf('filler' + (num + 4)) !== -1) {
         tempdict.mode = 'image';
-        tempdict.imgfile = this.img_dict["filler" + (num + 4) + '_img'];
+        tempdict.imgurl = URL.createObjectURL(this.img_dict["filler" + (num + 4) + '_img']);
       } else {
         tempdict.mode = 'text';
-        tempdict.imgfile = null;
+        tempdict.imgurl = null;
       }
       this.citP.nontargrefs.push(tempdict);
     });

@@ -429,16 +429,17 @@ export class CitProvider {
       this.block_trialnum = 0;
       if (this.blocknum == 1) {
         this.response_deadline = this.response_deadline_main;
-        this.teststim = this.itemgenP.inducer_items();
+        this.teststim = this.itemgenP.filler_items(this.targetrefs, this.nontargrefs);
       } else if (this.blocknum == 2) {
         this.response_deadline = this.response_deadline_main;
-        this.teststim = this.itemgenP.main_items();
+        this.teststim = this.itemgenP.main_items(this.stim_base);
       } else if (this.blocknum == 3) {
         this.response_deadline = this.response_deadline_main;
-        this.teststim = this.itemgenP.practice_items();
+        this.teststim = this.itemgenP.practice_items(this.targetrefs, this.nontargrefs);
       } else {
+        this.crrnt_phase = 'main';
         this.response_deadline = this.response_deadline_main;
-        this.teststim = this.itemgenP.fulltest_items();
+        this.teststim = this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs);
       }
       this.rt_data_dict = {};
       this.switch_divs('div_blockstart');

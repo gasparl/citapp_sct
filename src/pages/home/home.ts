@@ -482,7 +482,7 @@ export class HomePage {
       this.create_stim_base();
       this.citP.set_block_texts();
       this.citP.task_start();
-      this.citP.switch_divs('div_blockstart');
+      this.citP.nextblock();
       this.citP.content.resize();
     }
   }

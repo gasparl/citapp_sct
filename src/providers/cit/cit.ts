@@ -396,6 +396,21 @@ export class CitProvider {
     this.next_trial();
   }
 
+  // this.citP.t1()
+  t1() {
+    this.teststim = this.itemgenP.main_items(this.stim_base);
+  }
+  t2() {
+    this.teststim = this.itemgenP.filler_items(this.targetrefs, this.nontargrefs);
+  }
+  t3() {
+    this.teststim = this.itemgenP.practice_items(this.targetrefs, this.nontargrefs);
+  }
+  t4() {
+    this.teststim = this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs);
+  }
+
+
   nextblock() {
     this.crrnt_phase = 'practice';
     this.bg_color = "#fff";

@@ -11,7 +11,8 @@ export class ItemgenProvider {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  shuffle(array) {
+  shuffle(arr) {
+    let array = JSON.parse(JSON.stringify((arr)));
     var newarr = [];
     var currentIndex = array.length,
       temporaryValue,
@@ -88,7 +89,7 @@ export class ItemgenProvider {
       });
       if (good_indexes.length == 0) {
         console.log('no good_indexes - count', safecount);
-        blck_itms_temp = this.shuffle(blck_itms_temp); // rethis.shuffle
+        blck_itms_temp = this.shuffle(blck_itms_temp); // reshuffle
       } else { // if there are good places, choose one randomly, insert the new item, and remove it from blck_itms_temp
         stim_dicts_f.splice(this.rchoice(good_indexes), 0, blck_itms_temp.shift());
       }

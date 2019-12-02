@@ -9,7 +9,7 @@ export class TranslationProvider {
     'en': (targs, nontargs, trefs, nontrefs, cittype) => {
       let numprac: string;
       let thetexts: string[] = [''];
-      if (cittype == 1) {
+      if (cittype == 0) {
         numprac = 'three';
       } else {
         numprac = 'two';
@@ -23,8 +23,8 @@ export class TranslationProvider {
         '<br>Touch the <i>left</i> button when you see any other item. These other items are:<br>' +
         nontargs +
         '</br></br>In this practice round, you will have a lot of time to choose each response, but <b>you must respond to each item correctly</b>. If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat this practice round.';
-      // 0: fillers & target, 1: fillers (no target), 2: standard CIT
-      if (cittype !== 1) {
+      // 0: fillers & target, 1: standard CIT, 2: fillers (no target)
+      if (cittype !== 2) {
         thetexts.push(
           '<span id="feedback_id1">' + intro + intro_end + '</br></br>In this first practice round, you have to categorize two kinds of items. ' + inducers_instructions +
           'In each category, you need at least 80% correct responses in time, otherwise you have to repeat this practice round.</span>');
@@ -38,7 +38,7 @@ export class TranslationProvider {
       } else {
         targs = '';
         thetexts.push(intro + main_instruction + intro_end);
-        thetexts.push("<span id='feedback_id3'>Now, in this second and last practice round, you have to respond fast, but a certain rate of error is allowed. The task is the same, touch the <i>left</i> button when you see the following item: " + targs + trefs + "<br>Touch the <i>right</i> button for everything else.</span>");
+        thetexts.push("<span id='feedback_id2'>Now, in this second and last practice round, you have to respond fast, but a certain rate of error is allowed. The task is the same, touch the <i>left</i> button when you see the following item: " + targs + "<br>Touch the <i>right</i> button for everything else.</span>");
       }
 
       thetexts.push(

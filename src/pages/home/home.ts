@@ -573,7 +573,7 @@ export class HomePage {
         tempdict.type = "target";
         if (Object.keys(this.img_dict).indexOf('target') !== -1) {
           tempdict.mode = 'image';
-          tempdict.imgurl =  URL.createObjectURL(this.img_dict['target_img']);
+          tempdict.imgurl = URL.createObjectURL(this.img_dict['target_img']);
         } else {
           tempdict.mode = 'text';
           tempdict.imgurl = null;
@@ -590,8 +590,10 @@ export class HomePage {
         }
         this.citP.the_nontargs.push(tempdict);
       }
-      this.citP.stim_base.push(tempdict);
-    }, this);
+      if (!(this.citP.cit_type === 2 && tempdict.type === "target")) {
+        this.citP.stim_base.push(tempdict);
+      }
+    });
 
     this.targetref_words.forEach((ref_item, num) => {
       let tempdict: any = {

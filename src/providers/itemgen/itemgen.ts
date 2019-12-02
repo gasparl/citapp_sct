@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class ItemgenProvider {
-  stim_base_p: any;
+  stim_base_p: any[];
   constructor() { }
 
   // stimulus sequence generation
@@ -147,7 +147,7 @@ export class ItemgenProvider {
     return (stim_dicts_f); // return final list (for blck_items var assignment)
   }
 
-  main_items(block_stim_base) {
+  main_sequences(block_stim_base) {
     var items_ordered = [];
     var prev_last = ''; // prev order is the item order of the previous trial sequence
     for (var i = 0; i < 18; i++) { // each i represents a sequence of 6 trials
@@ -155,12 +155,16 @@ export class ItemgenProvider {
       item_order_temp = this.shuffle(item_order_temp); // this.shuffle this
       if (prev_last == item_order_temp[0].item) { // if the last one of the previous block is the first of this one
         var cutout = item_order_temp.splice(0, 1)[0]; // cut the element at index 'from'
-        item_order_temp.splice(this.randomdigit(1, 5), 0, cutout);
+        item_order_temp.splice(this.randomdigit(1, item_order_temp.length - 1), 0, cutout);
       }
       items_ordered.push(JSON.parse(JSON.stringify(item_order_temp))); // make this the item order for this trial sequence
       prev_last = item_order_temp[item_order_temp.length - 1].item;
     }
     return (items_ordered);
+  }
+
+  main_items(block_stim_base) {
+    return this.shuffle(block_stim_base);
   }
 
   zip: any = (...rows) => [...rows[0]].map((_, c) => rows.map(row => row[c]));
@@ -179,19 +183,19 @@ export class ItemgenProvider {
     nontargrefs_perm = this.shuffle(nontargrefs_perm); // another 6 arrangements
     var filler_lists = [];
 
-    this.zip(targetrefs_perm, nontargrefs_perm).forEach(function(perm_pair) {
+    this.zip(targetrefs_perm, nontargrefs_perm).forEach((perm_pair) => {
       var trefs = perm_pair[0];
       var ntrefs = perm_pair[1];
       var lst_temp = JSON.parse(JSON.stringify(ntrefs));
       var nums = this.range(0, trefs.length + ntrefs.length);
       var insert_locs = [];
-      this.range(0, trefs.length).forEach(function(i) {
+      this.range(0, trefs.length).forEach((i) => {
         var new_rand = this.rchoice(nums);
         insert_locs.push(new_rand);
         nums = nums.filter(n => Math.abs(n - new_rand) > 1);
       });
       insert_locs.sort();
-      insert_locs.forEach(function(loc) {
+      insert_locs.forEach((loc) => {
         lst_temp.splice(loc, 0, trefs.pop());
       });
       filler_lists.push(JSON.parse(JSON.stringify(lst_temp)));
@@ -205,9 +209,9 @@ export class ItemgenProvider {
     yesno_perm = this.shuffle(yesno_perm);
     var options = yesno_perm.slice(0, 9);
     var blck_rev = []; // create an empty list for the reversed block
-    options.forEach(function(opt) {
+    options.forEach((opt) => {
       var optz_new = this.range(0, 6);
-      opt.forEach(function(item, index) {
+      opt.forEach((item, index) => {
         if (item == "n") {
           optz_new[index] = "y";
         } else {
@@ -225,20 +229,20 @@ export class ItemgenProvider {
     //create final block
     var blck_fin = blck1.concat(blck2, blck3);
     var item_assignment = {};
-    block_stim_base.forEach(function(dct, indx) { //assign the yes/nos to the items
+    JSON.parse(JSON.stringify(block_stim_base)).forEach((dct, indx) => { //assign the yes/nos to the items
       item_assignment[dct.item] = blck_fin.map(a => a[indx]); // combine them to create an filler assignment for all 18 trial sequences and assign them to the dict
     });
     //  We then need to decide which filler is shown thus we make a list
     var filler_lists = this.filler_randomized(targetrefs, nontargrefs); // randomize 6 lists of filler items
     var filler_per_main = {};
-    block_stim_base.forEach(function(dct) {
+    JSON.parse(JSON.stringify(block_stim_base)).forEach((dct) => {
       filler_per_main[dct.item] = filler_lists.shift();
     });
     // now insert the fillers
     var final_item_order = [];
-    this.main_items(block_stim_base).forEach(function(trial_seq, t_indx) { // trial sequence represents the order in which the x amount of items are presented within one sequence (n=6) of trials
+    this.main_sequences(block_stim_base).forEach((trial_seq, t_indx) => { // trial sequence represents the order in which the x amount of items are presented within one sequence (n=6) of trials
       var final_temp = [];
-      trial_seq.forEach(function(item, i_indx) { // item represents each individual trial
+      trial_seq.forEach((item, i_indx) => { // item represents each individual trial
         if (item_assignment[item.item][t_indx] == "y") { // check if the item should get an filler
           // pick the right filler
           // then we should delete this element so filler so we use pop
@@ -253,6 +257,6 @@ export class ItemgenProvider {
 
   fulltest_items(targetrefs, nontargrefs) {
     console.log('fulltest_items()');
-    return (this.add_fillers(this.stim_base_p.pop(0), targetrefs, nontargrefs));
+    return (this.add_fillers(this.stim_base_p, targetrefs, nontargrefs));
   }
 }

@@ -92,8 +92,8 @@ export class CitProvider {
   listen: boolean = false;
   listn_end: boolean = false;
   it_type_feed_dict: any = {
-    selfrefitem: "target-side fillers",
-    otherrefitem: "nontarget-side fillers",
+    targetflr: "target-side fillers",
+    nontargflr: "nontarget-side fillers",
     main_item: "nontarget items",
     target: "target item"
   };
@@ -139,7 +139,7 @@ export class CitProvider {
       text: "Test in progress!",
       silent: false
     })
-    this.itemgenP.stim_base_p = this.stim_base;
+    this.itemgenP.stim_base_p = JSON.parse(JSON.stringify(this.stim_base));
   }
 
 
@@ -237,7 +237,7 @@ export class CitProvider {
   }
 
   item_display() {
-    if (this.trial_stim.type == "target" || this.trial_stim.type == "selfrefitem") {
+    if (this.trial_stim.type == "target" || this.trial_stim.type == "targetflr") {
       this.correct_resp = "resp_b";
     } else {
       this.correct_resp = "resp_a";
@@ -340,9 +340,9 @@ export class CitProvider {
 
   add_response() {
     var curr_type;
-    var act_type = this.trial_stim.type;
+    var act_type = this.trial_stim.type.replace(/[0-9]$/, '');
     if (
-      ["selfrefitem", "otherrefitem", "target"].indexOf(act_type) >= 0
+      ["targetflr", "nontargflr", "target"].indexOf(act_type) >= 0
     ) {
       curr_type = act_type;
     } else {
@@ -396,29 +396,30 @@ export class CitProvider {
     this.next_trial();
   }
 
-  // this.citP.t1()
+  // this.citP.t4()
   t1() {
-    this.teststim = this.itemgenP.main_items(this.stim_base);
+    return this.itemgenP.main_items(this.stim_base);
   }
   t2() {
-    this.teststim = this.itemgenP.filler_items(this.targetrefs, this.nontargrefs);
+    return this.itemgenP.filler_items(this.targetrefs, this.nontargrefs);
   }
   t3() {
-    this.teststim = this.itemgenP.practice_items(this.targetrefs, this.nontargrefs);
+    return this.itemgenP.practice_items(this.targetrefs, this.nontargrefs);
   }
   t4() {
-    this.teststim = this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs);
+    return this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs);
   }
 
 
   nextblock() {
     this.crrnt_phase = 'practice';
     this.bg_color = "#fff";
-    if (this.stim_base.length > 0) {
+    if (this.blocknum <= (this.num_of_blocks + 2) ||
+      (this.cit_type === 0 && this.blocknum <= (this.num_of_blocks + 3))) {
       this.block_trialnum = 0;
-      // 0: fillers & target, 1: fillers (no target), 2: standard CIT
+      // 0: fillers & target, 1: standard CIT, 2: fillers (no target)
       if (this.blocknum == 1) {
-        if (this.cit_type === 2) {
+        if (this.cit_type === 1) {
           this.response_timelimit = 10000;
           this.crrnt_phase = 'practice_strict';
           this.teststim = this.itemgenP.main_items(this.stim_base);
@@ -427,10 +428,10 @@ export class CitProvider {
           this.teststim = this.itemgenP.filler_items(this.targetrefs, this.nontargrefs);
         }
       } else if (this.blocknum == 2) {
-        if (this.cit_type === 2) {
+        if (this.cit_type === 1) {
           this.response_timelimit = this.response_timelimit_main;
           this.teststim = this.itemgenP.main_items(this.stim_base);
-        } else if (this.cit_type === 1) {
+        } else if (this.cit_type === 2) {
           this.response_timelimit = this.response_timelimit_main;
           this.teststim = this.itemgenP.practice_items(this.targetrefs, this.nontargrefs);
         } else {

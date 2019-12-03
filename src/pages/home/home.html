@@ -1,4 +1,4 @@
-<ion-header *ngIf="citP.current_div == 'div_settings' && (!on_device || !this.keyboard.isVisible)">
+<ion-header *ngIf="citP.current_div == 'div_settings'">
   <ion-toolbar>
     <ion-segment [(ngModel)]='current_segment'>
       <ion-segment-button value="menus" icon-only (tap)="pop_menu($event)">
@@ -378,6 +378,10 @@
         </ion-slide>
 
       </ion-slides>
+      <br />
+      <br />
+      <br />
+      <br />
     </form>
   </div>
 
@@ -449,7 +453,8 @@
     </p>
   </div>
 
-
+  <b>{{mycl}}</b>
+  <br />
   <input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;">
   <!-- app console for testing -->
 

@@ -20,7 +20,8 @@ import { DataShareProvider } from '../providers/data-share/data-share';
 import { CitProvider } from '../providers/cit/cit';
 import { TranslationProvider } from '../providers/translations/translations';
 import { ItemgenProvider } from '../providers/itemgen/itemgen';
-import { Keyboard } from '@ionic-native/keyboard';
+import { ImagePicker } from '@ionic-native/image-picker/ngx';
+
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { Keyboard } from '@ionic-native/keyboard';
   ],
   providers: [
     StatusBar,
+    ImagePicker,
     NavigationBar,
     Insomnia,
     Network,
@@ -56,8 +58,7 @@ import { Keyboard } from '@ionic-native/keyboard';
     DataShareProvider,
     CitProvider,
     TranslationProvider,
-    ItemgenProvider,
-    Keyboard
+    ItemgenProvider
   ]
 })
 export class AppModule { }

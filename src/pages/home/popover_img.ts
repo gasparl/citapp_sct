@@ -3,16 +3,14 @@ import { ViewController, AlertController } from 'ionic-angular';
 import { NavParams } from 'ionic-angular';
 import { DataShareProvider } from '../../providers/data-share/data-share';
 import { Storage } from "@ionic/storage";
+import { ImagePicker } from '@ionic-native/image-picker/';
 
 @Component({
   template: `
       <ion-list id='po_list_id'>
 
         <div style="padding: 16px;text-align:center;">
-          <label for="img_up_id" ion-button color='light' style="text-transform:none;" block>
-            Load image(s)
-          </label>
-          <input multiple type="file" (change)="load_img($event);" accept="image/*" capture="camera" id="img_up_id" hidden />
+          <button ion-button (click)="load_img()" color='light' style="text-transform:none;" block>Load image(s)</button>
         </div>
 
         <span *ngIf='objkeys(dataShare.stored_images).length !== 0' style="font-size:90%;text-align:center;font-weight:bold;padding-left: 16px;padding-right: 16px;">
@@ -47,7 +45,8 @@ export class PopoverImg {
     public alertCtrl: AlertController,
     public navParams: NavParams,
     public dataShare: DataShareProvider,
-    public storage: Storage) {}
+    public storage: Storage,
+    private imagePicker: ImagePicker) { }
 
   files: any[];
   objkeys = function(dict) {
@@ -59,18 +58,70 @@ export class PopoverImg {
     }
   }
 
-  load_img(event) {
-    this.files = event.target.files;
-    [].forEach.call(this.files, file => {
-      if (/image\/.*/.test(file.type)) {
-        this.dataShare.stored_images[file.name] = file;
+  load_img2(event) {
+    console.log("TRY")
+    //this.files = event.target.files;
+
+    let options = {
+      width: 200,
+      quality: 25,
+      outputType: 1
+    };
+    this.imagePicker.getPictures(options).then((results) => {
+      for (var i = 0; i < results.length; i++) {
+        console.log(results);
+        this.dataShare.stored_images.push('data:image/jpeg;base64,' + results[i]);
       }
+    }, (err) => {
+      console.log(err);
     });
+
+
+    console.log("this was finally executed")
     this.storage.set('imgs', this.dataShare.stored_images);
     if (this.files.length === 1) {
       this.img_select(this.files[0].name)
     }
   };
+
+  images = [];
+  public items: Array<{ images: string; }> = [];
+  load_img() {
+    this.imagePicker.hasReadPermission()
+      .then(res => {
+        if (res) {
+          this.openGallery();
+        } else {
+          this.imagePicker.requestReadPermission()
+            .then(res => {
+              if (res === 'ok') {
+                this.openGallery();
+              }
+            })
+        }
+      })
+      .catch(error => console.log(error));
+  }
+  openGallery() {
+    let options = {
+      maximumImagesCount: 10,
+      correctOrientation: true,
+      quality: 30,
+      width: 100,
+      height: 100,
+      allowEdit: true,
+      outputType: 1,
+    }
+    this.imagePicker.getPictures(options)
+      .then(file => {
+        //this.images = new Array(file.length);
+        for (let i = 0; i < file.length; i++) {
+          //this.images[i] = 'data:image/jpeg;base64,' + file[i]
+          this.images.push('data:image/jpeg;base64,' + file[i]);
+        }
+      });
+  }
+
 
   img_remove(inp) {
     delete this.dataShare.stored_images[inp];

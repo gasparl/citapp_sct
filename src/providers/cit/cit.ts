@@ -5,6 +5,7 @@ import { File } from '@ionic-native/file';
 import { NavigationBar } from '@ionic-native/navigation-bar';
 import { TranslationProvider } from '../../providers/translations/translations';
 import { ItemgenProvider } from '../../providers/itemgen/itemgen';
+import { StatusBar } from '@ionic-native/status-bar';
 
 @Injectable()
 export class CitProvider {
@@ -118,6 +119,7 @@ export class CitProvider {
     private clipboard: Clipboard,
     public file: File,
     public navigationBar: NavigationBar,
+    public statusBar: StatusBar,
     public backgroundMode: BackgroundMode,
     public trP: TranslationProvider,
     public itemgenP: ItemgenProvider
@@ -132,6 +134,7 @@ export class CitProvider {
     }.bind(this), 300);
     this.content.scrollToTop(0);
     this.navigationBar.hideNavigationBar();
+    this.statusBar.hide();
   }
 
   task_start() {

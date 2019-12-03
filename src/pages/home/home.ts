@@ -2,10 +2,8 @@ import { Component, ViewChild } from "@angular/core";
 import { Slides, Content } from 'ionic-angular';
 import { NavController, NavParams } from "ionic-angular";
 import { Storage } from "@ionic/storage";
-import { StatusBar } from '@ionic-native/status-bar';
 import { Network } from '@ionic-native/network';
 import { EmailComposer } from "@ionic-native/email-composer";
-import { Keyboard } from '@ionic-native/keyboard';
 import { Platform } from "ionic-angular";
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 import { PopoverController } from 'ionic-angular';
@@ -27,9 +25,11 @@ export class HomePage {
 
   // /*
   to_exec: any;
+  mycl: any;
   onChange(ee) {
     if (ee.keyCode === 13) {
-      console.log(eval(this.to_exec))
+      this.mycl = eval(this.to_exec);
+      console.log(this.mycl);
     }
   }
   //*/
@@ -54,7 +54,6 @@ export class HomePage {
     private emailComposer: EmailComposer,
     public platform: Platform,
     public formBuilder: FormBuilder,
-    private statusBar: StatusBar,
     private network: Network,
     public popoverCtrl: PopoverController,
     public http: HttpClient,
@@ -62,8 +61,7 @@ export class HomePage {
     public citP: CitProvider,
     public trP: TranslationProvider,
     protected _sanitizer: DomSanitizer,
-    public navParams: NavParams,
-    private keyboard: Keyboard
+    public navParams: NavParams
   ) {
     this.load_from_device();
     this.on_device = this.platform.is("cordova");
@@ -109,7 +107,7 @@ export class HomePage {
           }
         }
       }, 500);
-      this.statusBar.hide();
+      this.citP.statusBar.hide();
       this.citP.navigationBar.hideNavigationBar();
       this.citP.navigationBar.setUp(true);
       this.citP.backgroundMode.enable();
@@ -120,12 +118,6 @@ export class HomePage {
       });
       this.citP.path = this.citP.file.externalDataDirectory;
     }
-    this.keyboard.onKeyboardWillShow().subscribe(() => {
-      this.citP.content.resize();
-    });
-    this.keyboard.onKeyboardWillHide().subscribe(() => {
-      this.citP.content.resize();
-    });
   }
 
   san_html(html) {

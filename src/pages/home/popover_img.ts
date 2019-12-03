@@ -18,12 +18,12 @@ import { Storage } from "@ionic/storage";
           <hr style='border:white;' />
         </span>
         <ion-row style='padding-right:16px;' *ngFor="let img_name of objkeys(dataShare.stored_images)">
-          <ion-col>
+          <ion-col style='max-width: 80%;'>
             <button ion-item (tap)="img_select(img_name)">
               {{img_name}}
             </button>
           </ion-col>
-          <ion-col>
+          <ion-col style='width: 1%;'>
             <button ion-button style='float:right;' type="button" icon-only (tap)="img_remove(img_name)" color='danger'>
               <ion-icon name="trash"></ion-icon>
             </button>
@@ -53,30 +53,23 @@ export class PopoverImg {
     }
   }
 
-  load_img(event) {
+  async load_img(event) {
     let files = event.target.files;
-    [].forEach.call(files, file => {
+    for (const file of files) {
       if (/image\/.*/.test(file.type)) {
-        this.dataShare.stored_images[file.name] = this.get_base64(file);
-        console.log(this.dataShare.stored_images[file.name]);
+        const result = await this.toBase64(file).catch(e => e);
+        if (result instanceof Error) {
+          console.log('Error converting file to string: ', result.message);
+          return;
+        }
+        this.dataShare.stored_images[file.name] = result;
       }
-    });
+    };
     this.storage.set('imgs', this.dataShare.stored_images);
     if (files.length === 1 && /image\/.*/.test(files[0].type)) {
       this.img_select(files[0].name)
     }
   };
-
-  async get_base64(file) {
-    const result = await this.toBase64(file).catch(e => e);
-    if (result instanceof Error) {
-      console.log('Error converting file to string: ', result.message);
-      return;
-    } else {
-      console.log('this:', result);
-      return result;
-    }
-  }
 
   toBase64 = file => new Promise((resolve, reject) => {
     const reader = new FileReader();

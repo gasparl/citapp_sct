@@ -84,6 +84,7 @@ export class HomePage {
     this.form_items = formBuilder.group(validator_dict);
     this.storage.get('imgs').then((cntent) => {
       if (cntent) {
+        console.log(Object.keys(cntent));
         dataShare.stored_images = cntent;
       }
     });
@@ -465,8 +466,12 @@ export class HomePage {
   duplicates: string = '';
   initials() {
     let allitems = JSON.parse(JSON.stringify(this.cit_items.concat(this.targetref_words, this.nontargref_words)));
+    console.log(allitems);
+    allitems = allitems.filter(item => item !== null);
     let dupls = allitems.reduce((acc, v, i, arr) => arr.indexOf(v) !== i && acc.indexOf(v) === -1 ? acc.concat(v) : acc, [])
+    console.log(dupls);
     dupls = dupls.filter(item => item !== '');
+    console.log(dupls);
     if (dupls.length > 0) {
       this.duplicates = '"' + dupls.join('", "') + '"';
     } else {

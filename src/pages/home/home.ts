@@ -28,7 +28,7 @@ export class HomePage {
   mycl: any;
   onChange(ee) {
     if (ee.keyCode === 13) {
-      this.mycl = eval(this.to_exec);
+      this.mycl = JSON.stringify(eval(this.to_exec));
       console.log(this.mycl);
     }
   }
@@ -462,30 +462,39 @@ export class HomePage {
   };
 
   save_on_citstart: boolean = true;
+  duplicates: string = '';
   initials() {
-    this.send_stat();
-    if (!this.form_items.valid) {
-      this.submit_failed = true;
-      // for TESTING:
-      console.log('testing');
-      this.auto_img();
-      this.fill_demo();
+    let allitems = JSON.parse(JSON.stringify(this.cit_items.concat(this.targetref_words, this.nontargref_words)));
+    let dupls = allitems.reduce((acc, v, i, arr) => arr.indexOf(v) !== i && acc.indexOf(v) === -1 ? acc.concat(v) : acc, [])
+    dupls = dupls.filter(item => item !== '');
+    if (dupls.length > 0) {
+      this.duplicates = '"' + dupls.join('", "') + '"';
     } else {
-      clearInterval(this.checknet);
-      if (this.texttrans === true) {
-        this.cit_items = this.cit_items.map(w => w.toUpperCase())
-        this.targetref_words = this.targetref_words.map(w => w.toUpperCase())
-        this.nontargref_words = this.nontargref_words.map(w => w.toUpperCase())
+      this.duplicates = '';
+      this.send_stat();
+      if (!this.form_items.valid) {
+        this.submit_failed = true;
+        // for TESTING:
+        console.log('testing');
+        this.auto_img();
+        this.fill_demo();
+      } else {
+        clearInterval(this.checknet);
+        if (this.texttrans === true) {
+          this.cit_items = this.cit_items.map(w => w.toUpperCase())
+          this.targetref_words = this.targetref_words.map(w => w.toUpperCase())
+          this.nontargref_words = this.nontargref_words.map(w => w.toUpperCase())
+        }
+        if (this.save_on_citstart === true) {
+          this.store_on_device();
+        }
+        this.citP.cit_type = parseInt(this.citP.cit_type);
+        this.create_stim_base();
+        this.citP.set_block_texts();
+        this.citP.task_start();
+        this.citP.nextblock();
+        this.citP.content.resize();
       }
-      if (this.save_on_citstart === true) {
-        this.store_on_device();
-      }
-      this.citP.cit_type = parseInt(this.citP.cit_type);
-      this.create_stim_base();
-      this.citP.set_block_texts();
-      this.citP.task_start();
-      this.citP.nextblock();
-      this.citP.content.resize();
     }
   }
 

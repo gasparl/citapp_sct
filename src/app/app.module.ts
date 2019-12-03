@@ -20,8 +20,6 @@ import { DataShareProvider } from '../providers/data-share/data-share';
 import { CitProvider } from '../providers/cit/cit';
 import { TranslationProvider } from '../providers/translations/translations';
 import { ItemgenProvider } from '../providers/itemgen/itemgen';
-import { ImagePicker } from '@ionic-native/image-picker/ngx';
-
 
 @NgModule({
   declarations: [
@@ -45,7 +43,6 @@ import { ImagePicker } from '@ionic-native/image-picker/ngx';
   ],
   providers: [
     StatusBar,
-    ImagePicker,
     NavigationBar,
     Insomnia,
     Network,

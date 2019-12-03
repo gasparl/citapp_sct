@@ -372,6 +372,9 @@
           <i>
             <p *ngIf="internet_on" style="color: red;">Warning: it seems you are connected to the internet. It is best to turn it off to avoid interruptions.</p>
           </i>
+          <i>
+            <p *ngIf="duplicates !== ''" style="color: red;">There are duplicate item names: {{duplicates}}. All item names must be unique to start the test.</p>
+          </i>
           <p *ngIf="!form_items.valid && submit_failed" style="color: red;">Please fill in all necessary details.</p>
           <button ion-button type="submit">Start CIT</button>
 
@@ -453,9 +456,10 @@
     </p>
   </div>
 
-  <b>{{mycl}}</b>
-  <br />
-  <input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;">
-  <!-- app console for testing -->
+    <b>{{mycl}}</b>
+    <br />
+    <input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;width:100%;">
+    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+    <!-- app console for testing -->
 
 </ion-content>

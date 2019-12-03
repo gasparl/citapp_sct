@@ -20,6 +20,7 @@ import { DataShareProvider } from '../providers/data-share/data-share';
 import { CitProvider } from '../providers/cit/cit';
 import { TranslationProvider } from '../providers/translations/translations';
 import { ItemgenProvider } from '../providers/itemgen/itemgen';
+import { Keyboard } from '@ionic-native/keyboard';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ import { ItemgenProvider } from '../providers/itemgen/itemgen';
   imports: [
     BrowserModule,
     HttpClientModule,
-    IonicModule.forRoot(MyApp, { scrollPadding: false }),
+    IonicModule.forRoot(MyApp, { scrollPadding: false, statusbarPadding: false }),
     IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
@@ -51,11 +52,12 @@ import { ItemgenProvider } from '../providers/itemgen/itemgen';
     BackgroundMode,
     EmailComposer,
     File,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
     DataShareProvider,
     CitProvider,
     TranslationProvider,
-    ItemgenProvider
+    ItemgenProvider,
+    Keyboard
   ]
 })
-export class AppModule {}
+export class AppModule { }

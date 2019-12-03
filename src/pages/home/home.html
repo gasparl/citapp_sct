@@ -1,4 +1,4 @@
-<ion-header *ngIf="citP.current_div == 'div_settings'">
+<ion-header *ngIf="citP.current_div == 'div_settings' && (!on_device || !this.keyboard.isVisible)">
   <ion-toolbar>
     <ion-segment [(ngModel)]='current_segment'>
       <ion-segment-button value="menus" icon-only (tap)="pop_menu($event)">
@@ -120,7 +120,9 @@
           <div style="font-weight:bold;font-size:130%;text-align:left;padding-left: 16px;">
             Main items in the test</div>
 
-          <ion-item id='target'>
+          <ion-item id='target' [ngStyle]="{ 'background-color' : (citP.cit_type === '2') ? '#cccccc' : undefined,
+          'color' : (citP.cit_type === '2') ? '#343434' : undefined,
+          'opacity' : (citP.cit_type === '2') ? 0.5 : undefined }">
             <ion-label fixed>Target:</ion-label>
             <ion-input [(ngModel)]="cit_items[0]" formControlName="target" type="text" [class.invalid]="!form_items.controls.target.valid && submit_failed" (tap)="remove_img_el('target');"></ion-input>
 
@@ -276,9 +278,9 @@
           <ion-item>
             <ion-label style="margin-bottom:0;color:black">Version</ion-label>
             <ion-select [(ngModel)]="citP.cit_type" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;">
-              <ion-option value="0">Enhanced</ion-option>
-              <ion-option value="1">Standard</ion-option>
-              <ion-option value="2">No-target</ion-option>
+              <ion-option value='0'>Enhanced</ion-option>
+              <ion-option value='1'>Standard</ion-option>
+              <ion-option value='2'>No-target</ion-option>
             </ion-select>
           </ion-item>
 
@@ -320,12 +322,12 @@
           </div>
 
           <ion-item>
-            <ion-label style="color:black;" fixed>Identifier</ion-label>
+            <ion-label style="color:black;min-width:21vw;" fixed>Identifier</ion-label>
             <ion-input (keypress)="valid_chars2($event)" [(ngModel)]="mailpost" type="text" [ngModelOptions]="{standalone: true}" style="font-style:normal;text-transform:none;"></ion-input>
           </ion-item>
 
           <ion-item>
-            <ion-label style="color:black;" fixed>Password</ion-label>
+            <ion-label style="color:black;min-width:21vw;" fixed>Password</ion-label>
             <ion-input (keypress)="valid_chars($event)" [(ngModel)]="pwpost" type="text" [ngModelOptions]="{standalone: true}" style="font-style:normal;text-transform:none;"></ion-input>
           </ion-item>
 

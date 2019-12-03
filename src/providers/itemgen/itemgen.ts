@@ -223,9 +223,9 @@ export class ItemgenProvider {
     var blck1 = options.slice(0, 3).concat(blck_rev.slice(0, 3)); // because we wanna split them up in 3 we create blcks of 6 which are each  time 3 lines and then the reverse of those 3 lines
     var blck2 = options.slice(3, 6).concat(blck_rev.slice(3, 6));
     var blck3 = options.slice(6, 9).concat(blck_rev.slice(6, 9));
-    blck1 = this.shuffle(blck1);
-    blck2 = this.shuffle(blck2);
-    blck3 = this.shuffle(blck3);
+    blck1 = this.shuffle(blck1); // 6 lists (each with 9 possible orders of y/n), with 3 exact reversed
+    blck2 = this.shuffle(blck2); // 6 lists (each with 9 possible orders of y/n), with 3 exact reversed
+    blck3 = this.shuffle(blck3); // 6 lists (each with 9 possible orders of y/n), with 3 exact reversed
     //create final block
     var blck_fin = blck1.concat(blck2, blck3);
     var item_assignment = {};

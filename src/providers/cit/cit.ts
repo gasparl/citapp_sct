@@ -60,7 +60,7 @@ export class CitProvider {
   response_timelimit: number;
   response_timelimit_main: number = 900;
   isi_delay: number = 99999;
-  cit_type: number = 0;
+  cit_type: any = 0;
   pre_cond: number = 9999;
   bg_color: string = "#fff";
   feed_text: string = "";
@@ -262,11 +262,10 @@ export class CitProvider {
     }.bind(this), this.isi_delay);
   }
 
-  practice_eval(min_correct) {
-    //at least min_correct% on each item. if not, warn accordingly
+  practice_eval(min_ratio) {
     var is_valid = true;
     var types_failed = [];
-    if (this.blocknum == 1) {
+    if (this.crrnt_phase === 'practice_strict') {
       is_valid = this.no_prac_fail;
       this.no_prac_fail = true;
       if (is_valid == false) {
@@ -279,22 +278,22 @@ export class CitProvider {
           return rt_item > 150;
         });
         var corr_ratio = rts_correct.length / this.rt_data_dict[it_type].length;
-        if (corr_ratio < min_correct) {
+        if (corr_ratio < min_ratio) {
           is_valid = false;
           types_failed.push(
             " " +
             this.it_type_feed_dict[it_type] +
             " (" +
-            Math.floor(corr_ratio * 10000) / 100 +
+            Math.floor(corr_ratio * 100) +
             "% correct)"
           );
         }
       }
       if (is_valid == false) {
         this.block_text =
-          "Sie müssen diese Übungsrunde wiederholen, da Sie zu wenige richtige Antworten gegeben haben. <br><br>Sie benötigen mindestens 60% richtige Antworten für jeden der beiden Antworttypen, jedoch gaben Sie nicht genügend richtige Antworten für folgende(n) Antworttyp(en):" +
+          "<span></span>You will have to repeat this practice round, because of too few correct responses.</b><br><br>You need at least " + min_ratio * 100 + "% accuracy on each item type, but you did not have enough correct responses for the following one(s):" +
           types_failed.join(",") +
-          ".<br><br>Bitte geben Sie genaue und im Zeitlimit liegende Antworten.<br><br><button ion-button style='text-transform: none;' (tap)='this.citP.block_text = this.citP.block_texts[this.citP.blocknum]' color='light' block>show instructions again</button>";
+          ".";
       }
     }
     return is_valid;
@@ -395,21 +394,6 @@ export class CitProvider {
     this.teststim.shift();
     this.next_trial();
   }
-
-  // this.citP.t4()
-  t1() {
-    return this.itemgenP.main_items(this.stim_base);
-  }
-  t2() {
-    return this.itemgenP.filler_items(this.targetrefs, this.nontargrefs);
-  }
-  t3() {
-    return this.itemgenP.practice_items(this.targetrefs, this.nontargrefs);
-  }
-  t4() {
-    return this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs);
-  }
-
 
   nextblock() {
     this.crrnt_phase = 'practice';

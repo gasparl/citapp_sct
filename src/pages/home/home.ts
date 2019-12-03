@@ -5,6 +5,7 @@ import { Storage } from "@ionic/storage";
 import { StatusBar } from '@ionic-native/status-bar';
 import { Network } from '@ionic-native/network';
 import { EmailComposer } from "@ionic-native/email-composer";
+import { Keyboard } from '@ionic-native/keyboard';
 import { Platform } from "ionic-angular";
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 import { PopoverController } from 'ionic-angular';
@@ -61,7 +62,8 @@ export class HomePage {
     public citP: CitProvider,
     public trP: TranslationProvider,
     protected _sanitizer: DomSanitizer,
-    public navParams: NavParams
+    public navParams: NavParams,
+    private keyboard: Keyboard
   ) {
     this.load_from_device();
     this.on_device = this.platform.is("cordova");
@@ -118,6 +120,12 @@ export class HomePage {
       });
       this.citP.path = this.citP.file.externalDataDirectory;
     }
+    this.keyboard.onKeyboardWillShow().subscribe(() => {
+      this.citP.content.resize();
+    });
+    this.keyboard.onKeyboardWillHide().subscribe(() => {
+      this.citP.content.resize();
+    });
   }
 
   san_html(html) {
@@ -480,6 +488,7 @@ export class HomePage {
       if (this.save_on_citstart === true) {
         this.store_on_device();
       }
+      this.citP.cit_type = parseInt(this.citP.cit_type);
       this.create_stim_base();
       this.citP.set_block_texts();
       this.citP.task_start();
@@ -515,6 +524,7 @@ export class HomePage {
   }
 
   fill_demo = function() {
+    this.default_core();
     this.citP.subj_id = 'CIT_demo_suspect_01';
     this.cit_items[0] = 'AUG 25';
     this.cit_items[1] = 'FEB 12';

@@ -84,7 +84,6 @@ export class HomePage {
     this.form_items = formBuilder.group(validator_dict);
     this.storage.get('imgs').then((cntent) => {
       if (cntent) {
-        console.log(Object.keys(cntent));
         dataShare.stored_images = cntent;
       }
     });
@@ -140,9 +139,9 @@ export class HomePage {
   }
 
   // this.store_stat(); // TODO add this where CIT is ended
-  store_stat = function() {
+  store_stat = async function() {
     let somecode = Math.random().toString(36).slice(2);
-    this.storage.set('test-' + somecode, this.neat_date().slice(0, 8));
+    await this.storage.set('test-' + somecode, this.neat_date().slice(0, 8));
     this.send_stat();
   }
 
@@ -154,8 +153,8 @@ export class HomePage {
     });
   }
 
-  store_on_device = function() {
-    this.storage.set('local', {
+  store_on_device = async function() {
+    await this.storage.set('local', {
       'subject_id': this.citP.subj_id,
       'cit_version': this.citP.cit_type,
       'num_of_blocks': this.citP.num_of_blocks,
@@ -195,7 +194,6 @@ export class HomePage {
     try {
       this.storage.get('local').then((cntent) => {
         let data_dict = cntent;
-
         try {
           this.citP.subj_id = data_dict.subject_id;
           this.citP.cit_type = data_dict.cit_version;

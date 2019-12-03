@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ViewController, AlertController } from 'ionic-angular';
-import { NavParams } from 'ionic-angular';
+import { NavParams, LoadingController } from 'ionic-angular';
 import { DataShareProvider } from '../../providers/data-share/data-share';
 import { Storage } from "@ionic/storage";
 
@@ -42,7 +42,8 @@ export class PopoverImg {
     public alertCtrl: AlertController,
     public navParams: NavParams,
     public dataShare: DataShareProvider,
-    public storage: Storage) { }
+    public storage: Storage,
+    private loadingCtrl: LoadingController) { }
 
   objkeys = function(dict) {
     try {
@@ -54,6 +55,10 @@ export class PopoverImg {
   }
 
   async load_img(event) {
+    let loading = this.loadingCtrl.create({
+      content: 'Loading image(s)...'
+    });
+    loading.present();
     let files = event.target.files;
     for (const file of files) {
       if (/image\/.*/.test(file.type)) {
@@ -69,6 +74,7 @@ export class PopoverImg {
     if (files.length === 1 && /image\/.*/.test(files[0].type)) {
       this.img_select(files[0].name)
     }
+    loading.dismiss();
   };
 
   toBase64 = file => new Promise((resolve, reject) => {

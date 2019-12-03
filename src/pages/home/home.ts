@@ -390,7 +390,7 @@ export class HomePage {
     let img = new Image;
     img.style.height = "9vw";
     img.id = img_key + '_img';
-    img.src = URL.createObjectURL(this.img_dict[img.id]);
+    img.src = this.img_dict[img.id];
     try {
       let img_elem = document.getElementById(img.id);
       img_elem.parentNode.removeChild(img_elem);
@@ -584,7 +584,7 @@ export class HomePage {
         tempdict.type = "target";
         if (Object.keys(this.img_dict).indexOf('target') !== -1) {
           tempdict.mode = 'image';
-          tempdict.imgurl = URL.createObjectURL(this.img_dict['target_img']);
+          tempdict.imgurl = this.img_dict['target_img'];
         } else {
           tempdict.mode = 'text';
           tempdict.imgurl = null;
@@ -594,7 +594,7 @@ export class HomePage {
         tempdict.type = "probe" + num;
         if (Object.keys(this.img_dict).indexOf('probe' + num) !== -1) {
           tempdict.mode = 'image';
-          tempdict.imgurl = URL.createObjectURL(this.img_dict["probe" + num + '_img']);
+          tempdict.imgurl = this.img_dict["probe" + num + '_img'];
         } else {
           tempdict.mode = 'text';
           tempdict.imgurl = null;
@@ -614,7 +614,7 @@ export class HomePage {
       }
       if (Object.keys(this.img_dict).indexOf('filler' + (num + 1)) !== -1) {
         tempdict.mode = 'image';
-        tempdict.imgurl = URL.createObjectURL(this.img_dict["filler" + (num + 1) + '_img']);
+        tempdict.imgurl = this.img_dict["filler" + (num + 1) + '_img'];
       } else {
         tempdict.mode = 'text';
         tempdict.imgurl = null;
@@ -629,7 +629,7 @@ export class HomePage {
       }
       if (Object.keys(this.img_dict).indexOf('filler' + (num + 4)) !== -1) {
         tempdict.mode = 'image';
-        tempdict.imgurl = URL.createObjectURL(this.img_dict["filler" + (num + 4) + '_img']);
+        tempdict.imgurl = this.img_dict["filler" + (num + 4) + '_img'];
       } else {
         tempdict.mode = 'text';
         tempdict.imgurl = null;

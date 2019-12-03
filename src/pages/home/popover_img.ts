@@ -57,10 +57,8 @@ export class PopoverImg {
     let files = event.target.files;
     [].forEach.call(files, file => {
       if (/image\/.*/.test(file.type)) {
-
-        this.get_base64(file);
-        
-        this.dataShare.stored_images[file.name] = file;
+        this.dataShare.stored_images[file.name] = this.get_base64(file);
+        console.log(this.dataShare.stored_images[file.name]);
       }
     });
     this.storage.set('imgs', this.dataShare.stored_images);
@@ -74,8 +72,10 @@ export class PopoverImg {
     if (result instanceof Error) {
       console.log('Error converting file to string: ', result.message);
       return;
+    } else {
+      console.log('this:', result);
+      return result;
     }
-    console.log('success: ', result);
   }
 
   toBase64 = file => new Promise((resolve, reject) => {

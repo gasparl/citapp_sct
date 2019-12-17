@@ -405,7 +405,7 @@
   </div>
 
 
-  <div id="div_cit_main" *ngSwitchCase="'div_cit_main'">
+  <div *ngSwitchCase="'div_cit_main'">
     <p id="feed_id"><b>{{citP.feed_text}}</b></p>
 
     <p (touchstart)="citP.touchstart($event, 'resp_a');" (touchend)="citP.touchend($event, 'resp_a');" id="resp_left" class="resp_buttons"></p>
@@ -413,6 +413,7 @@
     <p (touchstart)="citP.touchstart($event, 'resp_b');" (touchend)="citP.touchend($event, 'resp_b');" id="resp_right" class="resp_buttons"></p>
 
     <p id="stimulus">{{citP.stimulus_text}}</p>
+    <canvas width="10" height="10" #thecanvas></canvas>
 
     <p id="start_text" (tap)="citP.visib.start_text = false; citP.start_trials();" *ngIf="citP.visib.start_text">TAP HERE TO START</p>
   </div>

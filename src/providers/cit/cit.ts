@@ -114,6 +114,8 @@ export class CitProvider {
   path: any = "";
   show_eval: boolean = true;
   crrnt_phase: string;
+  canvas;
+  ctx: any;
 
   constructor(
     private clipboard: Clipboard,
@@ -239,25 +241,6 @@ export class CitProvider {
     }
   }
 
-  item_display() {
-    if (this.trial_stim.type == "target" || this.trial_stim.type == "targetflr") {
-      this.correct_resp = "resp_b";
-    } else {
-      this.correct_resp = "resp_a";
-    }
-    console.log(this.trial_stim);
-    //this.touchsim(); // for testing -- TODOREMOVE
-    requestAnimationFrame(() => {
-      this.stimulus_text = this.text_to_show;
-      this.start = performance.now();
-      this.listen = true;
-      this.response_window = setTimeout(function() {
-        this.rt_start = performance.now() - this.start;
-        this.listen = false;
-        this.flash_too_slow();
-      }.bind(this), this.response_timelimit);
-    });
-  }
   isi() {
     this.isi_delay = this.itemgenP.randomdigit(1, this.isi_delay_minmax[1] - this.isi_delay_minmax[0]);
     setTimeout(function() {
@@ -507,4 +490,47 @@ export class CitProvider {
       silent: true
     })
   }
+
+  // image display
+
+
+
+  item_display() {
+    if (this.trial_stim.type == "target" || this.trial_stim.type == "targetflr") {
+      this.correct_resp = "resp_b";
+    } else {
+      this.correct_resp = "resp_a";
+    }
+    console.log(this.trial_stim);
+    let img;
+    if (this.trial_stim.mode == 'image') {
+      this.ctx.clearRect(0, 0);
+      img = this.trial_stim;
+    }
+    //this.touchsim(); // for testing -- TODOREMOVE
+    requestAnimationFrame(() => {
+      if (this.trial_stim.mode == 'image') {
+        this.stimulus_text = this.text_to_show;
+      } else {
+        this.ctx.drawImage(img, 0, 0);
+      }
+      this.start = performance.now();
+      this.listen = true;
+      this.response_window = setTimeout(function() {
+        this.rt_start = performance.now() - this.start;
+        this.listen = false;
+        this.flash_too_slow();
+      }.bind(this), this.response_timelimit);
+    });
+  }
+
+
+
+
+
+
+
+
+
+
 }

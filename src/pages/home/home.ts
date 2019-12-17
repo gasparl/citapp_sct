@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, ViewChild, ElementRef } from "@angular/core";
 import { Slides, Content } from 'ionic-angular';
 import { NavController, NavParams } from "ionic-angular";
 import { Storage } from "@ionic/storage";
@@ -22,6 +22,18 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class HomePage {
   @ViewChild(Slides) slides: Slides;
   @ViewChild(Content) cntent_temp: Content;
+  canv_temp: ElementRef;
+  @ViewChild('thecanvas') set content(content: ElementRef) {
+    if (content !== undefined) {
+      this.citP.canvas = content;
+      this.citP.canvas.nativeElement.style.background = '#ff0000'
+      let wi = Math.floor(window.innerHeight * 0.62) + 'px';
+      this.citP.canvas.nativeElement.style.width = wi;
+      this.citP.canvas.nativeElement.style.height = wi;
+      console.log('final wi:', wi);
+      this.citP.ctx = this.citP.canvas.nativeElement.getContext('2d');
+    }
+  }
 
   // /*
   to_exec: any;
@@ -464,12 +476,9 @@ export class HomePage {
   duplicates: string = '';
   initials() {
     let allitems = JSON.parse(JSON.stringify(this.cit_items.concat(this.targetref_words, this.nontargref_words)));
-    console.log(allitems);
     allitems = allitems.filter(item => item !== null);
     let dupls = allitems.reduce((acc, v, i, arr) => arr.indexOf(v) !== i && acc.indexOf(v) === -1 ? acc.concat(v) : acc, [])
-    console.log(dupls);
     dupls = dupls.filter(item => item !== '');
-    console.log(dupls);
     if (dupls.length > 0) {
       this.duplicates = '"' + dupls.join('", "') + '"';
     } else {

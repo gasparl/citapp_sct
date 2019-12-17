@@ -62,11 +62,7 @@ export class PopoverImg {
     let files = event.target.files;
     for (const file of files) {
       if (/image\/.*/.test(file.type)) {
-        const result = await this.toBase64(file).catch(e => e);
-        if (result instanceof Error) {
-          console.log('Error converting file to string: ', result.message);
-          return;
-        }
+        const result = await this.resizedataURL(file);
         this.dataShare.stored_images[file.name] = result;
       }
     };
@@ -77,12 +73,23 @@ export class PopoverImg {
     loading.dismiss();
   };
 
-  toBase64 = file => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
+  resizedataURL(datas) {
+    return new Promise(async function(resolve, reject) {
+      var img = document.createElement('img');
+      img.onload = () => {
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        let wi = Math.floor(window.innerHeight * 0.62);
+        console.log('resize wi:', wi);
+        canvas.width = wi;
+        canvas.height = wi;
+        ctx.drawImage(img, 0, 0, wi, wi);
+        var dataURI = canvas.toDataURL();
+        resolve(dataURI);
+      };
+      img.src = URL.createObjectURL(datas);
+    })
+  }
 
   img_remove(inp) {
     delete this.dataShare.stored_images[inp];

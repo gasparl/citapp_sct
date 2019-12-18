@@ -24,13 +24,15 @@ export class HomePage {
   @ViewChild(Content) cntent_temp: Content;
   canv_temp: ElementRef;
   @ViewChild('thecanvas') set content(content: ElementRef) {
-    if (content !== undefined) {
+    if (content !== undefined && this.citP.canvas === undefined) {
+      console.log('attempt');
       this.citP.canvas = content;
       this.citP.canvas.nativeElement.style.background = '#ff0000'
       let wi = Math.floor(window.innerHeight * 0.62) + 'px';
       this.citP.canvas.nativeElement.style.width = wi;
       this.citP.canvas.nativeElement.style.height = wi;
       console.log('final wi:', wi);
+      // alert(wi); //  TODO:  remove
       this.citP.ctx = this.citP.canvas.nativeElement.getContext('2d');
     }
   }
@@ -245,7 +247,6 @@ export class HomePage {
 
   show_imgs() {
     if (Object.keys(this.img_dict).length !== 0) {
-      let all_ids = ['target', 'probe1', 'probe2', 'probe3', 'probe4', 'probe5', 'filler1', 'filler2', 'filler3', 'filler4', 'filler5', 'filler6', 'filler7', 'filler8', 'filler9'];
       Object.keys(this.img_dict).map((dkey) => {
         if (!dkey.includes('_img')) {
           this.display_thumbnail(dkey)
@@ -648,6 +649,15 @@ export class HomePage {
       }
       this.citP.nontargrefs.push(tempdict);
     });
+  }
+
+  // TODO: loop thru images in stim base and convert them with the function below
+  imgurl(base64) {
+    return new Promise((resolve, reject) => {
+      let img = new Image();
+      img.onload = () => resolve(img);
+      img.src = base64;
+    })
   }
 
   refresh_page() {

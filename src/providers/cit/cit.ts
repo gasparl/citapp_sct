@@ -154,7 +154,7 @@ export class CitProvider {
     }).sort().join('<br>');
     let imgitems = dicts.filter(dct => dct.mode === 'image').map(dct => {
       let props = 'style="max-height:50%;max-width:50%;vertical-align: middle;"';
-      return '<li><img ' + props + ' src="' + dct.imgurl + '"></li>';
+      return '<li><img ' + props + ' src="' + dct.imgurl.src + '"></li>';
     }).sort().join('<br>');
     if (textitems.length > 0 && imgitems.length > 0) {
       return '<b><ul>' + textitems + '<br>' + imgitems + '</ul></b><br>';
@@ -317,6 +317,7 @@ export class CitProvider {
 
   post_resp_hold() {
     this.stimulus_text = "";
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     setTimeout(function() {
       this.listn_end = false;
       this.add_response();
@@ -502,17 +503,12 @@ export class CitProvider {
       this.correct_resp = "resp_a";
     }
     console.log(this.trial_stim);
-    let img;
-    if (this.trial_stim.mode == 'image') {
-      this.ctx.clearRect(0, 0);
-      img = this.trial_stim;
-    }
     //this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
-      if (this.trial_stim.mode == 'image') {
-        this.stimulus_text = this.text_to_show;
+      if (this.trial_stim.mode === 'image') {
+        this.ctx.drawImage(this.trial_stim.imgurl, 0, 0);
       } else {
-        this.ctx.drawImage(img, 0, 0);
+        this.stimulus_text = this.text_to_show;
       }
       this.start = performance.now();
       this.listen = true;
@@ -523,14 +519,5 @@ export class CitProvider {
       }.bind(this), this.response_timelimit);
     });
   }
-
-
-
-
-
-
-
-
-
 
 }

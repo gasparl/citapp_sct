@@ -81,6 +81,7 @@ export class PopoverImg {
         var ctx = canvas.getContext('2d');
         let wi = Math.floor(window.innerHeight * 0.62);
         console.log('resize wi:', wi);
+        alert(wi); //  TODO:  remove
         canvas.width = wi;
         canvas.height = wi;
         ctx.drawImage(img, 0, 0, wi, wi);

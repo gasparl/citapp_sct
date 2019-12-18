@@ -24,15 +24,14 @@ export class HomePage {
   @ViewChild(Content) cntent_temp: Content;
   canv_temp: ElementRef;
   @ViewChild('thecanvas') set content(content: ElementRef) {
-    if (content !== undefined && this.citP.canvas === undefined) {
+    if (content !== undefined) {
       console.log('attempt');
       this.citP.canvas = content;
-      this.citP.canvas.nativeElement.style.background = '#ff0000'
-      let wi = Math.floor(window.innerHeight * 0.62) + 'px';
-      this.citP.canvas.nativeElement.style.width = wi;
-      this.citP.canvas.nativeElement.style.height = wi;
-      console.log('final wi:', wi);
-      // alert(wi); //  TODO:  remove
+      this.citP.image_width = Math.floor(window.innerHeight * 0.62);
+      this.citP.canvas.nativeElement.width = this.citP.image_width;
+      this.citP.canvas.nativeElement.height = this.citP.image_width;
+      console.log('final wi:', this.citP.image_width);
+      // alert(this.citP.image_width); //  TODO:  remove
       this.citP.ctx = this.citP.canvas.nativeElement.getContext('2d');
     }
   }
@@ -503,13 +502,47 @@ export class HomePage {
         }
         this.citP.cit_type = parseInt(this.citP.cit_type);
         this.create_stim_base();
-        this.citP.set_block_texts();
-        this.citP.task_start();
-        this.citP.nextblock();
-        this.citP.content.resize();
+        this.to_img();
       }
     }
   }
+
+  async to_img() {
+    let wi = Math.floor(window.innerHeight * 0.62) + 'px';
+    await Promise.all(this.citP.stim_base.map(async (dict) => {
+      if (dict['imgurl'] !== null) {
+        this.citP.task_images[dict['item']] = await this.imgurl(dict['imgurl']);
+      }
+      delete dict['imgurl'];
+    }));
+    await Promise.all(this.citP.targetrefs.map(async (dict) => {
+      if (dict['imgurl'] !== null) {
+        this.citP.task_images[dict['item']] = await this.imgurl(dict['imgurl']);
+      }
+      delete dict['imgurl'];
+    }));
+    await Promise.all(this.citP.nontargrefs.map(async (dict) => {
+      if (dict['imgurl'] !== null) {
+        this.citP.task_images[dict['item']] = await this.imgurl(dict['imgurl']);
+      }
+      delete dict['imgurl'];
+    }));
+    this.citP.set_block_texts();
+    this.citP.task_start();
+    this.citP.nextblock();
+    this.citP.content.resize();
+  }
+
+  imgurl(base64) {
+    console.log('hi prom');
+    return new Promise((resolve, reject) => {
+      let img = new Image();
+      img.onload = () => resolve(img);
+      img.src = base64;
+      console.log('bye prom');
+    })
+  }
+
 
   default_fillers() {
     Object.keys(this.img_dict).map((key) => {
@@ -649,15 +682,6 @@ export class HomePage {
       }
       this.citP.nontargrefs.push(tempdict);
     });
-  }
-
-  // TODO: loop thru images in stim base and convert them with the function below
-  imgurl(base64) {
-    return new Promise((resolve, reject) => {
-      let img = new Image();
-      img.onload = () => resolve(img);
-      img.src = base64;
-    })
   }
 
   refresh_page() {

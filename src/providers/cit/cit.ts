@@ -115,7 +115,9 @@ export class CitProvider {
   show_eval: boolean = true;
   crrnt_phase: string;
   canvas;
-  ctx: any;
+  ctx;
+  task_images: object = {};
+  image_width: number;
 
   constructor(
     private clipboard: Clipboard,
@@ -154,7 +156,7 @@ export class CitProvider {
     }).sort().join('<br>');
     let imgitems = dicts.filter(dct => dct.mode === 'image').map(dct => {
       let props = 'style="max-height:50%;max-width:50%;vertical-align: middle;"';
-      return '<li><img ' + props + ' src="' + dct.imgurl.src + '"></li>';
+      return '<li><img ' + props + ' src="' + this.task_images[dct.item].src + '"></li>';
     }).sort().join('<br>');
     if (textitems.length > 0 && imgitems.length > 0) {
       return '<b><ul>' + textitems + '<br>' + imgitems + '</ul></b><br>';
@@ -299,7 +301,7 @@ export class CitProvider {
       this.rt_start = 99999;
       this.rt_end = 99999;
       this.rspns = "";
-      this.trial_stim = this.teststim[0];
+      this.trial_stim = this.teststim.shift();
       this.block_trialnum++;
       this.text_to_show = this.trial_stim.item;
       this.isi();
@@ -316,8 +318,8 @@ export class CitProvider {
   }
 
   post_resp_hold() {
+    this.ctx.clearRect(0, 0, this.image_width, this.image_width);
     this.stimulus_text = "";
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     setTimeout(function() {
       this.listn_end = false;
       this.add_response();
@@ -378,7 +380,6 @@ export class CitProvider {
       "\t" +
       String(new Date().getTime()) +
       "\n";
-    this.teststim.shift();
     this.next_trial();
   }
 
@@ -494,19 +495,16 @@ export class CitProvider {
 
   // image display
 
-
-
   item_display() {
     if (this.trial_stim.type == "target" || this.trial_stim.type == "targetflr") {
       this.correct_resp = "resp_b";
     } else {
       this.correct_resp = "resp_a";
     }
-    console.log(this.trial_stim);
     //this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       if (this.trial_stim.mode === 'image') {
-        this.ctx.drawImage(this.trial_stim.imgurl, 0, 0);
+        this.ctx.drawImage(this.task_images[this.trial_stim.item], 0, 0);
       } else {
         this.stimulus_text = this.text_to_show;
       }

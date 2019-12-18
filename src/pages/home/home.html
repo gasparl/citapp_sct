@@ -406,14 +406,15 @@
 
 
   <div *ngSwitchCase="'div_cit_main'">
-    <p id="feed_id"><b>{{citP.feed_text}}</b></p>
 
     <p (touchstart)="citP.touchstart($event, 'resp_a');" (touchend)="citP.touchend($event, 'resp_a');" id="resp_left" class="resp_buttons"></p>
 
     <p (touchstart)="citP.touchstart($event, 'resp_b');" (touchend)="citP.touchend($event, 'resp_b');" id="resp_right" class="resp_buttons"></p>
 
-    <p id="stimulus">{{citP.stimulus_text}}</p>
     <canvas width="10" height="10" #thecanvas></canvas>
+    <p id="feed_id"><b>{{citP.feed_text}}</b></p>
+
+    <p id="stimulus">{{citP.stimulus_text}}</p>
 
     <p id="start_text" (tap)="citP.visib.start_text = false; citP.start_trials();" *ngIf="citP.visib.start_text">TAP HERE TO START</p>
   </div>
@@ -457,10 +458,10 @@
     </p>
   </div>
 
-    <b>{{mycl}}</b>
-    <br />
-    <input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;width:100%;">
-    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-    <!-- app console for testing -->
+  <b>{{mycl}}</b>
+  <br />
+  <input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;width:100%;">
+  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+  <!-- app console for testing -->
 
 </ion-content>

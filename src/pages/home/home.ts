@@ -53,9 +53,11 @@ export class HomePage {
   pwpost: string = "";
   email_valid: boolean = false;
   email_for_pw: string = "";
+  consentset: any[] = ['0', '1', '2'];
   img_dict: any = {};
   on_device: boolean;
   submit_failed: boolean = false;
+  consentitems: string;
   targetref_words_orig: string[] = ["FAMILIAR", "MINE", "RECOGNIZED"];
   nontargref_words_orig: string[] = ["FOREIGN", "IRRELEVANT", "OTHER", "RANDOM", "THEIRS", "UNFAMILIAR"];
   targetref_words: string[] = JSON.parse(JSON.stringify(this.targetref_words_orig));
@@ -192,7 +194,8 @@ export class HomePage {
       'img_dict': this.img_dict,
       'texttrans': this.texttrans,
       'save_on_citstart': this.save_on_citstart,
-      'show_eval': this.citP.show_eval
+      'show_eval': this.citP.show_eval,
+      'consent': this.consentset
     });
     try {
       let el = document.getElementById("storefeed_id2")
@@ -234,6 +237,7 @@ export class HomePage {
           this.texttrans = data_dict.texttrans;
           this.save_on_citstart = data_dict.save_on_citstart;
           this.citP.show_eval = data_dict.show_eval;
+          this.citP.consentset = data_dict.consent;
           this.change_texttrans();
         } catch (e) {
           console.log('(No locally saved data.)');
@@ -501,14 +505,30 @@ export class HomePage {
           this.store_on_device();
         }
         this.citP.cit_type = parseInt(this.citP.cit_type);
-        this.create_stim_base();
-        this.to_img();
+
+        if (this.consentset.indexOf('1') !== -1 || this.consentset.indexOf('2') !== -1) {
+          if (this.consentset.indexOf('1') !== -1 && this.consentset.indexOf('2') !== -1) {
+            this.consentitems = 'You also have the choice to give permission to share the data, but keep the main items presented during the test confidential.';
+          } else if (this.consentset.indexOf('2') !== -1) {
+            this.consentitems = 'The main items presented in the test will also remain confidential.';
+          }
+
+          this.citP.switch_divs('div_consent')
+        } else {
+          this.init_cit(99);
+        }
+
       }
     }
   }
 
+  init_cit(chosen) {
+    this.citP.consented = chosen;
+    this.create_stim_base();
+    this.to_img();
+  }
+
   async to_img() {
-    let wi = Math.floor(window.innerHeight * 0.62) + 'px';
     await Promise.all(this.citP.stim_base.map(async (dict) => {
       if (dict['imgurl'] !== null) {
         this.citP.task_images[dict['item']] = await this.imgurl(dict['imgurl']);
@@ -530,16 +550,13 @@ export class HomePage {
     this.citP.set_block_texts();
     this.citP.task_start();
     this.citP.nextblock();
-    this.citP.content.resize();
   }
 
   imgurl(base64) {
-    console.log('hi prom');
     return new Promise((resolve, reject) => {
       let img = new Image();
       img.onload = () => resolve(img);
       img.src = base64;
-      console.log('bye prom');
     })
   }
 

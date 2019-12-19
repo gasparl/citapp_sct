@@ -5,6 +5,34 @@ export class TranslationProvider {
   lang: string = 'en';
   constructor() { }
 
+
+  lgs: object = {
+    'en': 'English',
+    'cn': '中文',
+    'de': 'Deutsch',
+    'hu': 'Magyar',
+    'jp': '日本語',
+    'pl': 'Polski'
+  };
+
+  template_dict: object = {
+    'en': 'hello',
+    'cn': '你好',
+    'de': 'grüß dich',
+    'hu': 'üdv',
+    'jp': 'こんにちは',
+    'pl': 'cześć'
+  };
+
+  cit_completed: object = {
+    'en': 'Test completed',
+    'cn': '你好',
+    'de': 'grüß dich',
+    'hu': 'A teszt véget ért.',
+    'jp': 'こんにちは',
+    'pl': 'cześć'
+  };
+
   blck_texts: any = {
     'en': (targs, nontargs, trefs, nontrefs, cittype) => {
       let numprac: string;

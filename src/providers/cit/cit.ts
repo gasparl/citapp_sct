@@ -83,7 +83,7 @@ export class CitProvider {
     block3: 0
   };
   cit_data: string =
-    "subject_id\tcit_version\tblock_number\ttrial_number\tstimulus_shown\tcategory\tstim_type\tresponse_key\trt_start\trt_end\tincorrect\ttoo_slow\tisi\tdate_in_ms\n";
+    ["subject_id", "cit_version", "block_number", "trial_number", "stimulus_shown", "category", "stim_type", "response_key", "rt_start", "rt_end", "incorrect", "too_slow", "isi", "date_in_ms"].join('\t') + "\n";
   correct_resp: string = "none";
   blocknum: number = 1;
   num_of_blocks: number = 1;
@@ -113,6 +113,7 @@ export class CitProvider {
   f_name: string;
   path: any = "";
   show_eval: boolean = true;
+  consented: number;
   crrnt_phase: string;
   canvas;
   ctx;
@@ -136,9 +137,10 @@ export class CitProvider {
     setTimeout(function() {
       this.pointev[div_to_show] = "auto";
     }.bind(this), 300);
-    this.content.scrollToTop(0);
     this.navigationBar.hideNavigationBar();
     this.statusBar.hide();
+    this.content.resize();
+    this.content.scrollToTop(0);
   }
 
   task_start() {
@@ -352,33 +354,21 @@ export class CitProvider {
       this.rt_data_dict[curr_type].push(this.rt_start);
     }
     this.cit_data +=
-      this.subj_id +
-      "\t" +
-      this.cit_type +
-      "\t" +
-      this.blocknum +
-      "\t" +
-      this.block_trialnum +
-      "\t" +
-      this.trial_stim.item +
-      "\t" +
-      this.trial_stim.cat +
-      "\t" +
-      this.trial_stim.type +
-      "\t" +
-      this.rspns +
-      "\t" +
-      this.rt_start +
-      "\t" +
-      this.rt_end +
-      "\t" +
-      this.incorrect +
-      "\t" +
-      this.tooslow +
-      "\t" +
-      (this.isi_delay + this.isi_delay_minmax[0]) +
-      "\t" +
-      String(new Date().getTime()) +
+      [this.subj_id,
+      this.cit_type,
+      this.blocknum,
+      this.block_trialnum,
+      this.trial_stim.item,
+      this.trial_stim.cat,
+      this.trial_stim.type,
+      this.rspns,
+      this.rt_start,
+      this.rt_end,
+      this.incorrect,
+      this.tooslow,
+      (this.isi_delay + this.isi_delay_minmax[0]),
+      String(new Date().getTime())
+      ].join('\t') +
       "\n";
     this.next_trial();
   }
@@ -431,7 +421,7 @@ export class CitProvider {
   }
 
   runblock() {
-    this.bg_color = "#000";
+    this.bg_color = "#000000";
     this.switch_divs('div_cit_main')
     this.visib.start_text = true;
   }
@@ -496,7 +486,7 @@ export class CitProvider {
   // image display
 
   item_display() {
-    if (this.trial_stim.type == "target" || this.trial_stim.type == "targetflr") {
+    if (this.trial_stim.type === "target" || this.trial_stim.type.slice(0, 9) === "targetflr") {
       this.correct_resp = "resp_b";
     } else {
       this.correct_resp = "resp_a";

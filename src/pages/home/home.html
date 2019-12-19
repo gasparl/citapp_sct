@@ -366,6 +366,15 @@
             <ion-label style="margin-bottom:0;color:black">Show evaluation immediately after completion</ion-label>
             <ion-toggle [(ngModel)]='citP.show_eval' [ngModelOptions]="{standalone: true}"></ion-toggle>
           </ion-item>
+          <ion-item>
+            <ion-label style="margin-bottom:0;color:black">Consent choices</ion-label>
+            <ion-select [(ngModel)]="consentset" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;" multiple="true">
+              <ion-option value='0'>No</ion-option>
+              <ion-option value='1'>Yes</ion-option>
+              <ion-option value='2'>Yes but without items</ion-option>
+            </ion-select>
+          </ion-item>
+
           <br /><span *ngIf="citP.subj_id != ''" style="font-size:120%">Initiate test with Subject ID <b>{{citP.subj_id}}</b>.</span>
           <br />
           <br />
@@ -386,6 +395,25 @@
       <br />
       <br />
     </form>
+  </div>
+
+
+  <div *ngSwitchCase="'div_consent'">
+    <span style="line-height: 150%;">
+      With your permission, the data from the following test may be used and published for research purposes. The data will not reveal who you are, you will not be named and your identity will remain strictly confidential. {{consentitems}}
+    </span>
+    <br /><br />
+    <div text-center>
+      Do you give permission to share the data?
+      <br /><br />
+      <button ion-button *ngIf="consentset.indexOf('1') !== -1" (tap)="init_cit(1);" color='light' block>Yes</button>
+      <br />
+      <button ion-button *ngIf="consentset.indexOf('2') !== -1 && consentset.indexOf('1') !== -1" (tap)="init_cit(2);" color='light' block>Yes, but without items</button>
+      <button ion-button *ngIf="consentset.indexOf('2') !== -1 && consentset.indexOf('1') === -1" (tap)="init_cit(2);" color='light' block>Yes</button>
+      <br />
+      <button ion-button *ngIf="consentset.indexOf('0') !== -1" (tap)="init_cit(0);" color='light' block>No</button>
+      <br />
+    </div>
   </div>
 
 
@@ -420,48 +448,17 @@
   </div>
 
 
-  <div *ngSwitchCase="'div_end'">
-    <header>
-      <ion-navbar>
-        <ion-title>
-          Ende
-        </ion-title>
-      </ion-navbar>
-    </header>
-    <b>Bitte senden Sie die Daten mit folgender Taste (wählen Sie nach dem Tastendruck aus den angegebenen Applikationen Ihr Email-Programm aus):
-      <div text-center>
-        <button ion-button type="button" (tap)="send_mail()" style="text-transform: none;">DATEN SENDEN</button>
-      </div>
-      <br /> Stellen Sie sicher, dass sich eine Datei im Anhang befindet. Wenn es irgendwelche Probleme gibt, geben Sie uns Bescheid. Nach dem Versenden der Mail können Sie die Applikation beenden. Vielen Dank für Ihre Teilnahme.
-    </b>
-    <br />
-    <br />Kurze Information über den Test:
-    <br> In dieser Studie versuchen wir, Ihre wirklichen selbstbezogenen Details (z.B. Ihren tatsächlichen Vornamen) von solchen zu unterscheiden, die Ihnen nicht zugehörig sind (z.B. andere Vornamen). Ziel dieses Tests ist es, anhand von
-    Reaktionszeiten
-    herauszufinden, wenn eine Person versucht, bestimmte Daten zu verschleiern bzw. zu verheimlichen. Dies geschieht auf Basis der Vermutung, dass Reaktionszeiten für die Ihnen präsentierten eigenen Namen langsamer ausfallen, als im Falle anderer
-    Namen. Hauptanliegen der aktuellen Studie ist es, zu zeigen, ob dies besser mit Daumen oder Zeigefinger funktioniert.
-    <br><br>
-    Bezüglich Ihrer Ergebnisse: Der Unterschied zwischen Ihrem eigenen Namen und den anderen Namen ist standardisiert. Dieser Wert liegt üblicherweise zwischen -1 und 5. Ist der Wert größer als 0.1, kategorisieren wir diese Person als schuldig. Ihr
-    Wert liegt bei {{personal_feedback}}.
-
-    <br><br> Falls Sie sich für die endgültigen Ergebnisse der Studie interessieren, senden Sie einfach eine Email mit dem Betreff "FEEDBACK" an die gleiche Addresse, die Sie zum Senden der Datei genutzt haben (gaspar.lukacs@univie.ac.at). Wir
-    senden Ihnen dann gerne eine Kopie des resultierenden Manuskripts zu (etwa im Laufe eines halben Jahres).
-    <br>Für weitere unmittelbare Informationen wenden Sie sich bitte an den Versuchsleiter.
-    <br />
-    <br />
-    <br />
-    <hr />
-    <hr />
-    Technical details:
-    <br />
-    <p style="user-select: text;white-space:pre;" [innerHTML]="to_display">
-    </p>
+  <div *ngSwitchCase="'div_end'" (swipe)="citP.switch_divs('div_start');">
+    <ion-title>
+      {{trP.cit_completed}}
+    </ion-title>
   </div>
 
+  <!-- app console for testing -->
   <b>{{mycl}}</b>
   <br />
   <input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;width:100%;">
   <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <!-- app console for testing -->
+  <!-- console end -->
 
 </ion-content>

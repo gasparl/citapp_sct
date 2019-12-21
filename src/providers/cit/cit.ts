@@ -397,8 +397,8 @@ export class CitProvider {
           this.response_timelimit = this.response_timelimit_main;
           this.teststim = this.itemgenP.practice_items(this.targetrefs, this.nontargrefs);
         } else {
+          this.response_timelimit = 10000;
           this.crrnt_phase = 'practice_strict';
-          this.response_timelimit = this.response_timelimit_main;
           this.teststim = this.itemgenP.main_items(this.stim_base);
         }
       } else if (this.blocknum == 3 && this.cit_type === 0) {
@@ -409,6 +409,7 @@ export class CitProvider {
         this.response_timelimit = this.response_timelimit_main;
         this.teststim = this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs);
       }
+      this.teststim = this.teststim.slice(0,5); // TODO remove
       this.rt_data_dict = {};
       this.switch_divs('div_blockstart');
     } else {

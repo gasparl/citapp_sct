@@ -53,7 +53,7 @@ export class HomePage {
   pwpost: string = "";
   email_valid: boolean = false;
   email_for_pw: string = "";
-  consentset: any[] = ['0', '1', '2'];
+  consentset: any[] = [];
   img_dict: any = {};
   on_device: boolean;
   submit_failed: boolean = false;
@@ -237,7 +237,7 @@ export class HomePage {
           this.texttrans = data_dict.texttrans;
           this.save_on_citstart = data_dict.save_on_citstart;
           this.citP.show_eval = data_dict.show_eval;
-          this.citP.consentset = data_dict.consent;
+          this.consentset = data_dict.consent;
           this.change_texttrans();
         } catch (e) {
           console.log('(No locally saved data.)');
@@ -507,17 +507,16 @@ export class HomePage {
         this.citP.cit_type = parseInt(this.citP.cit_type);
 
         if (this.consentset.indexOf('1') !== -1 || this.consentset.indexOf('2') !== -1) {
+          this.consentitems = '';
           if (this.consentset.indexOf('1') !== -1 && this.consentset.indexOf('2') !== -1) {
-            this.consentitems = 'You also have the choice to give permission to share the data, but keep the main items presented during the test confidential.';
+            this.consentitems = this.trP.consentitems_chosen[this.trP.lang];
           } else if (this.consentset.indexOf('2') !== -1) {
-            this.consentitems = 'The main items presented in the test will also remain confidential.';
+            this.consentitems = this.trP.consentitems_conf[this.trP.lang];;
           }
-
           this.citP.switch_divs('div_consent')
         } else {
           this.init_cit(99);
         }
-
       }
     }
   }

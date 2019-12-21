@@ -33,11 +33,11 @@
 
     <br /><br />
     <div>
-      <button ion-button type="button">Information (brief intro with link to full README file)</button>
+      <button ion-button type="button">Information</button>
     </div>
     <br /><br />
     <div>
-      <button ion-button type="button">Demo (%with redirect to Autofill%)</button>
+      <button ion-button type="button">Demo</button>
     </div>
     <br /><br />
     <div>
@@ -276,6 +276,15 @@
         <ion-slide>
 
           <ion-item>
+            <ion-label style="margin-bottom:0;color:black">Choose language</ion-label>
+            <ion-select [(ngModel)]="trP.lang" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;">
+              <ion-option *ngFor="let lg_code of trP.lg_keys" value="{{lg_code}}" default>
+                {{trP.lgs[lg_code]}} ({{lg_code.toUpperCase()}})
+              </ion-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
             <ion-label style="margin-bottom:0;color:black">Version</ion-label>
             <ion-select [(ngModel)]="citP.cit_type" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;">
               <ion-option value='0'>Enhanced</ion-option>
@@ -400,18 +409,18 @@
 
   <div *ngSwitchCase="'div_consent'">
     <span style="line-height: 150%;">
-      With your permission, the data from the following test may be used and published for research purposes. The data will not reveal who you are, you will not be named and your identity will remain strictly confidential. {{consentitems}}
+      {{trP.consent[trP.lang]}} {{consentitems}}
     </span>
     <br /><br />
     <div text-center>
-      Do you give permission to share the data?
+      {{trP.consent_q[trP.lang]}}
       <br /><br />
-      <button ion-button *ngIf="consentset.indexOf('1') !== -1" (tap)="init_cit(1);" color='light' block>Yes</button>
+      <button ion-button *ngIf="consentset.indexOf('1') !== -1" (tap)="init_cit(1);" color='light' block>{{trP.consent_a[trP.lang][0]}}</button>
       <br />
-      <button ion-button *ngIf="consentset.indexOf('2') !== -1 && consentset.indexOf('1') !== -1" (tap)="init_cit(2);" color='light' block>Yes, but without items</button>
-      <button ion-button *ngIf="consentset.indexOf('2') !== -1 && consentset.indexOf('1') === -1" (tap)="init_cit(2);" color='light' block>Yes</button>
+      <button ion-button *ngIf="consentset.indexOf('2') !== -1 && consentset.indexOf('1') !== -1" (tap)="init_cit(2);" color='light' block>{{trP.consent_a[trP.lang][1]}}</button>
+      <button ion-button *ngIf="consentset.indexOf('2') !== -1 && consentset.indexOf('1') === -1" (tap)="init_cit(2);" color='light' block>{{trP.consent_a[trP.lang][0]}}</button>
       <br />
-      <button ion-button *ngIf="consentset.indexOf('0') !== -1" (tap)="init_cit(0);" color='light' block>No</button>
+      <button ion-button *ngIf="consentset.indexOf('0') !== -1" (tap)="init_cit(0);" color='light' block>{{trP.consent_a[trP.lang][2]}}</button>
       <br />
     </div>
   </div>
@@ -422,11 +431,11 @@
     <div text-center>
       <br />
       <br />
-      <button ion-button (tap)="citP.runblock();">Start</button>
+      <button ion-button (tap)="citP.runblock();">{{trP.start[trP.lang]}}</button>
       <div *ngIf='citP.block_text.slice(0, 13) === "<span></span>"'>
         <br />
         <br />
-        <button ion-button style='text-transform: none;' (tap)='this.citP.block_text = this.citP.block_texts[this.citP.blocknum]' color='light' block>show instructions again</button>
+        <button ion-button style='text-transform: none;' (tap)='this.citP.block_text = this.citP.block_texts[this.citP.blocknum]' color='light' block>{{trP.show_inst[trP.lang]}}</button>
       </div>
       <br />
     </div>
@@ -444,7 +453,7 @@
 
     <p id="stimulus">{{citP.stimulus_text}}</p>
 
-    <p id="start_text" (tap)="citP.visib.start_text = false; citP.start_trials();" *ngIf="citP.visib.start_text">TAP HERE TO START</p>
+    <p id="start_text" (tap)="citP.visib.start_text = false; citP.start_trials();" *ngIf="citP.visib.start_text">{{trP.taptostart[trP.lang]}}</p>
   </div>
 
 

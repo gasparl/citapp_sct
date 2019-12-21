@@ -15,9 +15,6 @@ export class CitProvider {
   touchsim() {
     var info = this.trial_stim.type + " (" + this.trial_stim.item + ")";
     var rt_sim = this.itemgenP.randomdigit(600, 830);
-    if (this.trial_stim.type == "probe") {
-      rt_sim = rt_sim;// + 10;
-    }
     var correct_chance1 = 1;
     var correct_chance2 = 0.95;
     var correct_chance, sim_key, corr_code, incor_code, chosen_response;
@@ -54,7 +51,6 @@ export class CitProvider {
 
   subj_id: string = '';
   current_div: string = "div_settings"; // ddd default: "div_start", div_settings, div_dems, div_cit_main, div_end
-  personal_feedback: string = '';
   false_delay: number = 400;
   tooslow_delay: number = 400;
   isi_delay_minmax: number[] = [300, 700];
@@ -62,7 +58,6 @@ export class CitProvider {
   response_timelimit_main: number = 900;
   isi_delay: number = 99999;
   cit_type: any = 0;
-  pre_cond: number = 9999;
   bg_color: string = "#fff";
   feed_text: string = "";
   visib: any = { start_text: true };
@@ -72,7 +67,13 @@ export class CitProvider {
   incorrect: number;
   block_trialnum: number;
   rt_data_dict: any;
-  all_main_rts: any = { "probs": [], "irrs": [] };
+  all_main_rts: any = {
+    "probe1": [],
+    "probe2": [],
+    "probe3": [],
+    "probe4": [],
+    "probe5": []
+  };
   trial_stim: any;
   rspns: string;
   no_prac_fail: boolean = true;
@@ -92,14 +93,7 @@ export class CitProvider {
   start: any = 0;
   listen: boolean = false;
   listn_end: boolean = false;
-  it_type_feed_dict: any = {
-    targetflr: "target-side fillers",
-    nontargflr: "nontarget-side fillers",
-    main_item: "nontarget items",
-    target: "target item"
-  };
   practice_num: number = 5;
-  basic_times: any = {};
   response_window: any;
   nums: any[];
   stim_base: any[];
@@ -218,7 +212,7 @@ export class CitProvider {
 
 
   flash_too_slow() {
-    this.feed_text = "Zu langsam!";
+    this.feed_text = this.trP.feedtooslo[this.trP.lang];
     setTimeout(function() {
       this.feed_text = "";
       this.tooslow = 1;
@@ -229,7 +223,7 @@ export class CitProvider {
   }
 
   flash_false() {
-    this.feed_text = "Falsch!";
+    this.feed_text = this.trP.feedwrong[this.trP.lang];
     setTimeout(function() {
       this.feed_text = "";
       this.incorrect = 1;
@@ -260,7 +254,7 @@ export class CitProvider {
       this.no_prac_fail = true;
       if (is_valid == false) {
         this.block_text =
-          "<span></span>You need to repeat this practice round due to no correct response in time.";
+          this.trP.accrep_feed[this.trP.lang];
       }
     } else {
       for (var it_type in this.rt_data_dict) {
@@ -272,16 +266,16 @@ export class CitProvider {
           is_valid = false;
           types_failed.push(
             " " +
-            this.it_type_feed_dict[it_type] +
+            this.trP.it_type_feed_dict[this.trP.lang][it_type] +
             " (" +
             Math.floor(corr_ratio * 100) +
-            "% correct)"
+            this.trP.correct[this.trP.lang] + ')'
           );
         }
       }
       if (is_valid == false) {
         this.block_text =
-          "<span></span>You will have to repeat this practice round, because of too few correct responses.</b><br><br>You need at least " + min_ratio * 100 + "% accuracy on each item type, but you did not have enough correct responses for the following one(s):" +
+          this.trP.acc_feed[this.trP.lang][0] + min_ratio * 100 + this.trP.acc_feed[this.trP.lang][1] +
           types_failed.join(",") +
           ".";
       }
@@ -308,7 +302,6 @@ export class CitProvider {
       this.text_to_show = this.trial_stim.item;
       this.isi();
     } else {
-      this.basic_times.blocks += "\nBlock " + this.blocknum + " end " + Date();
       if ((this.blocknum > 3) || (this.blocknum == 4 && this.practice_eval(0.8)) || this.practice_eval(0.5)) {
         this.blocknum++;
         this.block_text = this.block_texts[this.blocknum];
@@ -409,7 +402,7 @@ export class CitProvider {
         this.response_timelimit = this.response_timelimit_main;
         this.teststim = this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs);
       }
-      this.teststim = this.teststim.slice(0,5); // TODO remove
+      this.teststim = this.teststim.slice(0, 5); // TODO remove
       this.rt_data_dict = {};
       this.switch_divs('div_blockstart');
     } else {
@@ -457,28 +450,14 @@ export class CitProvider {
     this.f_name =
       this.subj_id +
       "_" +
-      this.pre_cond +
-      "_" +
       Date.now() +
       ".txt";
-    this.basic_times.finished = Date();
+    // this.clipboard.copy(this.cit_data);
+    // this.file.writeFile(this.path, this.f_name, this.cit_data);
 
-    this.clipboard.copy(this.cit_data);
-    this.file.writeFile(this.path, this.f_name, this.cit_data);
-    var outcome;
-    this.personal_feedback += (Math.ceil(dcit * 1000) / 1000).toFixed(3);
-    if (dcit > 0.1) {
-      outcome = " => found GUILTY (<i>d</i><sub>CIT</sub> > 0.1";
-      this.personal_feedback += ". Das bedeutet, dass Ihre Reaktionszeit für Ihren Name signifikant langsamer war als für andere Namen. Somit haben wir enthüllt, dass Sie dieses Detail verheimlicht haben";
-    } else {
-      outcome = " => found INNOCENT (<i>d</i><sub>CIT</sub> <= 0.1";
-      this.personal_feedback += ". Das bedeutet, dass Ihre Reaktionszeit für Ihren Name nicht signifikant langsamer war als für andere Namen. Somit konnten wir nicht enthüllen, dass Sie dieses Detail verheimlicht haben";
-    }
+    // (Math.ceil(dcit * 1000) / 1000).toFixed(3);
+    // Math.round(this.mean(this.all_main_rts.probs) - this.mean(this.all_main_rts.irrs)) + " ms)"
 
-    outcome += "; Pr-Irr diff ~" + Math.round(this.mean(this.all_main_rts.probs) - this.mean(this.all_main_rts.irrs)) + " ms)"
-    this.to_display = "<i>d</i><sub>CIT</sub> = " + (Math.ceil(dcit * 1000) / 1000).toFixed(3) + outcome + "<br/><br/>Path to saved file:<br/>" + this.path + "<br/>" + "File name: " + this.f_name + "<br/><br/>Full data:<br/>"
-    this.to_display += this.cit_data;
-    this.to_display = this.to_display.replace(/\\n/g, "<br/>");
     this.backgroundMode.setDefaults({
       silent: true
     })
@@ -492,7 +471,7 @@ export class CitProvider {
     } else {
       this.correct_resp = "resp_a";
     }
-    //this.touchsim(); // for testing -- TODOREMOVE
+    this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       if (this.trial_stim.mode === 'image') {
         this.ctx.drawImage(this.task_images[this.trial_stim.item], 0, 0);

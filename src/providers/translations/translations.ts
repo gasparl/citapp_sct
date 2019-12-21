@@ -17,8 +17,22 @@ export class TranslationProvider {
     'pl': 'Polski'
   };
 
-  targetref_words_orig: string[] = ["FAMILIAR", "MINE", "RECOGNIZED"];
-  nontargref_words_orig: string[] = ["FOREIGN", "IRRELEVANT", "OTHER", "RANDOM", "THEIRS", "UNFAMILIAR"];
+  targetref_words_orig: object = {
+    'en': ["FAMILIAR", "MINE", "RECOGNIZED"],
+    'cn': '中文',
+    'de': 'Deutsch',
+    'hu': ["FELISMERT", "ENYÉM", "LÉNYEGES"],
+    'jp': '日本語',
+    'pl': 'Polski'
+  };
+  nontargref_words_orig: object = {
+    'en': ["FOREIGN", "IRRELEVANT", "OTHER", "RANDOM", "THEIRS", "UNFAMILIAR"],
+    'cn': '中文',
+    'de': 'Deutsch',
+    'hu': ["IDEGEN", "LÉNYEGTELEN", "EGYÉB", "RANDOM", "MÁS", "ISMERETLEN"],
+    'jp': '日本語',
+    'pl': 'Polski'
+  };
 
   consent: object = {
     'en': 'With your permission, the data from the following test may be used and published for research purposes. The data will not reveal who you are, you will not be named and your identity will remain strictly confidential.',
@@ -91,6 +105,67 @@ export class TranslationProvider {
     'pl': 'Polski'
   };
 
+  feedtooslo: object = {
+    'en': "Too slow!",
+    'cn': '中文',
+    'de': 'Zu langsam!',
+    'hu': 'Túl lassú!',
+    'jp': '日本語',
+    'pl': 'Polski'
+  };
+  feedwrong: object = {
+    'en': "Wrong!",
+    'cn': '中文',
+    'de': "Falsch!",
+    'hu': 'Túl lassú!',
+    'jp': '日本語',
+    'pl': 'Polski'
+  };
+
+  it_type_feed_dict: object = {
+    'en': {
+      targetflr: "right-side secondary items",
+      nontargflr: "left-side secondary items",
+      main_item: "main (left-side) items",
+      target: "target item"
+    },
+    'cn': '中文',
+    'de': 'Deutsch',
+    'hu': {
+      targetflr: "jobb-oldali másodlagos stimulusok",
+      nontargflr: "bal-oldali másodlagos stimulusok",
+      main_item: "bal-oldali fő stimulusok",
+      target: "cél stimulus"
+    },
+    'jp': '日本語',
+    'pl': 'Polski'
+  };
+
+  correct: object = {
+    'en': "% correct",
+    'cn': '中文',
+    'de': '% korrekt',
+    'hu': '% korrekt',
+    'jp': '日本語',
+    'pl': 'Polski'
+  };
+  accrep_feed: object = {
+    'en': '<span></span>You need to repeat this practice round due to no correct response in time.',
+    'cn': '中文',
+    'de': 'Deutsch',
+    'hu': 'Magyar',
+    'jp': '日本語',
+    'pl': 'Polski'
+  };
+  acc_feed: object = {
+    'en': ['<span></span>You will have to repeat this practice round, because of too few correct responses.</b><br><br>You need at least ', "% accuracy on each item type, but you did not have enough correct responses for the following one(s):"],
+    'cn': '中文',
+    'de': 'Deutsch',
+    'hu': 'Magyar',
+    'jp': '日本語',
+    'pl': 'Polski'
+  };
+
   cit_completed: object = {
     'en': 'Test completed',
     'cn': '中文',
@@ -127,23 +202,26 @@ export class TranslationProvider {
           thetexts.push("<span id='feedback_id2'>In this second practice round, you have to categorize the main test items. " + main_instruction + '</span>');
           console.log(targs);
           thetexts.push(
-            "<span id='feedback_id3'>In this third and last practice round all items are present. You again have to respond fast, but a certain rate of error is allowed. The task is the same, touch the <i>left</i> button when you see the following items: " + targs.replace('<br>', '') + trefs + "Touch the <i>right</i> button for everything else.</span>");
+            "<span id='feedback_id3'>In this third and last practice round all items are present. You again have to respond fast, but a certain rate of error is allowed. The task is the same, touch the <i>right</i> button when you see the following items: " + targs.replace('<br>', '') + trefs + "Touch the <i>left</i> button for everything else.</span>");
         } else {
           thetexts.push('<span id="feedback_id2">In this second and last practice round, you also have to categorize the main test items: ' + nontargs + 'These all have to be categorized by touching the <i>left</i> button. You again need at least 80% accuracy for the previous item categories, as well as for this new category.</span>');
+          targs = '';
         }
+        thetexts.push(
+          "Now begins the actual test. The task is the same, touch the <i>right</i> button when you see the following items: " + targs.replace('<br>', '') + trefs + "Touch the <i>left</i> button for everything else.<br><br>Try to be as accurate and as fast as possible.");
       } else {
-        targs = '';
+        trefs = '';
         thetexts.push(intro + main_instruction + intro_end);
-        thetexts.push("<span id='feedback_id2'>Now, in this second and last practice round, you have to respond fast, but a certain rate of error is allowed. The task is the same, touch the <i>left</i> button when you see the following item: " + targs + "Touch the <i>right</i> button for everything else.</span>");
+        thetexts.push("<span id='feedback_id2'>Now, in this second and last practice round, you have to respond fast, but a certain rate of error is allowed. The task is the same, touch the <i>right</i> button when you see the following item: " + targs + "Touch the <i>left</i> button for everything else.</span>");
+        thetexts.push(
+          "Now begins the actual test. The task is the same, touch the <i>right</i> button when you see the following item: " + targs + "Touch the <i>left</i> button for everything else.<br><br>Try to be as accurate and as fast as possible.");
       }
 
-      thetexts.push(
-        "Now begins the actual test. The task is the same, touch the <i>left</i> button when you see the following items: " + targs.replace('<br>', '') + trefs + "Touch the <i>right</i> button for everything else.<br><br>Try to be as accurate and as fast as possible.");
       return thetexts;
     },
     'cn': '中文',
     'de': 'Deutsch',
-    'hu': 'A teszt véget ért.',
+    'hu': 'Magyar.',
     'jp': '日本語',
     'pl': 'Polski'
   }

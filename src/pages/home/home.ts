@@ -58,10 +58,8 @@ export class HomePage {
   on_device: boolean;
   submit_failed: boolean = false;
   consentitems: string;
-  targetref_words_orig: string[] = ["FAMILIAR", "MINE", "RECOGNIZED"];
-  nontargref_words_orig: string[] = ["FOREIGN", "IRRELEVANT", "OTHER", "RANDOM", "THEIRS", "UNFAMILIAR"];
-  targetref_words: string[] = JSON.parse(JSON.stringify(this.targetref_words_orig));
-  nontargref_words: string[] = JSON.parse(JSON.stringify(this.nontargref_words_orig));
+  targetref_words: string[] = JSON.parse(JSON.stringify(this.trP.targetref_words_orig[this.trP.lang]));
+  nontargref_words: string[] = JSON.parse(JSON.stringify(this.trP.nontargref_words_orig[this.trP.lang]));
 
   constructor(
     public navCtrl: NavController,
@@ -566,8 +564,8 @@ export class HomePage {
         this.remove_img_el(key);
       }
     });
-    this.targetref_words = JSON.parse(JSON.stringify(this.targetref_words_orig));
-    this.nontargref_words = JSON.parse(JSON.stringify(this.nontargref_words_orig));
+    this.targetref_words = JSON.parse(JSON.stringify(this.trP.targetref_words_orig[this.trP.lang]));
+    this.nontargref_words = JSON.parse(JSON.stringify(this.trP.nontargref_words_orig[this.trP.lang]));
   }
   default_core() {
     Object.keys(this.img_dict).map((key) => {

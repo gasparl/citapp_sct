@@ -383,8 +383,6 @@
               <ion-option value='2'>Yes but without items</ion-option>
             </ion-select>
           </ion-item>
-
-          <br /><span *ngIf="citP.subj_id != ''" style="font-size:120%">Initiate test with Subject ID <b>{{citP.subj_id}}</b>.</span>
           <br />
           <br />
           <i>
@@ -394,7 +392,7 @@
             <p *ngIf="duplicates !== ''" style="color: red;">There are duplicate item names: {{duplicates}}. All item names must be unique to start the test.</p>
           </i>
           <p *ngIf="!form_items.valid && submit_failed" style="color: red;">Please fill in all necessary details.</p>
-          <button ion-button type="submit">Start CIT</button>
+          <button ion-button type="submit">Start CIT<span *ngIf="citP.subj_id != ''">&nbsp; ({{citP.subj_id}})</span></button>
 
         </ion-slide>
 

@@ -150,7 +150,7 @@ export class TranslationProvider {
     'pl': 'Polski'
   };
   accrep_feed: object = {
-    'en': '<span></span>You need to repeat this practice round due to no correct response in time.',
+    'en': 'You need to repeat this practice round due to no correct response in time.',
     'cn': '中文',
     'de': 'Deutsch',
     'hu': 'Magyar',
@@ -158,7 +158,7 @@ export class TranslationProvider {
     'pl': 'Polski'
   };
   acc_feed: object = {
-    'en': ['<span></span>You will have to repeat this practice round, because of too few correct responses.</b><br><br>You need at least ', "% accuracy on each item type, but you did not have enough correct responses for the following one(s):"],
+    'en': ['You will have to repeat this practice round, because of too few correct responses.</b><br><br>You need at least ', "% accuracy on each item type, but you did not have enough correct responses for the following one(s):"],
     'cn': '中文',
     'de': 'Deutsch',
     'hu': 'Magyar',
@@ -216,7 +216,6 @@ export class TranslationProvider {
         thetexts.push(
           "Now begins the actual test. The task is the same, touch the <i>right</i> button when you see the following item: " + targs + "Touch the <i>left</i> button for everything else.<br><br>Try to be as accurate and as fast as possible.");
       }
-
       return thetexts;
     },
     'cn': '中文',

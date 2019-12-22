@@ -51,6 +51,8 @@ export class CitProvider {
 
   subj_id: string = '';
   current_div: string = "div_settings"; // ddd default: "div_start", div_settings, div_dems, div_cit_main, div_end
+  current_segment: string = '';
+  current_menu: string = '';
   false_delay: number = 400;
   tooslow_delay: number = 400;
   isi_delay_minmax: number[] = [300, 700];
@@ -122,7 +124,14 @@ export class CitProvider {
     public backgroundMode: BackgroundMode,
     public trP: TranslationProvider,
     public itemgenP: ItemgenProvider
-  ) { }
+  ) {
+    // TODO REMOVE
+    this.get_results();
+    // this.cit_results
+    this.current_menu = 'm_testres';
+    this.current_segment = 'menus';
+  }
+
 
   pointev: any = {};
   switch_divs(div_to_show) {
@@ -194,11 +203,12 @@ export class CitProvider {
       return sq + Math.pow(n - m, 2);
     }, 0) / (array_for_sd.length - 1));
   };
-
-  seconds_between_dates(startDate, endDate) {
-    return Math.abs(+new Date(startDate) - +new Date(endDate)) / 1000;
+  sd_pooled(var1, var2) {
+    let n1 = var1.length
+    let n2 = var2.length
+    let nom = (n1 - 1) * (this.sd(var1) ** 2) + (n2 - 1) * (this.sd(var2) ** 2)
+    return Math.sqrt(nom / (n1 + n2 - 2))
   }
-
 
   neat_date() {
     var m = new Date();
@@ -209,7 +219,6 @@ export class CitProvider {
       ("0" + m.getMinutes()).slice(-2) + "" +
       ("0" + m.getSeconds()).slice(-2);
   }
-
 
   flash_too_slow() {
     this.feed_text = this.trP.feedtooslo[this.trP.lang];
@@ -253,7 +262,7 @@ export class CitProvider {
       is_valid = this.no_prac_fail;
       this.no_prac_fail = true;
       if (is_valid == false) {
-        this.block_text =
+        this.block_text = '<span></span>' +
           this.trP.accrep_feed[this.trP.lang];
       }
     } else {
@@ -274,7 +283,7 @@ export class CitProvider {
         }
       }
       if (is_valid == false) {
-        this.block_text =
+        this.block_text = '<span></span>' +
           this.trP.acc_feed[this.trP.lang][0] + min_ratio * 100 + this.trP.acc_feed[this.trP.lang][1] +
           types_failed.join(",") +
           ".";
@@ -330,11 +339,17 @@ export class CitProvider {
       curr_type = act_type;
     } else {
       curr_type = "main_item";
-      if (this.blocknum > 3 && this.incorrect != 1 && this.tooslow != 1 && this.rt_start > 150 && this.rt_start < 800) {
+      if (this.crrnt_phase == 'main' && this.rt_start < this.response_timelimit_main) {
         if (act_type == "probe") {
-          this.all_main_rts.probs.push(this.rt_start);
-        } else {
-          this.all_main_rts.irrs.push(this.rt_start);
+          if (this.rt_start <= 150) {
+            this.all_main_rts[this.trial_stim.type].push(-2);
+          } else if (this.tooslow === 1 || this.rt_start > this.response_timelimit_main) {
+            this.all_main_rts[this.trial_stim.type].push(-1);
+          } else if (this.incorrect === 1) {
+            this.all_main_rts[this.trial_stim.type].push(0);
+          } else {
+            this.all_main_rts[this.trial_stim.type].push(this.rt_start);
+          }
         }
       }
     }
@@ -442,8 +457,66 @@ export class CitProvider {
   }
 
 
-  // ITEM GENERATION
+  // DATA STORING
 
+  cit_results: object = {
+    "probe1": {},
+    "probe2": {},
+    "probe3": {},
+    "probe4": {},
+    "probe5": {}
+  };
+  get_results() {
+    this.all_main_rts = { // TODO REMOVE
+      "probe1": [512, 532, 512, 625],
+      "probe2": [521, -1, 0, 0],
+      "probe3": [-1, 523, 453, 523, 443],
+      "probe4": [-1, -1, -1],
+      "probe5": [0, 0, 0, 0]
+    }; // TODO REMOVE
+
+    let round = 3;
+    Object.keys(this.all_main_rts).map((dkey) => {
+      let probe = this.all_main_rts[dkey];
+      let irrs = [];
+      Object.keys(this.all_main_rts).map((dkey2) => {
+        if (dkey !== dkey2) {
+          irrs = irrs.concat(this.all_main_rts[dkey2])
+        }
+      });
+      // -1 tooslow, 0 incorrect
+      this.cit_results[dkey].acc_probe = probe.filter(x => x > 1).length / probe.filter(x => x !== -2).length;
+      this.cit_results[dkey].acc_irr = irrs.filter(x => x > 1).length / irrs.filter(x => x !== -2).length;
+      this.cit_results[dkey].acc_p_vs_i = this.cit_results[dkey].acc_probe - this.cit_results[dkey].acc_irr;
+      let rts_prob = probe.filter(x => x > 1);
+      let rts_irr = irrs.filter(x => x > 1);
+      if (probe.length > 2 && irrs.length > 2) {
+        this.cit_results[dkey].rt_probe = this.mean(rts_prob);
+        this.cit_results[dkey].rt_probe_sd = this.sd(rts_prob);
+        this.cit_results[dkey].rt_irr = this.mean(rts_irr);
+        this.cit_results[dkey].rt_irr_sd = this.sd(rts_irr);
+        this.cit_results[dkey].rt_p_vs_i = this.mean(rts_prob) - this.mean(rts_irr);
+        this.cit_results[dkey].dcit = (this.mean(rts_prob) - this.mean(rts_irr)) / this.sd_pooled(rts_prob, rts_irr);
+      } else {
+        this.cit_results[dkey].rt_probe = 'NA';
+        this.cit_results[dkey].rt_probe_sd = 'NA';
+        this.cit_results[dkey].rt_irr = 'NA';
+        this.cit_results[dkey].rt_irr_sd = 'NA';
+        this.cit_results[dkey].dcit = 'NA';
+      }
+      Object.keys(this.cit_results[dkey]).map((subkey) => {
+        if (!isNaN(this.cit_results[dkey][subkey])) {
+          if (subkey.slice(0, 3) == 'rt_') {
+            this.cit_results[dkey][subkey] = (Math.ceil(this.cit_results[dkey][subkey] * 10) / 10).toFixed(1);
+          } else {
+            this.cit_results[dkey][subkey] = (Math.ceil(this.cit_results[dkey][subkey] * 1000) / 10).toFixed(1);
+          }
+        } else {
+          this.cit_results[dkey][subkey] = 'NA';
+        }
+      });
+    });
+  }
 
   store_data() {
     var dcit = (this.mean(this.all_main_rts.probs) - this.mean(this.all_main_rts.irrs)) / this.sd(this.all_main_rts.irrs);

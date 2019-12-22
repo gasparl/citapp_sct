@@ -1,22 +1,22 @@
 <ion-header *ngIf="citP.current_div == 'div_settings'">
   <ion-toolbar>
-    <ion-segment [(ngModel)]='current_segment'>
+    <ion-segment [(ngModel)]='citP.current_segment'>
       <ion-segment-button value="menus" icon-only (tap)="pop_menu($event)">
         <ion-icon name="menu"></ion-icon>
       </ion-segment-button>
-      <ion-segment-button value="main" (tap)="current_menu = '';slides.slideTo(0);citP.content.scrollToTop(0);">
+      <ion-segment-button value="main" (tap)="citP.current_menu = '';slides.slideTo(0);citP.content.scrollToTop(0);">
         Core
       </ion-segment-button>
-      <ion-segment-button value="fillers" (tap)="current_menu = '';slides.slideTo(1);citP.content.scrollToTop(0);">
+      <ion-segment-button value="fillers" (tap)="citP.current_menu = '';slides.slideTo(1);citP.content.scrollToTop(0);">
         Fillers
       </ion-segment-button>
-      <ion-segment-button value="settings" (tap)="current_menu = '';slides.slideTo(2);citP.content.scrollToTop(0);">
+      <ion-segment-button value="settings" (tap)="citP.current_menu = '';slides.slideTo(2);citP.content.scrollToTop(0);">
         Settings
       </ion-segment-button>
-      <ion-segment-button value="autofill" (tap)="current_menu = '';slides.slideTo(3);citP.content.scrollToTop(0);">
+      <ion-segment-button value="autofill" (tap)="citP.current_menu = '';slides.slideTo(3);citP.content.scrollToTop(0);">
         Storing
       </ion-segment-button>
-      <ion-segment-button value="start" (tap)="current_menu = '';slides.slideTo(4);citP.content.scrollToTop(0);">
+      <ion-segment-button value="start" (tap)="citP.current_menu = '';slides.slideTo(4);citP.content.scrollToTop(0);">
         Start
       </ion-segment-button>
     </ion-segment>
@@ -41,7 +41,7 @@
     </div>
     <br /><br />
     <div>
-      <button ion-button type="button">Previous results</button>
+      <button ion-button type="button">Results</button>
     </div>
 
   </div>
@@ -49,9 +49,9 @@
 
   <div *ngSwitchCase="'div_settings'">
 
-    <div [hidden]="current_menu == ''" style="line-height: 150%;">
+    <div [hidden]="citP.current_menu == ''" style="line-height: 150%;">
 
-      <div [hidden]="current_menu != 'm_info'">
+      <div [hidden]="citP.current_menu != 'm_info'">
         <div style="font-size:110%;">
           <b>Info about this application</b>
         </div>
@@ -69,7 +69,7 @@
 
       </div>
 
-      <div [hidden]="current_menu != 'm_demo'">
+      <div [hidden]="citP.current_menu != 'm_demo'">
         <div style="font-size:110%;">
           <b>Demo</b>
         </div>
@@ -96,20 +96,72 @@
         <br />
       </div>
 
-      <div [hidden]="current_menu != 'm_prevs'">
+      <div [hidden]="citP.current_menu != 'm_prevs'">
         <div style="font-size:110%;">
           <b>Results of previous tests</b>
         </div>
         <br />
         List of results...
+      </div>
+
+      <div [hidden]="citP.current_menu != 'm_testres'">
+        <div style="font-size:110%;">
+          <b>Results for ...</b>
+        </div>
+        <br />
+
+        <div style="overflow-x:auto">
+          <table>
+            <tr>
+              <th></th>
+              <th>RT<sub>P&nbsp;vs&nbsp;I</sub><br /><span class='res_unit'>(ms)</span></th>
+              <th>RT<sub>P&nbsp;(SD)</sub><br /><span class='res_unit'>(ms)</span></th>
+              <th>RT<sub>I&nbsp;(SD)</sub><br /><span class='res_unit'>(ms)</span></th>
+              <th><i>d</i><sub>CIT</sub><br /><span class='res_unit'>&nbsp;</span></th>
+              <th>AR<sub>P&nbsp;vs&nbsp;I</sub><br /><span class='res_unit'>(%)</span></th>
+              <th>AR<sub>P</sub><br /><span class='res_unit'>(%)</span></th>
+              <th>AR<sub>I</sub><br /><span class='res_unit'>(%)</span></th>
+            </tr>
+
+            <tr *ngFor="let num of [1, 2, 3, 4, 5];">
+              <td>
+                Probe&nbsp;{{num}}
+              </td>
+              <td>
+                {{this.citP.cit_results['probe' + num]['rt_p_vs_i']}}
+              </td>
+              <td>
+                {{this.citP.cit_results['probe' + num]['rt_probe']}}&nbsp;({{this.citP.cit_results['probe' + num]['rt_probe_sd']}})
+              </td>
+              <td>
+                {{this.citP.cit_results['probe' + num]['rt_irr']}}&nbsp;({{this.citP.cit_results['probe' + num]['rt_irr_sd']}})
+              </td>
+              <td>
+                {{this.citP.cit_results['probe' + num]['dcit']}}
+              </td>
+              <td>
+                {{this.citP.cit_results['probe' + num]['acc_probe']}}
+              </td>
+              <td>
+                {{this.citP.cit_results['probe' + num]['acc_irr']}}
+              </td>
+              <td>
+                {{this.citP.cit_results['probe' + num]['acc_p_vs_i']}}
+              </td>
+
+
+
+            </tr>
+          </table>
+        </div>
 
       </div>
 
     </div>
 
-    <form [hidden]="current_menu != ''" (ngSubmit)="initials()" [formGroup]="form_items" (keydown.enter)="$event.preventDefault()">
+    <form [hidden]="citP.current_menu != ''" (ngSubmit)="initials()" [formGroup]="form_items" (keydown.enter)="$event.preventDefault()">
 
-      <ion-slides (ionSlideWillChange)='current_segment = seg_values[slides.getActiveIndex()];'>
+      <ion-slides (ionSlideWillChange)='citP.current_segment = seg_values[slides.getActiveIndex()];'>
         <ion-slide>
 
           <ion-item>
@@ -376,8 +428,8 @@
             <ion-toggle [(ngModel)]='citP.show_eval' [ngModelOptions]="{standalone: true}"></ion-toggle>
           </ion-item>
           <ion-item>
-            <ion-label style="margin-bottom:0;color:black">Consent choices</ion-label>
-            <ion-select [(ngModel)]="consentset" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;" multiple="true">
+            <ion-label style="margin-bottom:0;color:black">Data sharing consent choices</ion-label>
+            <ion-select [(ngModel)]="consentset" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;" multiple="true" [selectOptions]="{title:'Consent choices'}">
               <ion-option value='0'>No</ion-option>
               <ion-option value='1'>Yes</ion-option>
               <ion-option value='2'>Yes but without items</ion-option>

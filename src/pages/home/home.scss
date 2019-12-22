@@ -53,7 +53,37 @@ page-home {
     transform: translate(-50%, -50%);
   }
 
-  .item-input input {
+  table {
+    width: 100%;
+    border: 1px solid #ddd;
+  }
+
+  td {
+    padding: 1.4vw;
+    text-align: right;
+  }
+
+  td:nth-child(1) {
+    font-weight: bold;
+  }
+
+  tr {
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    border-collapse: collapse;
+  }
+
+  th {
+    padding: 1.4vw;
+    text-align: center;
+  }
+
+  .res_unit {
+    font-weight: normal;
+    font-size: 90%;
+  }
+
+  ​ .item-input input {
     margin-bottom: 0;
     margin-left: 0;
   }

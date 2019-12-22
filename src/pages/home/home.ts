@@ -101,8 +101,8 @@ export class HomePage {
       }
     });
     if (navParams.get('refreshed')) {
-      this.current_menu = 'm_prevs';
-      this.current_segment = 'menus';
+      this.citP.current_menu = 'm_prevs';
+      this.citP.current_segment = 'menus';
       this.citP.content.scrollToTop(0);
     }
   }
@@ -362,8 +362,6 @@ export class HomePage {
 
 
   seg_values: string[] = ['main', 'fillers', 'settings', 'autofill', 'start'];
-  current_segment: string = '';
-  current_menu: string = '';
   pop_menu(myEvent) {
     let popover = this.popoverCtrl.create(PopoverItems);
     popover.present({
@@ -371,8 +369,8 @@ export class HomePage {
     });
     popover.onDidDismiss(pop_data => {
       if (pop_data != null) {
-        this.current_menu = pop_data;
-        this.current_segment = 'menus';
+        this.citP.current_menu = pop_data;
+        this.citP.current_segment = 'menus';
         this.citP.content.scrollToTop(0);
       }
     })

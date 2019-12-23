@@ -124,14 +124,7 @@ export class CitProvider {
     public backgroundMode: BackgroundMode,
     public trP: TranslationProvider,
     public itemgenP: ItemgenProvider
-  ) {
-    // TODO REMOVE
-    this.get_results();
-    // this.cit_results
-    this.current_menu = 'm_testres';
-    this.current_segment = 'menus';
-  }
-
+  ) { }
 
   pointev: any = {};
   switch_divs(div_to_show) {
@@ -459,14 +452,20 @@ export class CitProvider {
 
   // DATA STORING
 
-  cit_results: object = {
+  cit_results: any = {
     "probe1": {},
     "probe2": {},
     "probe3": {},
     "probe4": {},
-    "probe5": {}
+    "probe5": {},
+    'subj_id': '',
+    'cit_data': '',
+    'date': '',
+    'file_name': ''
   };
   get_results() {
+
+    ///////////////
     this.all_main_rts = { // TODO REMOVE
       "probe1": [512, 532, 512, 625],
       "probe2": [521, -1, 0, 0],
@@ -474,8 +473,15 @@ export class CitProvider {
       "probe4": [-1, -1, -1],
       "probe5": [0, 0, 0, 0]
     }; // TODO REMOVE
+    ///////////////////
 
-    let round = 3;
+    this.cit_results = {
+      "probe1": {},
+      "probe2": {},
+      "probe3": {},
+      "probe4": {},
+      "probe5": {}
+    };
     Object.keys(this.all_main_rts).map((dkey) => {
       let probe = this.all_main_rts[dkey];
       let irrs = [];
@@ -516,6 +522,14 @@ export class CitProvider {
         }
       });
     });
+
+    this.cit_results.subj_id = this.subj_id;
+    console.log('HEYHEY');
+    console.log(this.subj_id);
+    this.cit_results.cit_data = this.cit_data;
+    this.cit_results.date = ''// this.date_in_ms();
+    this.cit_results.file_name = this.subj_id + ''// this.date_in_ms();
+    // TODO: store this using id & date_in_ms as key
   }
 
   store_data() {

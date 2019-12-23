@@ -60,10 +60,17 @@ page-home {
 
   td {
     padding: 1.4vw;
+  }
+
+  .dcit_table td {
+    text-align: left;
+  }
+
+  .results_table td {
     text-align: right;
   }
 
-  td:nth-child(1) {
+  .results_table td:nth-child(1) {
     font-weight: bold;
   }
 

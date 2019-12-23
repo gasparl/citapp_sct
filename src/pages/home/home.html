@@ -105,13 +105,12 @@
       </div>
 
       <div [hidden]="citP.current_menu != 'm_testres'">
-        <div style="font-size:110%;">
-          <b>Results for ...</b>
+        <div style="font-size:110%;text-align:center">
+          Summary CIT results for <b>{{citP.cit_results.subj_id}}</b>
         </div>
         <br />
-
         <div style="overflow-x:auto">
-          <table>
+          <table class='results_table'>
             <tr>
               <th></th>
               <th>RT<sub>P&nbsp;vs&nbsp;I</sub><br /><span class='res_unit'>(ms)</span></th>
@@ -122,39 +121,84 @@
               <th>AR<sub>P</sub><br /><span class='res_unit'>(%)</span></th>
               <th>AR<sub>I</sub><br /><span class='res_unit'>(%)</span></th>
             </tr>
-
             <tr *ngFor="let num of [1, 2, 3, 4, 5];">
               <td>
                 Probe&nbsp;{{num}}
               </td>
               <td>
-                {{this.citP.cit_results['probe' + num]['rt_p_vs_i']}}
+                {{citP.cit_results['probe' + num]['rt_p_vs_i']}}
               </td>
               <td>
-                {{this.citP.cit_results['probe' + num]['rt_probe']}}&nbsp;({{this.citP.cit_results['probe' + num]['rt_probe_sd']}})
+                {{citP.cit_results['probe' + num]['rt_probe']}}&nbsp;({{citP.cit_results['probe' + num]['rt_probe_sd']}})
               </td>
               <td>
-                {{this.citP.cit_results['probe' + num]['rt_irr']}}&nbsp;({{this.citP.cit_results['probe' + num]['rt_irr_sd']}})
+                {{citP.cit_results['probe' + num]['rt_irr']}}&nbsp;({{citP.cit_results['probe' + num]['rt_irr_sd']}})
+              </td>
+              <td style="color:#8b0000;">
+                {{citP.cit_results['probe' + num]['dcit']}}
               </td>
               <td>
-                {{this.citP.cit_results['probe' + num]['dcit']}}
+                {{citP.cit_results['probe' + num]['acc_probe']}}
               </td>
               <td>
-                {{this.citP.cit_results['probe' + num]['acc_probe']}}
+                {{citP.cit_results['probe' + num]['acc_irr']}}
               </td>
               <td>
-                {{this.citP.cit_results['probe' + num]['acc_irr']}}
+                {{citP.cit_results['probe' + num]['acc_p_vs_i']}}
               </td>
-              <td>
-                {{this.citP.cit_results['probe' + num]['acc_p_vs_i']}}
-              </td>
+            </tr>
+          </table>
+        </div>
+        <br />
 
+        Response times (in milliseconds): probe RT mean minus irrelevant RT mean (RT<sub>P&nbsp;vs&nbsp;I</sub>), probe RT mean and standard deviation (RT<sub>P&nbsp;(SD)</sub>), irrelevant RT mean and standard deviation (RT<sub>I&nbsp;(SD)</sub>),
+        uncorrected Cohen's d between all probe and all irrelevant RTs (<i>d</i><sub>CIT</sub>). Accuracy rates (ratio of correct responses compared to incorrect and too slow responses, in percentage): probe accuracy rate minus irrelevant accuracy
+        rate (AR<sub>P&nbsp;vs&nbsp;I</sub>), probe accuracy rate (AR<sub>P</sub>), irrelevant accuracy rate (AR<sub>I</sub>).
+        <br />
+        <br />
+        The <i>d</i><sub>CIT</sub> measure might be used to evaluate whether or not a given probe was recognized. The <i>d</i><sub>CIT</sub> typically fall between around -0.3 and 0.8; where a larger number always indicates a larger likelihood of
+        the
+        recognition of the given probe. As of yet, there is no established optimal cut-off value for the evaluation, but, based on a rough approximation in view of previous results, the following table depicts some possible evaluative labels for
+        given boundaries.
+        <br />
+        <br />
 
-
+        <div style="overflow-x:auto;white-space: nowrap;font-weight:normal !important;">
+          <table class='dcit_table'>
+            <tr>
+              <td><i>d</i><sub>CIT</sub> > 0.4</td>
+              <td>strong indication of recognition</td>
+            </tr>
+            <tr>
+              <td><i>d</i><sub>CIT</sub> > 0.3 and <i>d</i><sub>CIT</sub>
+                <= 0.4</td> <td>fair indication of recognition
+              </td>
+            </tr>
+            <tr>
+              <td><i>d</i><sub>CIT</sub> > 0.1 and <i>d</i><sub>CIT</sub>
+                <= 0.3</td> <td>weak indication of recognition
+              </td>
+            </tr>
+            <tr>
+              <td><i>d</i><sub>CIT</sub> > 0 and <i>d</i><sub>CIT</sub>
+                <= 0.1</td> <td>indeterminate
+              </td>
+            </tr>
+            <tr>
+              <td><i>d</i><sub>CIT</sub> > -0.1 and <i>d</i><sub>CIT</sub>
+                <= 0</td> <td>weak indication of non-recognition
+              </td>
+            </tr>
+            <tr>
+              <td><i>d</i><sub>CIT</sub>
+                <=- 0.1</td> <td>fair indication of non-recognition
+              </td>
             </tr>
           </table>
         </div>
 
+        <br />
+        (There is no strong indication of innocence: a very fast probe response is no more expected in case of innocence than in case of guilt.)
       </div>
 
     </div>
@@ -485,7 +529,7 @@
       <div *ngIf='citP.block_text.slice(0, 13) === "<span></span>"'>
         <br />
         <br />
-        <button ion-button style='text-transform: none;' (tap)='this.citP.block_text = this.citP.block_texts[this.citP.blocknum]' color='light' block>{{trP.show_inst[trP.lang]}}</button>
+        <button ion-button style='text-transform: none;' (tap)='citP.block_text = citP.block_texts[citP.blocknum]' color='light' block>{{trP.show_inst[trP.lang]}}</button>
       </div>
       <br />
     </div>

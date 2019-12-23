@@ -131,6 +131,16 @@ export class HomePage {
       });
       this.citP.path = this.citP.file.externalDataDirectory;
     }
+
+    // TODO REMOVE
+    setTimeout(() => {
+      this.citP.get_results();
+      // this.citP.cit_results
+      this.citP.current_menu = 'm_testres';
+      this.citP.current_segment = 'menus';
+    }, 2000);
+    // TODO REMOVE
+
   }
 
   san_html(html) {

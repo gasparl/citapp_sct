@@ -75,14 +75,32 @@ page-home {
   }
 
   tr {
-    border-bottom: 1px solid #ddd;
-    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
     border-collapse: collapse;
   }
 
   th {
     padding: 1.4vw;
     text-align: center;
+  }
+
+  .expandable {
+    background: #ddd;
+    border-radius: 3vw;
+    padding: 2vw;
+  }
+
+  .hideChildren > div {
+    display: none;
+  }
+
+  .hideChildren > #collapse {
+    display: none;
+  }
+
+  .showChildren > #expand {
+    display: none;
   }
 
   .res_unit {

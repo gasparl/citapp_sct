@@ -56,7 +56,7 @@
           <b>Info about this application</b>
         </div>
         <br />
-        Below you find a very brief summary about the Concealed Information Test that is implemented in this app. To properly understand the test, please read the <a href="https://github.com/gasparl/citapp_pc/blob/master/README.md" target="_blank">online
+        Below you find a very brief summary about the Concealed Information Test that is implemented in this app. To properly understand the test, please read the <a href="https://github.com/gasparl/citapp_phone" target="_blank">online
           documentation</a>.
         <br /><br />
         The <i>standard</i> and <i>enhanced</i> versions aim to reveal whether or not a certain information detail – the "probe" – is known to the tested person. The "irrelevant" and "target" items must be similar to the probe, and indistinguishable
@@ -100,16 +100,37 @@
         <div style="font-size:110%;">
           <b>Results of previous tests</b>
         </div>
+
+
+        this.stored_results
+
+        <ion-list>
+          <ion-item *ngFor="let citres of [1,2,3]">
+            {{citres.key}}subj_id&nbsp;{{citres.value}}date
+             this.citP.stored_results
+          </ion-item>
+        </ion-list>
+
+
         <br />
-        List of results...
+        <div style="overflow-x:auto">
+          <div style="padding-bottom:3.5vw">
+            <i>Path to full data files on the device:</i><br />
+            <b>{{citP.path}}</b>
+          </div>
+        </div>
+
       </div>
 
       <div [hidden]="citP.current_menu != 'm_testres'">
-        <div style="font-size:110%;text-align:center">
+        <div style="font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
           Summary CIT results for <b>{{citP.cit_results.subj_id}}</b>
         </div>
-        <br />
-        <div style="overflow-x:auto">
+        <div style="text-align:center;padding-bottom:4.5vw">
+          (Date: <b>{{citP.cit_results.date}}</b>)
+        </div>
+
+        <div style="overflow-x:auto;background:#f1f1f1">
           <table class='results_table'>
             <tr>
               <th></th>
@@ -151,56 +172,97 @@
         </div>
         <br />
 
-        Response times (in milliseconds): probe RT mean minus irrelevant RT mean (RT<sub>P&nbsp;vs&nbsp;I</sub>), probe RT mean and standard deviation (RT<sub>P&nbsp;(SD)</sub>), irrelevant RT mean and standard deviation (RT<sub>I&nbsp;(SD)</sub>),
-        uncorrected Cohen's d between all probe and all irrelevant RTs (<i>d</i><sub>CIT</sub>). Accuracy rates (ratio of correct responses compared to incorrect and too slow responses, in percentage): probe accuracy rate minus irrelevant accuracy
-        rate (AR<sub>P&nbsp;vs&nbsp;I</sub>), probe accuracy rate (AR<sub>P</sub>), irrelevant accuracy rate (AR<sub>I</sub>).
-        <br />
-        <br />
-        The <i>d</i><sub>CIT</sub> measure might be used to evaluate whether or not a given probe was recognized. The <i>d</i><sub>CIT</sub> typically fall between around -0.3 and 0.8; where a larger number always indicates a larger likelihood of
-        the
-        recognition of the given probe. As of yet, there is no established optimal cut-off value for the evaluation, but, based on a rough approximation in view of previous results, the following table depicts some possible evaluative labels for
-        given boundaries.
-        <br />
-        <br />
 
-        <div style="overflow-x:auto;white-space: nowrap;font-weight:normal !important;">
-          <table class='dcit_table'>
-            <tr>
-              <td><i>d</i><sub>CIT</sub> > 0.4</td>
-              <td>strong indication of recognition</td>
-            </tr>
-            <tr>
-              <td><i>d</i><sub>CIT</sub> > 0.3 and <i>d</i><sub>CIT</sub>
-                <= 0.4</td> <td>fair indication of recognition
-              </td>
-            </tr>
-            <tr>
-              <td><i>d</i><sub>CIT</sub> > 0.1 and <i>d</i><sub>CIT</sub>
-                <= 0.3</td> <td>weak indication of recognition
-              </td>
-            </tr>
-            <tr>
-              <td><i>d</i><sub>CIT</sub> > 0 and <i>d</i><sub>CIT</sub>
-                <= 0.1</td> <td>indeterminate
-              </td>
-            </tr>
-            <tr>
-              <td><i>d</i><sub>CIT</sub> > -0.1 and <i>d</i><sub>CIT</sub>
-                <= 0</td> <td>weak indication of non-recognition
-              </td>
-            </tr>
-            <tr>
-              <td><i>d</i><sub>CIT</sub>
-                <=- 0.1</td> <td>fair indication of non-recognition
-              </td>
-            </tr>
-          </table>
+        <div (tap)="ele.class = ele.class == 'show' ? '' :  'show'" [ngClass]="{ expandable : true, hideChildren : ele.class !== 'show', showChildren : ele.class === 'show' }" #ele>
+          <b>Description of variables</b>
+          <span id='expand'><b>(tap to show)</b></span>
+          <span id='collapse'><b>(tap to hide)</b></span>
+          <div>
+            Response times (for all correct responses, in milliseconds): probe RT mean minus irrelevant RT mean (RT<sub>P&nbsp;vs&nbsp;I</sub>), probe RT mean and standard deviation (RT<sub>P&nbsp;(SD)</sub>), irrelevant RT mean and standard
+            deviation (RT<sub>I&nbsp;(SD)</sub>),
+            uncorrected Cohen's d between all probe and all irrelevant RTs (<i>d</i><sub>CIT</sub>). Accuracy rates (ratio of correct responses compared to incorrect and too slow responses, in percentage): probe accuracy rate minus irrelevant
+            accuracy
+            rate (AR<sub>P&nbsp;vs&nbsp;I</sub>), probe accuracy rate (AR<sub>P</sub>), irrelevant accuracy rate (AR<sub>I</sub>). Responses with RT below 150 ms are excluded from all (RT and AR) analysis.
+            <br /><br />
+            For more details, see the <a href="https://github.com/gasparl/citapp_phone" target="_blank">online
+              documentation</a>.
+          </div>
         </div>
 
         <br />
-        (There is no strong indication of innocence: a very fast probe response is no more expected in case of innocence than in case of guilt.)
-      </div>
 
+        <div (tap)="ele2.class = ele2.class == 'show' ? '' :  'show'" [ngClass]="{ expandable : true, hideChildren : ele2.class !== 'show', showChildren : ele2.class === 'show' }" #ele2>
+          <b>Evaluation using <i>d</i><sub>CIT</sub></b>
+          <span id='expand'><b>(tap to show)</b></span>
+          <span id='collapse'><b>(tap to hide)</b></span>
+          <div>
+            The <i>d</i><sub>CIT</sub> measure might be used to evaluate whether or not a given probe was recognized. The <i>d</i><sub>CIT</sub> typically fall between around −0.3 and 0.8, where a larger number always indicates a larger likelihood
+            of
+            the
+            recognition of the given probe. As of yet, there is no established optimal cut-off value for the evaluation, but, based on a rough approximation in view of previous results, the following table depicts some possible evaluative labels for
+            given boundaries.
+            <br />
+            <br />
+
+            <div style="overflow-x:auto;white-space: nowrap;">
+              <table class='dcit_table'>
+                <tr>
+                  <td><i>d</i><sub>CIT</sub> > 0.4</td>
+                  <td>strong indication of recognition</td>
+                </tr>
+                <tr>
+                  <td><i>d</i><sub>CIT</sub> > 0.3 and <i>d</i><sub>CIT</sub>
+                    <= 0.4</td> <td>fair indication of recognition
+                  </td>
+                </tr>
+                <tr>
+                  <td><i>d</i><sub>CIT</sub> > 0.1 and <i>d</i><sub>CIT</sub>
+                    <= 0.3</td> <td>weak indication of recognition
+                  </td>
+                </tr>
+                <tr>
+                  <td><i>d</i><sub>CIT</sub> > 0 and <i>d</i><sub>CIT</sub>
+                    <= 0.1</td> <td>indeterminate
+                  </td>
+                </tr>
+                <tr>
+                  <td><i>d</i><sub>CIT</sub> > −0.1 and <i>d</i><sub>CIT</sub>
+                    <= 0</td> <td>weak indication of non-recognition
+                  </td>
+                </tr>
+                <tr>
+                  <td><i>d</i><sub>CIT</sub>
+                    <= −0.1</td> <td>fair indication of non-recognition
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <br />
+            (There is no strong indication of innocence: a very fast probe response is no more expected in case of innocence than in case of guilt.)
+            <br /><br />
+            For more details, see the <a href="https://github.com/gasparl/citapp_phone" target="_blank">online
+              documentation</a>.
+          </div>
+        </div>
+
+        <br />
+        <hr />
+        <br />
+
+        <div style="overflow-x:auto">
+          <div style="padding-bottom:3.5vw">
+            <i>Path to full data file:</i><br />
+            <b>{{citP.path}}</b>
+          </div>
+
+          <div style="padding-bottom:3.5vw">
+            <i>File name:</i><br />
+            <b>{{citP.cit_results.file_name}}</b>
+          </div>
+        </div>
+
+      </div>
     </div>
 
     <form [hidden]="citP.current_menu != ''" (ngSubmit)="initials()" [formGroup]="form_items" (keydown.enter)="$event.preventDefault()">

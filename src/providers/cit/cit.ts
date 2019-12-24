@@ -6,6 +6,7 @@ import { NavigationBar } from '@ionic-native/navigation-bar';
 import { TranslationProvider } from '../../providers/translations/translations';
 import { ItemgenProvider } from '../../providers/itemgen/itemgen';
 import { StatusBar } from '@ionic-native/status-bar';
+import { DataShareProvider } from '../../providers/data-share/data-share';
 
 @Injectable()
 export class CitProvider {
@@ -60,6 +61,11 @@ export class CitProvider {
   response_timelimit_main: number = 900;
   isi_delay: number = 99999;
   cit_type: any = 0;
+  cittypedict: any = {
+    '0': 'enhanced',
+    '1': 'standard',
+    '2': 'notarget'
+  };
   bg_color: string = "#fff";
   feed_text: string = "";
   visib: any = { start_text: true };
@@ -107,7 +113,7 @@ export class CitProvider {
   targetrefs: object[] = [];
   nontargrefs: object[] = [];
   f_name: string;
-  path: any = "";
+  path: any = "(path not found)";
   show_eval: boolean = true;
   consented: number;
   crrnt_phase: string;
@@ -123,6 +129,7 @@ export class CitProvider {
     public statusBar: StatusBar,
     public backgroundMode: BackgroundMode,
     public trP: TranslationProvider,
+    public dataShare: DataShareProvider,
     public itemgenP: ItemgenProvider
   ) { }
 
@@ -356,7 +363,7 @@ export class CitProvider {
     }
     this.cit_data +=
       [this.subj_id,
-      this.cit_type,
+      this.cittypedict[this.cit_type],
       this.blocknum,
       this.block_trialnum,
       this.trial_stim.item,
@@ -463,6 +470,7 @@ export class CitProvider {
     'date': '',
     'file_name': ''
   };
+  stored_results: any = {};
   get_results() {
 
     ///////////////
@@ -517,19 +525,27 @@ export class CitProvider {
           } else {
             this.cit_results[dkey][subkey] = (Math.ceil(this.cit_results[dkey][subkey] * 1000) / 10).toFixed(1);
           }
+          this.cit_results[dkey][subkey] = this.cit_results[dkey][subkey].replace('-', '−');
         } else {
           this.cit_results[dkey][subkey] = 'NA';
         }
       });
     });
-
     this.cit_results.subj_id = this.subj_id;
-    console.log('HEYHEY');
-    console.log(this.subj_id);
     this.cit_results.cit_data = this.cit_data;
-    this.cit_results.date = ''// this.date_in_ms();
-    this.cit_results.file_name = this.subj_id + ''// this.date_in_ms();
-    // TODO: store this using id & date_in_ms as key
+    let cdate = new Date();
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    this.cit_results.date = ("0" + cdate.getDate()).slice(-2) + " " +
+      months[cdate.getMonth()] + " " +
+      cdate.getFullYear() + " " +
+      ("0" + cdate.getHours()).slice(-2) + ":" +
+      ("0" + cdate.getMinutes()).slice(-2);
+    this.cit_results.file_name = this.subj_id + '_' +
+      this.cittypedict[this.cit_type] + '_' +
+      this.num_of_blocks + 'block_' +
+      this.neat_date().slice(0, 12) + '.txt';
+    this.stored_results[this.neat_date() + this.subj_id] = this.cit_results;
+    this.dataShare.storage.set('reslts', this.stored_results);
   }
 
   store_data() {

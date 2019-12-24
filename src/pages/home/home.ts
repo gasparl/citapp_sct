@@ -1,7 +1,6 @@
 import { Component, ViewChild, ElementRef } from "@angular/core";
 import { Slides, Content } from 'ionic-angular';
 import { NavController, NavParams } from "ionic-angular";
-import { Storage } from "@ionic/storage";
 import { Network } from '@ionic-native/network';
 import { EmailComposer } from "@ionic-native/email-composer";
 import { Platform } from "ionic-angular";
@@ -63,7 +62,6 @@ export class HomePage {
 
   constructor(
     public navCtrl: NavController,
-    public storage: Storage,
     private emailComposer: EmailComposer,
     public platform: Platform,
     public formBuilder: FormBuilder,
@@ -95,9 +93,14 @@ export class HomePage {
       ])
     ]);
     this.form_items = formBuilder.group(validator_dict);
-    this.storage.get('imgs').then((cntent) => {
+    this.dataShare.storage.get('imgs').then((cntent) => {
       if (cntent) {
         dataShare.stored_images = cntent;
+      }
+    });
+    this.dataShare.storage.get('reslts').then((cntent) => {
+      if (cntent) {
+        this.citP.stored_results = cntent;
       }
     });
     if (navParams.get('refreshed')) {
@@ -136,7 +139,7 @@ export class HomePage {
     setTimeout(() => {
       this.citP.get_results();
       // this.citP.cit_results
-      this.citP.current_menu = 'm_testres';
+      this.citP.current_menu = 'm_prevs';
       this.citP.current_segment = 'menus';
     }, 2000);
     // TODO REMOVE
@@ -151,7 +154,7 @@ export class HomePage {
     this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_stat.php', JSON.stringify({ "testdate": test_date }), { responseType: "text" }).subscribe((response) => {
       if (response == 'victory') {
         console.log('Saved to stats: ', key_to_del);
-        this.storage.remove(key_to_del);
+        this.dataShare.storage.remove(key_to_del);
       } else {
         console.log('Failed SQL:' + response);
       }
@@ -164,12 +167,12 @@ export class HomePage {
   // this.store_stat(); // TODO add this where CIT is ended
   store_stat = async function() {
     let somecode = Math.random().toString(36).slice(2);
-    await this.storage.set('test-' + somecode, this.neat_date().slice(0, 8));
+    await this.dataShare.storage.set('test-' + somecode, this.neat_date().slice(0, 8));
     this.send_stat();
   }
 
   send_stat = function() {
-    this.storage.forEach((value, key) => {
+    this.dataShare.storage.forEach((value, key) => {
       if (key.slice(0, 4) == 'test') {
         this.send_single_stat(value, key);
       }
@@ -177,7 +180,7 @@ export class HomePage {
   }
 
   store_on_device = async function() {
-    await this.storage.set('local', {
+    await this.dataShare.storage.set('local', {
       'subject_id': this.citP.subj_id,
       'cit_version': this.citP.cit_type,
       'num_of_blocks': this.citP.num_of_blocks,
@@ -216,7 +219,7 @@ export class HomePage {
 
   load_from_device = function() {
     try {
-      this.storage.get('local').then((cntent) => {
+      this.dataShare.storage.get('local').then((cntent) => {
         let data_dict = cntent;
         try {
           this.citP.subj_id = data_dict.subject_id;

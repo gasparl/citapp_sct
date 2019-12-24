@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { ViewController, AlertController } from 'ionic-angular';
 import { NavParams, LoadingController } from 'ionic-angular';
 import { DataShareProvider } from '../../providers/data-share/data-share';
-import { Storage } from "@ionic/storage";
 
 @Component({
   template: `
@@ -42,7 +41,6 @@ export class PopoverImg {
     public alertCtrl: AlertController,
     public navParams: NavParams,
     public dataShare: DataShareProvider,
-    public storage: Storage,
     private loadingCtrl: LoadingController) { }
 
   objkeys = function(dict) {
@@ -66,7 +64,7 @@ export class PopoverImg {
         this.dataShare.stored_images[file.name] = result;
       }
     };
-    this.storage.set('imgs', this.dataShare.stored_images);
+    this.dataShare.storage.set('imgs', this.dataShare.stored_images);
     if (files.length === 1 && /image\/.*/.test(files[0].type)) {
       this.img_select(files[0].name)
     }
@@ -94,7 +92,7 @@ export class PopoverImg {
 
   img_remove(inp) {
     delete this.dataShare.stored_images[inp];
-    this.storage.set('imgs', this.dataShare.stored_images);
+    this.dataShare.storage.set('imgs', this.dataShare.stored_images);
   }
   img_select(inp) {
     this.viewCtrl.dismiss(inp);
@@ -116,7 +114,7 @@ export class PopoverImg {
           text: 'Remove',
           handler: () => {
             this.dataShare.stored_images = {};
-            this.storage.set('imgs', this.dataShare.stored_images);
+            this.dataShare.storage.set('imgs', this.dataShare.stored_images);
           }
         }
       ]

@@ -531,6 +531,7 @@ export class CitProvider {
         }
       });
     });
+    this.subj_id = this.subj_id + Math.random().toString().slice(3,5); // TODO: remove
     this.cit_results.subj_id = this.subj_id;
     this.cit_results.cit_data = this.cit_data;
     let cdate = new Date();

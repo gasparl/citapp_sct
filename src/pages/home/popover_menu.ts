@@ -6,7 +6,7 @@ import { ViewController } from 'ionic-angular';
       <ion-list>
         <button ion-item (tap)="go_to('m_info')">Info</button>
         <button ion-item (tap)="go_to('m_demo')">Demo</button>
-        <button ion-item (tap)="go_to('m_testres')">Results</button>
+        <button ion-item (tap)="go_to('m_prevs')">Results</button>
       </ion-list>
     `
 })

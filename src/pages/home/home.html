@@ -61,7 +61,8 @@
         <br /><br />
         The <i>standard</i> and <i>enhanced</i> versions aim to reveal whether or not a certain information detail – the "probe" – is known to the tested person. The "irrelevant" and "target" items must be similar to the probe, and indistinguishable
         for a person who does not know the relevance of the probe (e.g. the probe is a stolen suitcase, and the irrelevant and targets are other suitcases). In this app, the input requires no designated "irrelevant" items: all items are potential
-        probes, and the real probe can be given as any of these items. In the end, all items (except the target) will each be automatically evaluated as potential probes.
+        probes, and the real probe can be given as any of these items. In the end, each of the items (except the target) will be automatically evaluated as potential probes (in each case with the given other four items, excluding the target, being
+        irrelevants).
         <br /><br />
         The <i>enhanced</i> version is much more effective than the <i>standard</i>; the latter is only for experimental purposes. The <i>no-target</i> version is a tentative approach in development to make the test applicable in cases where the
         probe is actually known to the participant.
@@ -97,33 +98,50 @@
       </div>
 
       <div [hidden]="citP.current_menu != 'm_prevs'">
-        <div style="font-size:110%;">
-          <b>Results of previous tests</b>
-        </div>
-
-
-        this.stored_results
-
-        <ion-list>
-          <ion-item *ngFor="let citres of [1,2,3]">
-            {{citres.key}}subj_id&nbsp;{{citres.value}}date
-             this.citP.stored_results
-          </ion-item>
-        </ion-list>
-
-
-        <br />
-        <div style="overflow-x:auto">
-          <div style="padding-bottom:3.5vw">
-            <i>Path to full data files on the device:</i><br />
-            <b>{{citP.path}}</b>
+        <div style="font-size:110%;padding-bottom:1.5vw;">
+          <b>Results</b>
+          <div style="float:right">
+            <button ion-button color='danger' style="padding: 16px;padding-right: 16px;" type="button" small (tap)="results_remove('all')">
+              REMOVE ALL
+            </button>
           </div>
         </div>
+        <br />
+
+        <div (tap)="ele_p.class = ele_p.class == 'show' ? '' :  'show'" [ngClass]="{ expandable : true, hideChildren : ele_p.class !== 'show', showChildren : ele_p.class === 'show' }" style="float:right;max-width:100%;margin-bottom:3.5vw;padding-top:1vw;padding-bottom:1vw;"
+            #ele_p>
+          <b>Path to files on the device</b>
+          <span id='expand'><b>(tap to show)</b></span>
+          <span id='collapse'><b>(tap to hide)</b></span>
+          <div>
+            {{citP.path}}
+          </div>
+        </div>
+
+        <ion-list>
+          <ion-segment *ngFor="let citres of dictitems(citP.stored_results)">
+            <ion-segment-button (ionSelect)="show_res(citres.k, 'm_testres')" value='1' style="text-transform:none;text-align:left">
+              <b>{{citres.v.subj_id}}</b> ({{citres.v.date}})
+            </ion-segment-button>
+
+            <ion-segment-button (ionSelect)="results_remove(citres.k)" value='' style="max-width: 11vw">
+              <ion-icon name="trash" color='danger'></ion-icon>
+            </ion-segment-button>
+            <ion-segment-button (ionSelect)="show_res(citres.k, 'm_sendin')" value='' style="max-width: 11vw">
+              <ion-icon name="send" color='dark'></ion-icon>
+            </ion-segment-button>
+
+          </ion-segment>
+        </ion-list>
 
       </div>
 
       <div [hidden]="citP.current_menu != 'm_testres'">
-        <div style="font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
+
+        <button ion-button small type='button' (tap)="backtolist()" color="light" block>Back to list</button>
+        <hr>
+
+        <div style="clear:both;font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
           Summary CIT results for <b>{{citP.cit_results.subj_id}}</b>
         </div>
         <div style="text-align:center;padding-bottom:4.5vw">
@@ -183,9 +201,6 @@
             uncorrected Cohen's d between all probe and all irrelevant RTs (<i>d</i><sub>CIT</sub>). Accuracy rates (ratio of correct responses compared to incorrect and too slow responses, in percentage): probe accuracy rate minus irrelevant
             accuracy
             rate (AR<sub>P&nbsp;vs&nbsp;I</sub>), probe accuracy rate (AR<sub>P</sub>), irrelevant accuracy rate (AR<sub>I</sub>). Responses with RT below 150 ms are excluded from all (RT and AR) analysis.
-            <br /><br />
-            For more details, see the <a href="https://github.com/gasparl/citapp_phone" target="_blank">online
-              documentation</a>.
           </div>
         </div>
 
@@ -240,24 +255,67 @@
 
             <br />
             (There is no strong indication of innocence: a very fast probe response is no more expected in case of innocence than in case of guilt.)
-            <br /><br />
-            For more details, see the <a href="https://github.com/gasparl/citapp_phone" target="_blank">online
-              documentation</a>.
           </div>
         </div>
+
+        <br />
+        For more details, see the <a href="https://github.com/gasparl/citapp_phone" target="_blank">online
+          documentation</a>.
+        <br />
+        <br />
+        <hr />
+        <br />
+
+        <div style="padding-bottom:3.5vw">
+          <i>Path to full data file:</i><br />
+          <div style="overflow-x:auto">
+            <b>{{citP.path}}</b>
+          </div>
+        </div>
+
+        <div style="padding-bottom:3.5vw">
+          <i>File name:</i><br />
+          <div style="overflow-x:auto">
+            <b>{{citP.cit_results.file_name}}</b>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div [hidden]="citP.current_menu != 'm_sendin'">
+
+        <button ion-button small type='button' (tap)="backtolist()" color="light" block>Back to list</button>
+        <hr>
+
+
+        .... email, etc.
+
+
+        <div style="clear:both;font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
+          Forward data with subject ID <b>{{citP.cit_results.subj_id}}</b>
+        </div>
+        <div style="text-align:center;padding-bottom:4.5vw">
+          (Date: <b>{{citP.cit_results.date}}</b>)
+        </div>
+
+
+
 
         <br />
         <hr />
         <br />
 
-        <div style="overflow-x:auto">
-          <div style="padding-bottom:3.5vw">
-            <i>Path to full data file:</i><br />
+        <div style="padding-bottom:3.5vw">
+          <i>Path to full data file:</i><br />
+          <div style="overflow-x:auto">
             <b>{{citP.path}}</b>
           </div>
+        </div>
 
-          <div style="padding-bottom:3.5vw">
-            <i>File name:</i><br />
+        <div style="padding-bottom:3.5vw">
+          <i>File name:</i><br />
+          <div style="overflow-x:auto">
             <b>{{citP.cit_results.file_name}}</b>
           </div>
         </div>

@@ -46,6 +46,10 @@ page-home {
     border: 2px solid #ea6153 !important;
   }
 
+  ion-segment-button {
+    opacity: 1 !important;
+  }
+
   canvas {
     position: fixed;
     top: 35%;

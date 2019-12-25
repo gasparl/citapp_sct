@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef } from "@angular/core";
-import { Slides, Content } from 'ionic-angular';
+import { Slides, Content, AlertController } from 'ionic-angular';
 import { NavController, NavParams } from "ionic-angular";
 import { Network } from '@ionic-native/network';
 import { EmailComposer } from "@ionic-native/email-composer";
@@ -72,7 +72,8 @@ export class HomePage {
     public citP: CitProvider,
     public trP: TranslationProvider,
     protected _sanitizer: DomSanitizer,
-    public navParams: NavParams
+    public navParams: NavParams,
+    public alertCtrl: AlertController
   ) {
     this.load_from_device();
     this.on_device = this.platform.is("cordova");
@@ -141,13 +142,32 @@ export class HomePage {
       // this.citP.cit_results
       this.citP.current_menu = 'm_prevs';
       this.citP.current_segment = 'menus';
-    }, 2000);
+    }, 1000);
     // TODO REMOVE
 
   }
 
+  stopprop(event) {
+    event.stopPropagation();
+    console.log('AKLSDAS');
+  }
+
+
   san_html(html) {
     return this._sanitizer.bypassSecurityTrustHtml(html);
+  }
+
+  dictitems = function(dict) {
+    try {
+      let ordered_vals = [];
+      Object.keys(dict).sort().reverse().forEach((akey) => {
+        ordered_vals.push({ 'k': akey, 'v': dict[akey] });
+      });
+      return ordered_vals;
+    } catch {
+      console.log("Failed to get dictionary values.");
+      return []
+    }
   }
 
   send_single_stat = function(test_date, key_to_del) {
@@ -388,6 +408,54 @@ export class HomePage {
       }
     })
   }
+
+  results_remove(to_del) {
+    let delmsg;
+    if (to_del == 'all') {
+      delmsg = 'Are you sure you want to remove all CIT results?';
+    } else {
+      delmsg = 'Do you want to remove the CIT results with subject ID ' + this.citP.stored_results[to_del].subj_id + '?';
+    }
+    let alert = this.alertCtrl.create({
+      title: 'Confirm removal',
+      message: delmsg,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Remove',
+          handler: () => {
+            if (to_del == 'all') {
+              this.citP.stored_results = {};
+              this.dataShare.storage.set('reslts', {});
+            } else {
+              delete this.citP.stored_results[to_del];
+              this.dataShare.storage.set('reslts', this.citP.stored_results);
+            }
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  show_res(res_id, menu) {
+    this.citP.cit_results = this.citP.stored_results[res_id];
+    this.citP.current_menu = menu;
+    this.citP.current_segment = 'menus';
+    this.citP.content.scrollToTop(0);
+  }
+  backtolist() {
+    this.citP.current_menu = 'm_prevs';
+    this.citP.current_segment = 'menus';
+    this.citP.content.scrollToTop(0);
+  }
+
 
   pop_imgs(myEvent, parent_id) {
     let popover = this.popoverCtrl.create(PopoverImg,

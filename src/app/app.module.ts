@@ -8,7 +8,8 @@ import { BackgroundMode } from '@ionic-native/background-mode';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { IonicStorageModule } from '@ionic/storage';
-import { EmailComposer } from '@ionic-native/email-composer';
+import { EmailComposer } from '@ionic-native/email-composer/';
+import { SocialSharing } from '@ionic-native/social-sharing/';
 import { File } from '@ionic-native/file';
 import { Network } from '@ionic-native/network';
 import { NavigationBar } from '@ionic-native/navigation-bar';
@@ -50,6 +51,7 @@ import { ItemgenProvider } from '../providers/itemgen/itemgen';
     Clipboard,
     BackgroundMode,
     EmailComposer,
+    SocialSharing,
     File,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     DataShareProvider,

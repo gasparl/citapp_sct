@@ -13,6 +13,8 @@ import { DataShareProvider } from '../../providers/data-share/data-share';
 import { CitProvider } from '../../providers/cit/cit';
 import { TranslationProvider } from '../../providers/translations/translations';
 import { DomSanitizer } from '@angular/platform-browser';
+import { SocialSharing } from '@ionic-native/social-sharing/';
+
 
 @Component({
   selector: "page-home",
@@ -24,13 +26,10 @@ export class HomePage {
   canv_temp: ElementRef;
   @ViewChild('thecanvas') set content(content: ElementRef) {
     if (content !== undefined) {
-      console.log('attempt');
       this.citP.canvas = content;
       this.citP.image_width = Math.floor(window.innerHeight * 0.62);
       this.citP.canvas.nativeElement.width = this.citP.image_width;
       this.citP.canvas.nativeElement.height = this.citP.image_width;
-      console.log('final wi:', this.citP.image_width);
-      // alert(this.citP.image_width); //  TODO:  remove
       this.citP.ctx = this.citP.canvas.nativeElement.getContext('2d');
     }
   }
@@ -62,7 +61,7 @@ export class HomePage {
 
   constructor(
     public navCtrl: NavController,
-    private emailComposer: EmailComposer,
+    private socialSharing: SocialSharing,
     public platform: Platform,
     public formBuilder: FormBuilder,
     private network: Network,
@@ -76,8 +75,6 @@ export class HomePage {
     public alertCtrl: AlertController
   ) {
     this.load_from_device();
-    this.on_device = this.platform.is("cordova");
-
     let validator_dict = {
       sub_id: [
         "",
@@ -114,37 +111,41 @@ export class HomePage {
   checknet: any;
   ionViewDidLoad() {
     this.citP.content = this.cntent_temp;
-    if (this.on_device) {
-      this.checknet = setInterval(() => {
-        if (this.network.type) {
-          if (this.network.type != "none") {
-            this.internet_on = true;
-          } else {
-            this.internet_on = false;
+
+    this.platform.ready().then(() => {
+      this.on_device = this.platform.is("cordova");
+      if (this.on_device) {
+        this.checknet = setInterval(() => {
+          if (this.network.type) {
+            if (this.network.type != "none") {
+              this.internet_on = true;
+            } else {
+              this.internet_on = false;
+            }
           }
-        }
+        }, 500);
+        this.citP.statusBar.hide();
+        this.citP.navigationBar.hideNavigationBar();
+        this.citP.navigationBar.setUp(true);
+        this.citP.backgroundMode.enable();
+        this.citP.backgroundMode.setDefaults({
+          title: "Concealed Information Test App active",
+          text: "",
+          silent: true
+        });
+        this.citP.path = this.citP.file.externalDataDirectory;
+      }
+
+      // TODO REMOVE
+      setTimeout(() => {
+        this.citP.get_results();
+        // this.citP.cit_results
+        this.citP.current_menu = 'm_sendin';
+        this.citP.current_segment = 'menus';
       }, 500);
-      this.citP.statusBar.hide();
-      this.citP.navigationBar.hideNavigationBar();
-      this.citP.navigationBar.setUp(true);
-      this.citP.backgroundMode.enable();
-      this.citP.backgroundMode.setDefaults({
-        title: "Concealed Information Test App active",
-        text: "",
-        silent: true
-      });
-      this.citP.path = this.citP.file.externalDataDirectory;
-    }
+      // TODO REMOVE
 
-    // TODO REMOVE
-    setTimeout(() => {
-      this.citP.get_results();
-      // this.citP.cit_results
-      this.citP.current_menu = 'm_prevs';
-      this.citP.current_segment = 'menus';
-    }, 1000);
-    // TODO REMOVE
-
+    });
   }
 
   stopprop(event) {
@@ -382,6 +383,34 @@ export class HomePage {
       // invalid character, prevent input
       event.preventDefault();
     }
+  }
+
+  mails: string = '';
+  mails_sending: string = '';
+  emails_input(event: any) {
+    const pattern = /[a-zA-Z0-9;_@.!]/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+      // invalid character, prevent input
+      event.preventDefault();
+    }
+  }
+
+  checkmail() {
+    let mailsarray = this.mails.split(";");
+    this.mails_sending = '';
+    mailsarray.map((ml) => {
+      if (/\S+@\S+\.\S+/.test(ml)) {
+        this.mails_sending = this.mails_sending + '; ' + ml.trim();
+      }
+    })
+    this.mails_sending = this.mails_sending.substr(2)
+  }
+
+  share() {
+    this.socialSharing.share('',
+      "CITapp data " + this.citP.cit_results.subj_id + this.citP.cit_results.date,
+      this.citP.path + this.citP.cit_results.file_name);
   }
 
   texttrans: boolean = true;

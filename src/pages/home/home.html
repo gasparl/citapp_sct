@@ -113,7 +113,7 @@
           <b>Path to files on the device</b>
           <span id='expand'><b>(tap to show)</b></span>
           <span id='collapse'><b>(tap to hide)</b></span>
-          <div>
+          <div class='selectable'>
             {{citP.path}}
           </div>
         </div>
@@ -268,14 +268,14 @@
 
         <div style="padding-bottom:3.5vw">
           <i>Path to full data file:</i><br />
-          <div style="overflow-x:auto">
+          <div style="overflow-x:auto" class='selectable'>
             <b>{{citP.path}}</b>
           </div>
         </div>
 
         <div style="padding-bottom:3.5vw">
           <i>File name:</i><br />
-          <div style="overflow-x:auto">
+          <div style="overflow-x:auto" class='selectable'>
             <b>{{citP.cit_results.file_name}}</b>
           </div>
         </div>
@@ -288,34 +288,46 @@
         <button ion-button small type='button' (tap)="backtolist()" color="light" block>Back to list</button>
         <hr>
 
-
-        .... email, etc.
-
-
-        <div style="clear:both;font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
+        <div style="font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
           Forward data with subject ID <b>{{citP.cit_results.subj_id}}</b>
         </div>
         <div style="text-align:center;padding-bottom:4.5vw">
           (Date: <b>{{citP.cit_results.date}}</b>)
         </div>
 
+        <div style="text-align:left;padding-left: 16px;">
+          The data can be sent automatically via a server to a specified email address, or to several email addresses separated by semicolon (e.g., "exam@ple.com;exa@mple.org").
+        </div>
+
+        <ion-item style="margin-bottom: 2vw;">
+          <ion-label style="color:black;min-width:21vw;" fixed>Email(s)</ion-label>
+          <ion-input (keypress)="emails_input($event)" [(ngModel)]="mails" type="text" (ngModelChange)="checkmail()" [ngModelOptions]="{standalone: true}" style="font-style:normal;text-transform:none;"></ion-input>
+        </ion-item>
+
+        <span id="sentfeed_id" style="font-size:110%;"></span>
+        <button [disabled]="mails_sending === ''" style="text-transform:none;text-align:center;line-height: 120%;" ion-button type='button' (tap)="test()" color="light" block>SEND VIA SERVER TO:<br>{{mails_sending}}</button>
 
 
+        <br />
+        <div style="text-align:left;padding-left: 16px;">
+          Alternatively, the data can be sent (shared, stored) via any chosen local application.
+        </div>
+        <button ion-button type='button' (tap)="share()" color="light" block>Choose application</button>
 
         <br />
         <hr />
         <br />
 
         <div style="padding-bottom:3.5vw">
-          <i>Path to full data file:</i><br />
-          <div style="overflow-x:auto">
+          <i>Path to all CIT results files on the device:</i><br />
+          <div style="overflow-x:auto" class='selectable'>
             <b>{{citP.path}}</b>
           </div>
         </div>
 
         <div style="padding-bottom:3.5vw">
           <i>File name:</i><br />
-          <div style="overflow-x:auto">
+          <div style="overflow-x:auto" class='selectable'>
             <b>{{citP.cit_results.file_name}}</b>
           </div>
         </div>

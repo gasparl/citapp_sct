@@ -13,7 +13,7 @@ export class MyApp {
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
       if (platform.is("cordova")) {
-        window.addEventListener("native.hidekeyboard", function() {
+        window.addEventListener("native.showkeyboard", function() {
           statusBar.hide();
         });
       }

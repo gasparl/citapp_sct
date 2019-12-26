@@ -26,24 +26,24 @@
 
 <ion-content hide-nav-bar="true" padding [ngSwitch]="citP.current_div" [ngStyle]="{ 'background-color': citP.bg_color }" text-wrap>
 
-  <div *ngSwitchCase="'div_start'">
+  <div *ngSwitchCase="'div_start'" style="text-align:center">
+    <div class='center'>
 
-    <div>
-      <button ion-button type="button" (tap)="citP.switch_divs('div_settings');">Start new test</button></div>
+      <div>
+        <button ion-button type="button" (tap)="citP.switch_divs('div_settings');citP.content.scrollToTop(0);">
+          Start &nbsp;<b>Concealed Information Test</b>
+        </button></div>
+      <br />
+      <div>
+        <button ion-button type="button" (tap)="goto_menu('m_info')">Info</button>
+        <button ion-button type="button" (tap)="goto_menu('m_demo')">Demo</button>
+      </div>
+      <br />
+      <div>
+        <button ion-button type="button" (tap)="goto_menu('m_prevs')">Previous results</button>
+      </div>
 
-    <br /><br />
-    <div>
-      <button ion-button type="button">Information</button>
     </div>
-    <br /><br />
-    <div>
-      <button ion-button type="button">Demo</button>
-    </div>
-    <br /><br />
-    <div>
-      <button ion-button type="button">Results</button>
-    </div>
-
   </div>
 
 
@@ -138,7 +138,7 @@
 
       <div [hidden]="citP.current_menu != 'm_testres'">
 
-        <button ion-button small type='button' (tap)="backtolist()" color="light" block>Back to list</button>
+        <button ion-button small type='button' (tap)="goto_menu('m_prevs')" color="light" block>Back to list</button>
         <hr>
 
         <div style="clear:both;font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
@@ -211,7 +211,7 @@
           <span id='expand'><b>(tap to show)</b></span>
           <span id='collapse'><b>(tap to hide)</b></span>
           <div>
-            The <i>d</i><sub>CIT</sub> measure might be used to evaluate whether or not a given probe was recognized. The <i>d</i><sub>CIT</sub> typically fall between around −0.3 and 0.8, where a larger number always indicates a larger likelihood
+            The <i>d</i><sub>CIT</sub> measure might be used to evaluate whether or not a given probe was recognized. The <i>d</i><sub>CIT</sub> typically falls between around −0.3 and 0.8, where a larger number always indicates a larger likelihood
             of
             the
             recognition of the given probe. As of yet, there is no established optimal cut-off value for the evaluation, but, based on a rough approximation in view of previous results, the following table depicts some possible evaluative labels for
@@ -279,13 +279,14 @@
             <b>{{citP.cit_results.file_name}}</b>
           </div>
         </div>
-
+        <hr />
+        <button ion-button small type='button' (tap)="goto_menu('m_sendin')" color="light" block>Get full data</button>
       </div>
 
 
       <div [hidden]="citP.current_menu != 'm_sendin'">
 
-        <button ion-button small type='button' (tap)="backtolist()" color="light" block>Back to list</button>
+        <button ion-button small type='button' (tap)="goto_menu('m_prevs')" color="light" block>Back to list</button>
         <hr>
 
         <div style="font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
@@ -295,6 +296,7 @@
           (Date: <b>{{citP.cit_results.date}}</b>)
         </div>
 
+        <!--
         <div style="text-align:left;padding-left: 16px;">
           The data can be sent automatically via a server to a specified email address, or to several email addresses separated by semicolon (e.g., "exam@ple.com;exa@mple.org").
         </div>
@@ -304,15 +306,23 @@
           <ion-input (keypress)="emails_input($event)" [(ngModel)]="mails" type="text" (ngModelChange)="checkmail()" [ngModelOptions]="{standalone: true}" style="font-style:normal;text-transform:none;"></ion-input>
         </ion-item>
 
-        <span id="sentfeed_id" style="font-size:110%;"></span>
+        <span id="sentfeed_id" style="color:green;">&nbsp;</span>
         <button [disabled]="mails_sending === ''" style="text-transform:none;text-align:center;line-height: 120%;" ion-button type='button' (tap)="test()" color="light" block>SEND VIA SERVER TO:<br>{{mails_sending}}</button>
+        <br />
+        -->
 
+        <div style="text-align:left;padding-left: 16px;padding-top:1.5vw;">
+          The data can be sent (shared, stored) via any chosen local application (e.g. email, cloud storage, etc.).
+        </div>
+        <span>&nbsp;</span>
+        <button ion-button type='button' (tap)="sendviaapp()" color="light" block>Choose application</button>
 
         <br />
-        <div style="text-align:left;padding-left: 16px;">
-          Alternatively, the data can be sent (shared, stored) via any chosen local application.
+        <div style="text-align:left;padding-left: 16px;padding-top:1.5vw;">
+          You can also just simply copy the data to the clipboard. Afterwards it can be pasted into any other application.
         </div>
-        <button ion-button type='button' (tap)="share()" color="light" block>Choose application</button>
+        <span id="copyfeed_id" style="color:green;">&nbsp;</span>
+        <button ion-button type='button' (tap)="to_clipboard()" color="light" block>Copy to clipboard</button>
 
         <br />
         <hr />
@@ -331,13 +341,14 @@
             <b>{{citP.cit_results.file_name}}</b>
           </div>
         </div>
-
+        <hr />
+        <button ion-button small type='button' (tap)="goto_menu('m_testres')" color="light" block>Show main results</button>
       </div>
     </div>
 
     <form [hidden]="citP.current_menu != ''" (ngSubmit)="initials()" [formGroup]="form_items" (keydown.enter)="$event.preventDefault()">
 
-      <ion-slides (ionSlideWillChange)='citP.current_segment = seg_values[slides.getActiveIndex()];'>
+      <ion-slides (ionSlideWillChange)='citP.current_segment = seg_values[slides.getActiveIndex()];' initialSlide="4">
         <ion-slide>
 
           <ion-item>
@@ -546,8 +557,21 @@
             <ion-label style="margin-bottom:0;color:black">Auto-transform input to uppercase</ion-label>
             <ion-toggle [(ngModel)]='texttrans' [ngModelOptions]="{standalone: true}" (ionChange)="change_texttrans();"></ion-toggle>
           </ion-item>
+
+
+          <br />
+          <div style="font-weight:bold;font-size:110%;text-align:left;padding-left: 16px;">
+            Optionally, default email address (or addresses) can be given for data sending. The text given below will be filled in automatically (but can always be changed before sending) in the <i>to:</i> field when choosing an email application to
+            send data (under the <i>Results</i> menu).
+          </div>
+          <ion-item>
+            <ion-label style="color:black;min-width:25vw;" fixed>Default email(s)</ion-label>
+            <ion-input (keypress)="emails_input($event)" [(ngModel)]="mails" type="text" [ngModelOptions]="{standalone: true}" style="font-style:normal;text-transform:none;"></ion-input>
+          </ion-item>
+
           <br />
           <br />
+
           <button ion-button type='button' (tap)="default_settings()" color="light" block>Restore default</button>
 
         </ion-slide>
@@ -689,11 +713,11 @@
     </ion-title>
   </div>
 
-  <!-- app console for testing -->
+  <!-- app console for testing
   <b>{{mycl}}</b>
   <br />
   <input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;width:100%;">
   <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <!-- console end -->
+  console end -->
 
 </ion-content>

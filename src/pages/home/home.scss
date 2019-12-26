@@ -73,6 +73,15 @@ page-home {
     padding: 1.4vw;
   }
 
+  .center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+
   .dcit_table td {
     text-align: left;
   }

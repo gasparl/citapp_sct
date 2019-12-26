@@ -1,6 +1,5 @@
-import { Injectable, Component } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BackgroundMode } from '@ionic-native/background-mode';
-import { Clipboard } from '@ionic-native/clipboard';
 import { File } from '@ionic-native/file';
 import { NavigationBar } from '@ionic-native/navigation-bar';
 import { TranslationProvider } from '../../providers/translations/translations';
@@ -51,7 +50,7 @@ export class CitProvider {
   //*/
 
   subj_id: string = '';
-  current_div: string = "div_settings"; // ddd default: "div_start", div_settings, div_dems, div_cit_main, div_end
+  current_div: string = "div_start"; // ddd default: "div_start", div_settings, div_dems, div_cit_main, div_end
   current_segment: string = '';
   current_menu: string = '';
   false_delay: number = 400;
@@ -112,7 +111,6 @@ export class CitProvider {
   to_display: string = "";
   targetrefs: object[] = [];
   nontargrefs: object[] = [];
-  f_name: string;
   path: any = "(path not found)";
   show_eval: boolean = true;
   consented: number;
@@ -123,7 +121,6 @@ export class CitProvider {
   image_width: number;
 
   constructor(
-    private clipboard: Clipboard,
     public file: File,
     public navigationBar: NavigationBar,
     public statusBar: StatusBar,
@@ -550,18 +547,11 @@ export class CitProvider {
   }
 
   store_data() {
-    var dcit = (this.mean(this.all_main_rts.probs) - this.mean(this.all_main_rts.irrs)) / this.sd(this.all_main_rts.irrs);
-    this.f_name =
-      this.subj_id +
-      "_" +
-      Date.now() +
-      ".txt";
-    // this.clipboard.copy(this.cit_data);
-    // this.file.writeFile(this.path, this.f_name, this.cit_data);
-
-    // (Math.ceil(dcit * 1000) / 1000).toFixed(3);
-    // Math.round(this.mean(this.all_main_rts.probs) - this.mean(this.all_main_rts.irrs)) + " ms)"
-
+    this.file.writeFile(this.path, this.cit_results.file_name, this.cit_results.cit_data).then(value => {
+      alert('success2' + value)
+    }, reason => {
+      alert(reason)
+    });
     this.backgroundMode.setDefaults({
       silent: true
     })

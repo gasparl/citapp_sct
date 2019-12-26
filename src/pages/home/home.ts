@@ -13,8 +13,7 @@ import { DataShareProvider } from '../../providers/data-share/data-share';
 import { CitProvider } from '../../providers/cit/cit';
 import { TranslationProvider } from '../../providers/translations/translations';
 import { DomSanitizer } from '@angular/platform-browser';
-import { SocialSharing } from '@ionic-native/social-sharing/';
-
+import { Clipboard } from '@ionic-native/clipboard/';
 
 @Component({
   selector: "page-home",
@@ -35,7 +34,7 @@ export class HomePage {
   }
 
   // /*
-  to_exec: any;
+  to_exec: any = 'this.';
   mycl: any;
   onChange(ee) {
     if (ee.keyCode === 13) {
@@ -61,7 +60,8 @@ export class HomePage {
 
   constructor(
     public navCtrl: NavController,
-    private socialSharing: SocialSharing,
+    private emailComposer: EmailComposer,
+    private clipboard: Clipboard,
     public platform: Platform,
     public formBuilder: FormBuilder,
     private network: Network,
@@ -135,24 +135,8 @@ export class HomePage {
         });
         this.citP.path = this.citP.file.externalDataDirectory;
       }
-
-      // TODO REMOVE
-      setTimeout(() => {
-        this.citP.get_results();
-        // this.citP.cit_results
-        this.citP.current_menu = 'm_sendin';
-        this.citP.current_segment = 'menus';
-      }, 500);
-      // TODO REMOVE
-
     });
   }
-
-  stopprop(event) {
-    event.stopPropagation();
-    console.log('AKLSDAS');
-  }
-
 
   san_html(html) {
     return this._sanitizer.bypassSecurityTrustHtml(html);
@@ -227,7 +211,8 @@ export class HomePage {
       'texttrans': this.texttrans,
       'save_on_citstart': this.save_on_citstart,
       'show_eval': this.citP.show_eval,
-      'consent': this.consentset
+      'consent': this.consentset,
+      'mails': this.mails
     });
     try {
       let el = document.getElementById("storefeed_id2")
@@ -270,6 +255,7 @@ export class HomePage {
           this.save_on_citstart = data_dict.save_on_citstart;
           this.citP.show_eval = data_dict.show_eval;
           this.consentset = data_dict.consent;
+          this.mails = data_dict.mails;
           this.change_texttrans();
         } catch (e) {
           console.log('(No locally saved data.)');
@@ -386,31 +372,45 @@ export class HomePage {
   }
 
   mails: string = '';
-  mails_sending: string = '';
   emails_input(event: any) {
-    const pattern = /[a-zA-Z0-9;_@.!]/;
+    const pattern = /[a-zA-Z0-9\s;_@.!]/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
       // invalid character, prevent input
       event.preventDefault();
     }
   }
+  // mails_sending: string = '';
+  // checkmail() {
+  //   let mailsarray = this.mails.split(";");
+  //   this.mails_sending = '';
+  //   mailsarray.map((ml) => {
+  //     if (/\S+@\S+\.\S+/.test(ml)) {
+  //       this.mails_sending = this.mails_sending + '; ' + ml.trim();
+  //     }
+  //   })
+  //   this.mails_sending = this.mails_sending.substr(2)
+  // }
 
-  checkmail() {
-    let mailsarray = this.mails.split(";");
-    this.mails_sending = '';
-    mailsarray.map((ml) => {
-      if (/\S+@\S+\.\S+/.test(ml)) {
-        this.mails_sending = this.mails_sending + '; ' + ml.trim();
-      }
-    })
-    this.mails_sending = this.mails_sending.substr(2)
+  sendviaapp() {
+    let email = {
+      to: this.mails,
+      cc: "",
+      subject: "CITapp data " + this.citP.cit_results.file_name,
+      body: "",
+      attachments: [
+        this.citP.path + this.citP.cit_results.file_name
+      ]
+    };
+    this.emailComposer.open(email);
   }
 
-  share() {
-    this.socialSharing.share('',
-      "CITapp data " + this.citP.cit_results.subj_id + this.citP.cit_results.date,
-      this.citP.path + this.citP.cit_results.file_name);
+  to_clipboard() {
+    this.clipboard.copy(this.citP.cit_results.cit_data);
+    document.getElementById("copyfeed_id").innerHTML = 'CIT result data copied to clipboard.';
+    setTimeout(() => {
+      document.getElementById("copyfeed_id").innerHTML = '&nbsp;';
+    }, 3000);
   }
 
   texttrans: boolean = true;
@@ -431,9 +431,7 @@ export class HomePage {
     });
     popover.onDidDismiss(pop_data => {
       if (pop_data != null) {
-        this.citP.current_menu = pop_data;
-        this.citP.current_segment = 'menus';
-        this.citP.content.scrollToTop(0);
+        this.goto_menu(pop_data);
       }
     })
   }
@@ -479,8 +477,9 @@ export class HomePage {
     this.citP.current_segment = 'menus';
     this.citP.content.scrollToTop(0);
   }
-  backtolist() {
-    this.citP.current_menu = 'm_prevs';
+
+  goto_menu(menu_name) {
+    this.citP.current_menu = menu_name;
     this.citP.current_segment = 'menus';
     this.citP.content.scrollToTop(0);
   }
@@ -690,6 +689,8 @@ export class HomePage {
     this.citP.num_of_blocks = 1;
     this.citP.isi_delay_minmax = [300, 700];
     this.citP.response_timelimit_main = 900;
+    this.trP.lang = 'en';
+    this.mails = '';
   }
 
   fill_demo = function() {

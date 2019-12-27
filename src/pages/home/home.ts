@@ -44,6 +44,7 @@ export class HomePage {
   }
   //*/
 
+  initslide: any = 0;
   cit_items: string[] = [];
   form_items: FormGroup;
   mailpost: string = "";
@@ -101,17 +102,11 @@ export class HomePage {
         this.citP.stored_results = cntent;
       }
     });
-    if (navParams.get('refreshed')) {
-      this.citP.current_menu = 'm_prevs';
-      this.citP.current_segment = 'menus';
-      this.citP.content.scrollToTop(0);
-    }
   }
   internet_on: boolean = false;
   checknet: any;
   ionViewDidLoad() {
     this.citP.content = this.cntent_temp;
-
     this.platform.ready().then(() => {
       this.on_device = this.platform.is("cordova");
       if (this.on_device) {
@@ -210,7 +205,6 @@ export class HomePage {
       'img_dict': this.img_dict,
       'texttrans': this.texttrans,
       'save_on_citstart': this.save_on_citstart,
-      'show_eval': this.citP.show_eval,
       'consent': this.consentset,
       'mails': this.mails
     });
@@ -253,7 +247,6 @@ export class HomePage {
           this.show_imgs();
           this.texttrans = data_dict.texttrans;
           this.save_on_citstart = data_dict.save_on_citstart;
-          this.citP.show_eval = data_dict.show_eval;
           this.consentset = data_dict.consent;
           this.mails = data_dict.mails;
           this.change_texttrans();
@@ -483,7 +476,6 @@ export class HomePage {
     this.citP.current_segment = 'menus';
     this.citP.content.scrollToTop(0);
   }
-
 
   pop_imgs(myEvent, parent_id) {
     let popover = this.popoverCtrl.create(PopoverImg,
@@ -742,7 +734,21 @@ export class HomePage {
   // item generation
 
   create_stim_base() {
+    this.citP.blocknum = 1;
     this.citP.stim_base = [];
+    this.citP.the_targets = [];
+    this.citP.the_nontargs = [];
+    this.citP.the_probes = [];
+    this.citP.targetrefs = [];
+    this.citP.nontargrefs = [];
+    this.citP.task_images = {};
+    this.citP.all_main_rts = {
+      "probe1": [],
+      "probe2": [],
+      "probe3": [],
+      "probe4": [],
+      "probe5": []
+    };
     var items_array = JSON.parse(JSON.stringify(this.cit_items));
     items_array.forEach((item, num) => {
       let tempdict: any = {
@@ -807,10 +813,19 @@ export class HomePage {
     });
   }
 
-  refresh_page() {
-    //refresh after ending:
-    this.navCtrl.setRoot(this.navCtrl.getActive().component, { 'refreshed': true });
+  goto_slide(snum) {
+    if (this.citP.current_menu === '') {
+      this.slides.slideTo(snum);
+    } else {
+      this.initslide = snum;
+      this.citP.current_menu = '';
+    }
+    this.citP.content.scrollToTop(0);
   }
 
-
+  sethome() {
+    this.citP.switch_divs('div_settings');
+    this.citP.current_menu = 'm_testres';
+    this.citP.current_segment = 'menus';
+  }
 }

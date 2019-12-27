@@ -51,7 +51,7 @@ export class CitProvider {
 
   subj_id: string = '';
   current_div: string = "div_start"; // ddd default: "div_start", div_settings, div_dems, div_cit_main, div_end
-  current_segment: string = '';
+  current_segment: string = 'main';
   current_menu: string = '';
   false_delay: number = 400;
   tooslow_delay: number = 400;
@@ -85,39 +85,31 @@ export class CitProvider {
   rspns: string;
   no_prac_fail: boolean = true;
   text_to_show: string;
-  practice_repeated: any = {
-    block1: 0,
-    block2: 0,
-    block3: 0
-  };
   cit_data: string =
     ["subject_id", "cit_version", "block_number", "trial_number", "stimulus_shown", "category", "stim_type", "response_key", "rt_start", "rt_end", "incorrect", "too_slow", "isi", "date_in_ms"].join('\t') + "\n";
   correct_resp: string = "none";
-  blocknum: number = 1;
+  blocknum: number;
   num_of_blocks: number = 1;
   rt_start: number = 99999;
   rt_end: number = 99999;
   start: any = 0;
   listen: boolean = false;
   listn_end: boolean = false;
-  practice_num: number = 5;
   response_window: any;
-  nums: any[];
   stim_base: any[];
-  the_targets: string[] = [];
-  the_nontargs: string[] = [];
-  the_probes: string[] = [];
+  the_targets: string[];
+  the_nontargs: string[];
+  the_probes: string[];
   stimulus_text: string = "";
   to_display: string = "";
-  targetrefs: object[] = [];
-  nontargrefs: object[] = [];
+  targetrefs: object[];
+  nontargrefs: object[];
   path: any = "(path not found)";
-  show_eval: boolean = true;
   consented: number;
   crrnt_phase: string;
   canvas;
   ctx;
-  task_images: object = {};
+  task_images: object;
   image_width: number;
 
   constructor(
@@ -414,7 +406,7 @@ export class CitProvider {
         this.response_timelimit = this.response_timelimit_main;
         this.teststim = this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs);
       }
-      this.teststim = this.teststim.slice(0, 5); // TODO remove
+      this.teststim = this.teststim.slice(0, 10); // TODO remove
       this.rt_data_dict = {};
       this.switch_divs('div_blockstart');
     } else {
@@ -453,8 +445,17 @@ export class CitProvider {
     }
   }
 
-
   // DATA STORING
+
+  store_data() {
+    this.get_results();
+    this.file.writeFile(this.path, this.cit_results.file_name, this.cit_results.cit_data).then(value => {
+      this.switch_divs('div_end');
+    }, reason => {
+      this.switch_divs('div_end');
+      this.cit_results.file_nam_disp = this.cit_results.file_name + ' There was an error saving this file. Data data can still be retrieved by copying it to the clipboard. Error: ' + reason;
+    });
+  }
 
   cit_results: any = {
     "probe1": {},
@@ -465,21 +466,11 @@ export class CitProvider {
     'subj_id': '',
     'cit_data': '',
     'date': '',
-    'file_name': ''
+    'file_name': '',
+    'file_nam_disp': ''
   };
   stored_results: any = {};
   get_results() {
-
-    ///////////////
-    this.all_main_rts = { // TODO REMOVE
-      "probe1": [512, 532, 512, 625],
-      "probe2": [521, -1, 0, 0],
-      "probe3": [-1, 523, 453, 523, 443],
-      "probe4": [-1, -1, -1],
-      "probe5": [0, 0, 0, 0]
-    }; // TODO REMOVE
-    ///////////////////
-
     this.cit_results = {
       "probe1": {},
       "probe2": {},
@@ -538,26 +529,24 @@ export class CitProvider {
       cdate.getFullYear() + " " +
       ("0" + cdate.getHours()).slice(-2) + ":" +
       ("0" + cdate.getMinutes()).slice(-2);
+
+    let consentword: object = {
+      99: 'noconsent',
+      1: 'fullshare',
+      2: 'noitemshare',
+      0: 'noshare'
+    };
+
     this.cit_results.file_name = this.subj_id + '_' +
       this.cittypedict[this.cit_type] + '_' +
       this.num_of_blocks + 'block_' +
-      this.neat_date().slice(0, 12) + '.txt';
+      consentword[this.consented] + '_' + this.neat_date().slice(0, 12) + '.txt';
+    this.cit_results.file_nam_disp = this.cit_results.file_name;
     this.stored_results[this.neat_date() + this.subj_id] = this.cit_results;
     this.dataShare.storage.set('reslts', this.stored_results);
   }
 
-  store_data() {
-    this.file.writeFile(this.path, this.cit_results.file_name, this.cit_results.cit_data).then(value => {
-      alert('success2' + value)
-    }, reason => {
-      alert(reason)
-    });
-    this.backgroundMode.setDefaults({
-      silent: true
-    })
-  }
-
-  // image display
+  // display
 
   item_display() {
     if (this.trial_stim.type === "target" || this.trial_stim.type.slice(0, 9) === "targetflr") {

@@ -4,19 +4,19 @@
       <ion-segment-button value="menus" icon-only (tap)="pop_menu($event)">
         <ion-icon name="menu"></ion-icon>
       </ion-segment-button>
-      <ion-segment-button value="main" (tap)="citP.current_menu = '';slides.slideTo(0);citP.content.scrollToTop(0);">
+      <ion-segment-button value="main" (tap)="goto_slide(0)">
         Core
       </ion-segment-button>
-      <ion-segment-button value="fillers" (tap)="citP.current_menu = '';slides.slideTo(1);citP.content.scrollToTop(0);">
+      <ion-segment-button value="fillers" (tap)="goto_slide(1)">
         Fillers
       </ion-segment-button>
-      <ion-segment-button value="settings" (tap)="citP.current_menu = '';slides.slideTo(2);citP.content.scrollToTop(0);">
+      <ion-segment-button value="settings" (tap)="goto_slide(2)">
         Settings
       </ion-segment-button>
-      <ion-segment-button value="autofill" (tap)="citP.current_menu = '';slides.slideTo(3);citP.content.scrollToTop(0);">
+      <ion-segment-button value="autofill" (tap)="goto_slide(3)">
         Storing
       </ion-segment-button>
-      <ion-segment-button value="start" (tap)="citP.current_menu = '';slides.slideTo(4);citP.content.scrollToTop(0);">
+      <ion-segment-button value="start" (tap)="goto_slide(4)">
         Start
       </ion-segment-button>
     </ion-segment>
@@ -30,17 +30,17 @@
     <div class='center'>
 
       <div>
-        <button ion-button type="button" (tap)="citP.switch_divs('div_settings');citP.content.scrollToTop(0);">
-          Start &nbsp;<b>Concealed Information Test</b>
+        <button ion-button type="button" (tap)="citP.switch_divs('div_settings');">
+          <b>Concealed Information Test</b>
         </button></div>
       <br />
       <div>
-        <button ion-button type="button" (tap)="goto_menu('m_info')">Info</button>
-        <button ion-button type="button" (tap)="goto_menu('m_demo')">Demo</button>
+        <button ion-button type="button" (tap)="citP.switch_divs('div_settings');goto_menu('m_info')">Info</button>
+        <button ion-button type="button" (tap)="citP.switch_divs('div_settings');goto_menu('m_demo')">Demo</button>
       </div>
       <br />
       <div>
-        <button ion-button type="button" (tap)="goto_menu('m_prevs')">Previous results</button>
+        <button ion-button type="button" (tap)="citP.switch_divs('div_settings');goto_menu('m_prevs')">Previous results</button>
       </div>
 
     </div>
@@ -67,7 +67,9 @@
         The <i>enhanced</i> version is much more effective than the <i>standard</i>; the latter is only for experimental purposes. The <i>no-target</i> version is a tentative approach in development to make the test applicable in cases where the
         probe is actually known to the participant.
         <br /><br />
-
+        At the end of the test there are no instructions or button, but only the text "<i>Test completed.</i>" (in the selected language). This is to prevent subjects to see the results without permission. To show results, <i>swipe right</i> on the
+        text.
+        <br />
       </div>
 
       <div [hidden]="citP.current_menu != 'm_demo'">
@@ -276,7 +278,7 @@
         <div style="padding-bottom:3.5vw">
           <i>File name:</i><br />
           <div style="overflow-x:auto" class='selectable'>
-            <b>{{citP.cit_results.file_name}}</b>
+            <b>{{citP.cit_results.file_nam_disp}}</b>
           </div>
         </div>
         <hr />
@@ -338,7 +340,7 @@
         <div style="padding-bottom:3.5vw">
           <i>File name:</i><br />
           <div style="overflow-x:auto" class='selectable'>
-            <b>{{citP.cit_results.file_name}}</b>
+            <b>{{citP.cit_results.file_nam_disp}}</b>
           </div>
         </div>
         <hr />
@@ -346,9 +348,9 @@
       </div>
     </div>
 
-    <form [hidden]="citP.current_menu != ''" (ngSubmit)="initials()" [formGroup]="form_items" (keydown.enter)="$event.preventDefault()">
+    <form *ngIf="citP.current_menu === ''" (ngSubmit)="initials()" [formGroup]="form_items" (keydown.enter)="$event.preventDefault()">
 
-      <ion-slides (ionSlideWillChange)='citP.current_segment = seg_values[slides.getActiveIndex()];' initialSlide="4">
+      <ion-slides (ionSlideWillChange)='citP.current_segment = seg_values[slides.getActiveIndex()];' [initialSlide]="initslide">
         <ion-slide>
 
           <ion-item>
@@ -624,10 +626,6 @@
             <ion-toggle [(ngModel)]='store_on_device' [ngModelOptions]="{standalone: true}"></ion-toggle>
           </ion-item>
           <ion-item>
-            <ion-label style="margin-bottom:0;color:black">Show evaluation immediately after completion</ion-label>
-            <ion-toggle [(ngModel)]='citP.show_eval' [ngModelOptions]="{standalone: true}"></ion-toggle>
-          </ion-item>
-          <ion-item>
             <ion-label style="margin-bottom:0;color:black">Data sharing consent choices</ion-label>
             <ion-select [(ngModel)]="consentset" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;" multiple="true" [selectOptions]="{title:'Consent choices'}">
               <ion-option value='0'>No</ion-option>
@@ -707,17 +705,17 @@
   </div>
 
 
-  <div *ngSwitchCase="'div_end'" (swipe)="citP.switch_divs('div_start');">
-    <ion-title>
-      {{trP.cit_completed}}
+  <div *ngSwitchCase="'div_end'">
+    <ion-title class='center' (swipe)="sethome();">
+      {{trP.cit_completed[trP.lang]}}
     </ion-title>
   </div>
 
-  <!-- app console for testing
+  <!-- app console for testing -->
   <b>{{mycl}}</b>
   <br />
   <input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;width:100%;">
   <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  console end -->
+  <!-- console end -->
 
 </ion-content>

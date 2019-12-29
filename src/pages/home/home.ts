@@ -38,8 +38,8 @@ export class HomePage {
   mycl: any;
   onChange(ee) {
     if (ee.keyCode === 13) {
+      console.log(eval(this.to_exec));
       this.mycl = JSON.stringify(eval(this.to_exec));
-      console.log(this.mycl);
     }
   }
   //*/

@@ -406,7 +406,7 @@ export class CitProvider {
         this.response_timelimit = this.response_timelimit_main;
         this.teststim = this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs);
       }
-      this.teststim = this.teststim.slice(0, 10); // TODO remove
+      this.teststim = this.teststim.slice(0, 5); // TODO remove
       this.rt_data_dict = {};
       this.switch_divs('div_blockstart');
     } else {
@@ -554,7 +554,7 @@ export class CitProvider {
     } else {
       this.correct_resp = "resp_a";
     }
-    this.touchsim(); // for testing -- TODOREMOVE
+    // this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       if (this.trial_stim.mode === 'image') {
         this.ctx.drawImage(this.task_images[this.trial_stim.item], 0, 0);

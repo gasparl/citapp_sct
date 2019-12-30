@@ -402,6 +402,8 @@ export class CitProvider {
         this.response_timelimit = this.response_timelimit_main;
         this.teststim = this.itemgenP.practice_items(this.targetrefs, this.nontargrefs);
       } else {
+        // TODO: CHOOSE DIFFERENT TYPE BASED ON CONDITION
+        // TODO: NOT REPEAT THIS PART IF WRONG
         this.crrnt_phase = 'main';
         this.response_timelimit = this.response_timelimit_main;
         this.teststim = this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs);

@@ -206,6 +206,7 @@ export class HomePage {
       'texttrans': this.texttrans,
       'save_on_citstart': this.save_on_citstart,
       'consent': this.consentset,
+      'language': this.trP.lang,
       'mails': this.mails
     });
     try {
@@ -224,7 +225,7 @@ export class HomePage {
         try {
           this.citP.subj_id = data_dict.subject_id;
           this.citP.cit_type = data_dict.cit_version;
-          this.num_of_blocks = data_dict.num_of_blocks;
+          this.citP.num_of_blocks = data_dict.num_of_blocks;
           this.citP.response_timelimit_main = data_dict.timelimit;
           this.citP.isi_delay_minmax[0] = data_dict.isi_min;
           this.citP.isi_delay_minmax[1] = data_dict.isi_max;
@@ -248,6 +249,7 @@ export class HomePage {
           this.texttrans = data_dict.texttrans;
           this.save_on_citstart = data_dict.save_on_citstart;
           this.consentset = data_dict.consent;
+          this.trP.lang = data_dict.language,
           this.mails = data_dict.mails;
           this.change_texttrans();
         } catch (e) {
@@ -275,7 +277,7 @@ export class HomePage {
       datapost = JSON.stringify({
         'subject_id': this.citP.subj_id,
         'cit_version': this.citP.cit_type,
-        'num_of_blocks': this.num_of_blocks,
+        'num_of_blocks': this.citP.num_of_blocks,
         'timelimit': this.citP.response_timelimit_main,
         'isi_min': this.citP.isi_delay_minmax[0],
         'isi_max': this.citP.isi_delay_minmax[1],
@@ -400,10 +402,12 @@ export class HomePage {
 
   to_clipboard() {
     this.clipboard.copy(this.citP.cit_results.cit_data);
-    document.getElementById("copyfeed_id").innerHTML = 'CIT result data copied to clipboard.';
-    setTimeout(() => {
-      document.getElementById("copyfeed_id").innerHTML = '&nbsp;';
-    }, 3000);
+    try {
+      document.getElementById("copyfeed_id").innerHTML = 'CIT result data copied to clipboard.';
+      setTimeout(() => {
+        document.getElementById("copyfeed_id").innerHTML = '&nbsp;';
+      }, 3000);
+    } catch { }
   }
 
   texttrans: boolean = true;
@@ -725,10 +729,12 @@ export class HomePage {
         feed = 'Images added. (' + added.length + ' images: ' + added.join(', ') + '.)';
       }
     }
-    document.getElementById("imgfeed_id").innerHTML = feed;
-    setTimeout(() => {
-      document.getElementById("imgfeed_id").innerHTML = '';
-    }, 3000);
+    try {
+      document.getElementById("imgfeed_id").innerHTML = feed;
+      setTimeout(() => {
+        document.getElementById("imgfeed_id").innerHTML = '';
+      }, 3000);
+    } catch { }
   }
 
   // item generation
@@ -742,12 +748,15 @@ export class HomePage {
     this.citP.targetrefs = [];
     this.citP.nontargrefs = [];
     this.citP.task_images = {};
-    this.citP.all_main_rts = {
+    this.citP.all_rts = {
       "probe1": [],
       "probe2": [],
       "probe3": [],
       "probe4": [],
-      "probe5": []
+      "probe5": [],
+      "targetflr": [],
+      "nontargflr": [],
+      "target": []
     };
     var items_array = JSON.parse(JSON.stringify(this.cit_items));
     items_array.forEach((item, num) => {

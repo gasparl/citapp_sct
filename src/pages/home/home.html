@@ -192,7 +192,9 @@
         </div>
         <br />
 
-
+        Overall accuracy rates: {{citP.cit_results.ar_overall}}.
+        <br />
+        <br />
         <div (tap)="ele.class = ele.class == 'show' ? '' :  'show'" [ngClass]="{ expandable : true, hideChildren : ele.class !== 'show', showChildren : ele.class === 'show' }" #ele>
           <b>Description of variables</b>
           <span id='expand'><b>(tap to show)</b></span>

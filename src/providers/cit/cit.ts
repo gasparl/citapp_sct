@@ -19,7 +19,7 @@ export class CitProvider {
     var correct_chance2 = 0.95;
     var correct_chance, sim_key, corr_code, incor_code, chosen_response;
     setTimeout(function() {
-      if (this.blocknum == 1) {
+      if (this.crrnt_phase === 'practice_strict') {
         correct_chance = correct_chance1;
       } else {
         correct_chance = correct_chance2;
@@ -47,6 +47,7 @@ export class CitProvider {
       console.log(info);
     }.bind(this), rt_sim);
   }
+  to_slice: number = 5;
   //*/
 
   subj_id: string = '';
@@ -74,12 +75,15 @@ export class CitProvider {
   incorrect: number;
   block_trialnum: number;
   rt_data_dict: any;
-  all_main_rts: any = {
+  all_rts: object = {
     "probe1": [],
     "probe2": [],
     "probe3": [],
     "probe4": [],
-    "probe5": []
+    "probe5": [],
+    "targetflr": [],
+    "nontargflr": [],
+    "target": []
   };
   trial_stim: any;
   rspns: string;
@@ -111,6 +115,7 @@ export class CitProvider {
   ctx;
   task_images: object;
   image_width: number;
+  all_teststms: any[] = [];
 
   constructor(
     public file: File,
@@ -308,8 +313,27 @@ export class CitProvider {
     } else {
       if ((this.blocknum > 3) || (this.blocknum > 2 && this.cit_type !== 0) || this.practice_eval()) {
         this.blocknum++;
-        this.block_text = this.block_texts[this.blocknum];
-        this.nextblock();
+        if (this.blocknum <= (this.num_of_blocks + 2) ||
+          (this.cit_type === 0 && this.blocknum <= (this.num_of_blocks + 3))) {
+          if (this.block_texts[this.blocknum] !== undefined) {
+            this.block_text = this.block_texts[this.blocknum];
+            this.nextblock();
+          } else {
+            this.block_trialnum = 0;
+            this.teststim = this.all_teststms.shift();
+            if (this.to_slice !== 0) {
+              this.teststim = this.teststim.slice(0, this.to_slice);
+            }
+            this.next_trial();
+          }
+        } else {
+          this.bg_color = "#fff";
+          this.switch_divs('div_end')
+          this.store_data();
+          this.backgroundMode.setDefaults({
+            silent: true
+          })
+        }
       } else {
         this.nextblock();
       }
@@ -335,16 +359,14 @@ export class CitProvider {
     } else {
       curr_type = "main_item";
       if (this.crrnt_phase == 'main' && this.rt_start < this.response_timelimit_main) {
-        if (act_type == "probe") {
-          if (this.rt_start <= 150) {
-            this.all_main_rts[this.trial_stim.type].push(-2);
-          } else if (this.tooslow === 1 || this.rt_start > this.response_timelimit_main) {
-            this.all_main_rts[this.trial_stim.type].push(-1);
-          } else if (this.incorrect === 1) {
-            this.all_main_rts[this.trial_stim.type].push(0);
-          } else {
-            this.all_main_rts[this.trial_stim.type].push(this.rt_start);
-          }
+        if (this.rt_start <= 150) {
+          this.all_rts[this.trial_stim.type].push(-2);
+        } else if (this.tooslow === 1 || this.rt_start > this.response_timelimit_main) {
+          this.all_rts[this.trial_stim.type].push(-1);
+        } else if (this.incorrect === 1) {
+          this.all_rts[this.trial_stim.type].push(0);
+        } else {
+          this.all_rts[this.trial_stim.type].push(this.rt_start);
         }
       }
     }
@@ -376,56 +398,54 @@ export class CitProvider {
     this.next_trial();
   }
 
+
   nextblock() {
     this.crrnt_phase = 'practice';
     this.bg_color = "#fff";
-    if (this.blocknum <= (this.num_of_blocks + 2) ||
-      (this.cit_type === 0 && this.blocknum <= (this.num_of_blocks + 3))) {
-      this.block_trialnum = 0;
-      // 0: fillers & target, 1: standard CIT, 2: fillers (no target)
-      if (this.blocknum == 1) {
-        if (this.cit_type === 1) {
-          this.response_timelimit = 10000;
-          this.crrnt_phase = 'practice_strict';
-          this.teststim = this.itemgenP.main_items(this.stim_base);
-        } else {
-          this.response_timelimit = this.response_timelimit_main;
-          this.teststim = this.itemgenP.filler_items(this.targetrefs, this.nontargrefs);
-        }
-      } else if (this.blocknum == 2) {
-        if (this.cit_type === 1) {
-          this.response_timelimit = this.response_timelimit_main;
-          this.teststim = this.itemgenP.main_items(this.stim_base);
-        } else if (this.cit_type === 2) {
-          this.response_timelimit = this.response_timelimit_main;
-          this.teststim = this.itemgenP.practice_items(this.targetrefs, this.nontargrefs);
-        } else {
-          this.response_timelimit = 10000;
-          this.crrnt_phase = 'practice_strict';
-          this.teststim = this.itemgenP.main_items(this.stim_base);
-        }
-      } else if (this.blocknum == 3 && this.cit_type === 0) {
+    this.block_trialnum = 0;
+    // 0: fillers & target, 1: standard CIT, 2: fillers (no target)
+    if (this.blocknum == 1) {
+      if (this.cit_type === 1) {
+        this.response_timelimit = 10000;
+        this.crrnt_phase = 'practice_strict';
+        this.teststim = this.itemgenP.main_items(this.stim_base);
+      } else {
+        this.response_timelimit = this.response_timelimit_main;
+        this.teststim = this.itemgenP.filler_items(this.targetrefs, this.nontargrefs);
+      }
+    } else if (this.blocknum == 2) {
+      if (this.cit_type === 1) {
+        this.response_timelimit = this.response_timelimit_main;
+        this.teststim = this.itemgenP.main_items(this.stim_base);
+      } else if (this.cit_type === 2) {
         this.response_timelimit = this.response_timelimit_main;
         this.teststim = this.itemgenP.practice_items(this.targetrefs, this.nontargrefs);
       } else {
-        this.crrnt_phase = 'main';
-        this.response_timelimit = this.response_timelimit_main;
+        this.response_timelimit = 10000;
+        this.crrnt_phase = 'practice_strict';
+        this.teststim = this.itemgenP.main_items(this.stim_base);
+      }
+    } else if (this.blocknum == 3 && this.cit_type === 0) {
+      this.response_timelimit = this.response_timelimit_main;
+      this.teststim = this.itemgenP.practice_items(this.targetrefs, this.nontargrefs);
+    } else {
+      this.crrnt_phase = 'main';
+      this.response_timelimit = this.response_timelimit_main;
+      for (let i = 0; i < this.num_of_blocks; i++) {
         if (this.cit_type === 1) {
-          this.teststim = this.itemgenP.fulltest_standard_items();
+          this.all_teststms.push(this.itemgenP.fulltest_standard_items());
         } else {
-          this.teststim = this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs);
+          this.all_teststms.push(this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs));
         }
       }
-      this.teststim = this.teststim.slice(0, 5); // TODO remove
-      this.rt_data_dict = {};
-      this.switch_divs('div_blockstart');
-    } else {
-      this.switch_divs('div_end')
-      this.store_data();
-      this.backgroundMode.setDefaults({
-        silent: true
-      })
+      this.teststim = this.all_teststms.shift();
     }
+    if (this.to_slice !== 0) {
+      this.teststim = this.teststim.slice(0, this.to_slice);
+    }
+    this.rt_data_dict = {};
+    this.switch_divs('div_blockstart');
+
   }
 
   runblock() {
@@ -473,6 +493,7 @@ export class CitProvider {
     "probe3": {},
     "probe4": {},
     "probe5": {},
+    "ar_overall": '',
     'subj_id': '',
     'cit_data': '',
     'date': '',
@@ -488,12 +509,14 @@ export class CitProvider {
       "probe4": {},
       "probe5": {}
     };
-    Object.keys(this.all_main_rts).map((dkey) => {
-      let probe = this.all_main_rts[dkey];
+    let allmain = [];
+    Object.keys(this.cit_results).map((dkey) => {
+      let probe = this.all_rts[dkey];
+      allmain = allmain.concat(probe);
       let irrs = [];
-      Object.keys(this.all_main_rts).map((dkey2) => {
+      Object.keys(this.all_rts).map((dkey2) => {
         if (dkey !== dkey2) {
-          irrs = irrs.concat(this.all_main_rts[dkey2])
+          irrs = irrs.concat(this.all_rts[dkey2])
         }
       });
       // -1 tooslow, 0 incorrect
@@ -529,7 +552,28 @@ export class CitProvider {
         }
       });
     });
+    let ar_names = {
+      'mains': 'main items (all probes) ',
+      'target': 'target ',
+      'targetflr': 'target fillers ',
+      'nontargflr': 'nontarget fillers '
+    };
+    let ars = [];
+    ['mains', 'target', 'targetflr', 'nontargflr'].map((dkey) => {
+      let the_ar = NaN;
+      if (dkey == 'mains') {
+        the_ar = allmain.filter(x => x > 1).length / allmain.length;
+      } else if (Object.keys(this.cit_results).indexOf(dkey) >= 0) {
+        the_ar = this.cit_results[dkey].filter(x => x > 1).length / this.cit_results[dkey].length;
+      }
+      if (!isNaN(the_ar)) {
+        ars.push(ar_names[dkey] + (Math.ceil(the_ar * 1000) / 10).toFixed(1) + '%');
+      }
+    })
+    this.cit_results.ar_overall = ars.join(', ');
+
     this.subj_id = this.subj_id + Math.random().toString().slice(3, 5); // TODO: remove
+
     this.cit_results.subj_id = this.subj_id;
     this.cit_results.cit_data = this.cit_data;
     let cdate = new Date();
@@ -564,7 +608,7 @@ export class CitProvider {
     } else {
       this.correct_resp = "resp_a";
     }
-    // this.touchsim(); // for testing -- TODOREMOVE
+    this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       if (this.trial_stim.mode === 'image') {
         this.ctx.drawImage(this.task_images[this.trial_stim.item], 0, 0);

@@ -244,7 +244,8 @@ export class CitProvider {
     }.bind(this), this.isi_delay);
   }
 
-  practice_eval(min_ratio) {
+  practice_eval() {
+    let min_ratio;
     var is_valid = true;
     var types_failed = [];
     if (this.crrnt_phase === 'practice_strict') {
@@ -255,6 +256,11 @@ export class CitProvider {
           this.trP.accrep_feed[this.trP.lang];
       }
     } else {
+      if (this.blocknum === 3) {
+        min_ratio = 0.5
+      } else {
+        min_ratio = 0.8
+      }
       for (var it_type in this.rt_data_dict) {
         var rts_correct = this.rt_data_dict[it_type].filter(function(rt_item) {
           return rt_item > 150;
@@ -300,7 +306,7 @@ export class CitProvider {
       this.text_to_show = this.trial_stim.item;
       this.isi();
     } else {
-      if ((this.blocknum > 3) || (this.blocknum == 4 && this.practice_eval(0.8)) || this.practice_eval(0.5)) {
+      if ((this.blocknum > 3) || (this.blocknum > 2 && this.cit_type !== 0) || this.practice_eval()) {
         this.blocknum++;
         this.block_text = this.block_texts[this.blocknum];
         this.nextblock();
@@ -402,11 +408,13 @@ export class CitProvider {
         this.response_timelimit = this.response_timelimit_main;
         this.teststim = this.itemgenP.practice_items(this.targetrefs, this.nontargrefs);
       } else {
-        // TODO: CHOOSE DIFFERENT TYPE BASED ON CONDITION
-        // TODO: NOT REPEAT THIS PART IF WRONG
         this.crrnt_phase = 'main';
         this.response_timelimit = this.response_timelimit_main;
-        this.teststim = this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs);
+        if (this.cit_type === 1) {
+          this.teststim = this.itemgenP.fulltest_standard_items();
+        } else {
+          this.teststim = this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs);
+        }
       }
       this.teststim = this.teststim.slice(0, 5); // TODO remove
       this.rt_data_dict = {};

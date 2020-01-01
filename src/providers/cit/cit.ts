@@ -358,17 +358,6 @@ export class CitProvider {
       curr_type = act_type;
     } else {
       curr_type = "main_item";
-      if (this.crrnt_phase == 'main' && this.rt_start < this.response_timelimit_main) {
-        if (this.rt_start <= 150) {
-          this.all_rts[this.trial_stim.type].push(-2);
-        } else if (this.tooslow === 1 || this.rt_start > this.response_timelimit_main) {
-          this.all_rts[this.trial_stim.type].push(-1);
-        } else if (this.incorrect === 1) {
-          this.all_rts[this.trial_stim.type].push(0);
-        } else {
-          this.all_rts[this.trial_stim.type].push(this.rt_start);
-        }
-      }
     }
     if (!(curr_type in this.rt_data_dict)) {
       this.rt_data_dict[curr_type] = [];
@@ -377,6 +366,22 @@ export class CitProvider {
       this.rt_data_dict[curr_type].push(-1);
     } else {
       this.rt_data_dict[curr_type].push(this.rt_start);
+    }
+    if (
+      ["targetflr", "nontargflr", "target"].indexOf(act_type) === -1
+    ) {
+      curr_type = this.trial_stim.type;
+    }
+    if (this.crrnt_phase == 'main') {
+      if (this.rt_start <= 150) {
+        this.all_rts[curr_type].push(-2);
+      } else if (this.tooslow === 1 || this.rt_start > this.response_timelimit_main) {
+        this.all_rts[curr_type].push(-1);
+      } else if (this.incorrect === 1) {
+        this.all_rts[curr_type].push(0);
+      } else {
+        this.all_rts[curr_type].push(this.rt_start);
+      }
     }
     this.cit_data +=
       [this.subj_id,
@@ -563,8 +568,8 @@ export class CitProvider {
       let the_ar = NaN;
       if (dkey == 'mains') {
         the_ar = allmain.filter(x => x > 1).length / allmain.length;
-      } else if (Object.keys(this.cit_results).indexOf(dkey) >= 0) {
-        the_ar = this.cit_results[dkey].filter(x => x > 1).length / this.cit_results[dkey].length;
+    } else if (Object.keys(this.all_rts).indexOf(dkey) >= 0) {
+        the_ar = this.all_rts[dkey].filter(x => x > 1).length / this.all_rts[dkey].length;
       }
       if (!isNaN(the_ar)) {
         ars.push(ar_names[dkey] + (Math.ceil(the_ar * 1000) / 10).toFixed(1) + '%');

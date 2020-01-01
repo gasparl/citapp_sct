@@ -93,7 +93,7 @@ export class CitProvider {
     ["subject_id", "cit_version", "block_number", "trial_number", "stimulus_shown", "category", "stim_type", "response_key", "rt_start", "rt_end", "incorrect", "too_slow", "isi", "date_in_ms"].join('\t') + "\n";
   correct_resp: string = "none";
   blocknum: number;
-  num_of_blocks: number = 1;
+  num_of_blocks: any = 1;
   rt_start: number = 99999;
   rt_end: number = 99999;
   start: any = 0;

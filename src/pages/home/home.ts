@@ -606,6 +606,7 @@ export class HomePage {
           this.store_on_device();
         }
         this.citP.cit_type = parseInt(this.citP.cit_type);
+        this.citP.num_of_blocks = parseInt(this.citP.num_of_blocks);
 
         if (this.consentset.indexOf('1') !== -1 || this.consentset.indexOf('2') !== -1) {
           this.consentitems = '';

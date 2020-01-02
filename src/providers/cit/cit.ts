@@ -13,16 +13,17 @@ export class CitProvider {
 
   // /*
   touchsim() {
+    var correct_chance;
     var info = this.trial_stim.type + " (" + this.trial_stim.item + ")";
     var rt_sim = this.itemgenP.randomdigit(600, 830);
-    var correct_chance1 = 1;
-    var correct_chance2 = 0.95;
     var correct_chance, sim_key, corr_code, incor_code, chosen_response;
     setTimeout(function() {
       if (this.crrnt_phase === 'practice_strict') {
-        correct_chance = correct_chance1;
+        correct_chance = 1;
+      } else if (this.crrnt_phase === 'main') {
+        correct_chance = 0.5;
       } else {
-        correct_chance = correct_chance2;
+        correct_chance = 0.9;
       }
       if (this.correct_resp == "resp_a") {
         corr_code = "resp_a";
@@ -47,8 +48,8 @@ export class CitProvider {
       console.log(info);
     }.bind(this), rt_sim);
   }
-  to_slice: number = 5;
   //*/
+  to_slice: number = 5;
 
   subj_id: string = '';
   current_div: string = "div_start"; // ddd default: "div_start", div_settings, div_dems, div_cit_main, div_end
@@ -128,12 +129,17 @@ export class CitProvider {
   ) { }
 
   pointev: any = {};
-  switch_divs(div_to_show) {
+  switch_divs(div_to_show, goto = false) {
     this.current_div = div_to_show;
     Object.keys(this.pointev).forEach(ky => this.pointev[ky] = "none");
-    setTimeout(function() {
+    setTimeout(() => {
       this.pointev[div_to_show] = "auto";
-    }.bind(this), 300);
+      if (goto == true) {
+        this.current_menu = 'm_prevs';
+        this.current_segment = 'menus';
+        this.content.scrollToTop(0);
+      }
+    }, 300);
     this.navigationBar.hideNavigationBar();
     this.statusBar.hide();
     this.content.resize();
@@ -450,7 +456,6 @@ export class CitProvider {
     }
     this.rt_data_dict = {};
     this.switch_divs('div_blockstart');
-
   }
 
   runblock() {
@@ -490,6 +495,8 @@ export class CitProvider {
       this.switch_divs('div_end');
       this.cit_results.file_nam_disp = this.cit_results.file_name + ' There was an error saving this file. Data data can still be retrieved by copying it to the clipboard. Error: ' + reason;
     });
+    let somecode = this.neat_date() + Math.random().toString(36).slice(2);
+    this.dataShare.storage.set('test-' + somecode, this.trP.lang + this.neat_date().slice(0, 8));
   }
 
   cit_results: any = {
@@ -568,7 +575,7 @@ export class CitProvider {
       let the_ar = NaN;
       if (dkey == 'mains') {
         the_ar = allmain.filter(x => x > 1).length / allmain.length;
-    } else if (Object.keys(this.all_rts).indexOf(dkey) >= 0) {
+      } else if (Object.keys(this.all_rts).indexOf(dkey) >= 0) {
         the_ar = this.all_rts[dkey].filter(x => x > 1).length / this.all_rts[dkey].length;
       }
       if (!isNaN(the_ar)) {

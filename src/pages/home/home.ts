@@ -102,6 +102,7 @@ export class HomePage {
         this.citP.stored_results = cntent;
       }
     });
+    this.send_stat();
   }
   internet_on: boolean = false;
   checknet: any;
@@ -150,25 +151,23 @@ export class HomePage {
     }
   }
 
-  send_single_stat = function(test_date, key_to_del) {
-    this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_stat.php', JSON.stringify({ "testdate": test_date }), { responseType: "text" }).subscribe((response) => {
-      if (response == 'victory') {
-        console.log('Saved to stats: ', key_to_del);
-        this.dataShare.storage.remove(key_to_del);
-      } else {
-        console.log('Failed SQL:' + response);
-      }
-    },
-      err => {
-        console.log('Request failed: ' + err);
-      });
-  }
-
-  // this.store_stat(); // TODO add this where CIT is ended
-  store_stat = async function() {
-    let somecode = Math.random().toString(36).slice(2);
-    await this.dataShare.storage.set('test-' + somecode, this.neat_date().slice(0, 8));
-    this.send_stat();
+  send_single_stat = function(test_info, key_to_del) {
+    this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_stat.php',
+      JSON.stringify({
+        "testdate": test_info.slice(2),
+        "testlang": test_info.slice(0, 2)
+      }),
+      { responseType: "text" }).subscribe((response) => {
+        if (response == 'victory') {
+          console.log('Saved to stats: ', key_to_del);
+          this.dataShare.storage.remove(key_to_del);
+        } else {
+          console.log('Failed SQL:' + response);
+        }
+      },
+        err => {
+          console.log('Request failed: ', err);
+        });
   }
 
   send_stat = function() {
@@ -250,7 +249,7 @@ export class HomePage {
           this.save_on_citstart = data_dict.save_on_citstart;
           this.consentset = data_dict.consent;
           this.trP.lang = data_dict.language,
-          this.mails = data_dict.mails;
+            this.mails = data_dict.mails;
           this.change_texttrans();
         } catch (e) {
           console.log('(No locally saved data.)');
@@ -588,7 +587,6 @@ export class HomePage {
       this.duplicates = '"' + dupls.join('", "') + '"';
     } else {
       this.duplicates = '';
-      this.send_stat();
       if (!this.form_items.valid) {
         this.submit_failed = true;
         // for TESTING:
@@ -837,5 +835,6 @@ export class HomePage {
     this.citP.switch_divs('div_settings');
     this.citP.current_menu = 'm_testres';
     this.citP.current_segment = 'menus';
+    this.send_stat();
   }
 }

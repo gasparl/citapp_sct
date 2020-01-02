@@ -40,7 +40,7 @@
       </div>
       <br />
       <div>
-        <button ion-button type="button" (tap)="citP.switch_divs('div_settings');goto_menu('m_prevs')">Previous results</button>
+        <button ion-button type="button" (tap)="citP.switch_divs('div_settings', true);">Previous results</button>
       </div>
 
     </div>
@@ -192,7 +192,7 @@
         </div>
         <br />
 
-        Overall accuracy rates: {{citP.cit_results.ar_overall}}.
+        Overall accuracy rates (number of correct responses per number of all trials): {{citP.cit_results.ar_overall}}.
         <br />
         <br />
         <div (tap)="ele.class = ele.class == 'show' ? '' :  'show'" [ngClass]="{ expandable : true, hideChildren : ele.class !== 'show', showChildren : ele.class === 'show' }" #ele>
@@ -204,7 +204,8 @@
             deviation (RT<sub>I&nbsp;(SD)</sub>),
             uncorrected Cohen's d between all probe and all irrelevant RTs (<i>d</i><sub>CIT</sub>). Accuracy rates (ratio of correct responses compared to incorrect and too slow responses, in percentage): probe accuracy rate minus irrelevant
             accuracy
-            rate (AR<sub>P&nbsp;vs&nbsp;I</sub>), probe accuracy rate (AR<sub>P</sub>), irrelevant accuracy rate (AR<sub>I</sub>). Responses with RT below 150 ms are excluded from all (RT and AR) analysis.
+            rate (AR<sub>P&nbsp;vs&nbsp;I</sub>), probe accuracy rate (AR<sub>P</sub>), irrelevant accuracy rate (AR<sub>I</sub>). Responses with RT below 150 ms are excluded from all RT and AR analysis, except for the overall accuracy rate
+            calculation. Trials (i.e., responses) from practice rounds are not included in any of the statistics above.
           </div>
         </div>
 
@@ -712,12 +713,12 @@
       {{trP.cit_completed[trP.lang]}}
     </ion-title>
   </div>
-
-  <!-- app console for testing -->
+  
+  <!-- app console for testing-->
   <b>{{mycl}}</b>
   <br />
   <input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;width:100%;">
   <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <!-- console end -->
+   <!-- console end -->
 
 </ion-content>

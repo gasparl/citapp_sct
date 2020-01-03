@@ -1,8 +1,8 @@
 {
-  "name": "citapp",
-  "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "http://ionicframework.com/",
+  "name": "CITapp",
+  "version": "1.0.0",
+  "author": "Gaspar Lukacs",
+  "homepage": "https://github.com/gasparl/citapp_phone/",
   "private": true,
   "scripts": {
     "clean": "ionic-app-scripts clean",
@@ -73,7 +73,7 @@
     "@angular-devkit/build-angular": "^0.803.21",
     "@angular/cli": "^8.3.21",
     "@angular/compiler-cli": "^8.2.14",
-    "@ionic/app-scripts": "^3.2.4",
+    "@ionic/app-scripts": "3.2.4",
     "@types/node": "^9.6.55",
     "typescript": "^2.6.2"
   },

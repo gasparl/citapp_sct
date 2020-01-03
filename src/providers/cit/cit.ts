@@ -13,7 +13,6 @@ export class CitProvider {
 
   // /*
   touchsim() {
-    var correct_chance;
     var info = this.trial_stim.type + " (" + this.trial_stim.item + ")";
     var rt_sim = this.itemgenP.randomdigit(600, 830);
     var correct_chance, sim_key, corr_code, incor_code, chosen_response;
@@ -49,7 +48,7 @@ export class CitProvider {
     }.bind(this), rt_sim);
   }
   //*/
-  to_slice: number = 5;
+  to_slice: number = 10;
 
   subj_id: string = '';
   current_div: string = "div_start"; // ddd default: "div_start", div_settings, div_dems, div_cit_main, div_end
@@ -620,7 +619,7 @@ export class CitProvider {
     } else {
       this.correct_resp = "resp_a";
     }
-    this.touchsim(); // for testing -- TODOREMOVE
+    // this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       if (this.trial_stim.mode === 'image') {
         this.ctx.drawImage(this.task_images[this.trial_stim.item], 0, 0);

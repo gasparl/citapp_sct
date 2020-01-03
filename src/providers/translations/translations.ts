@@ -18,7 +18,7 @@ export class TranslationProvider {
   };
 
   targetref_words_orig: object = {
-    'en': ["FAMILIAR", "MINE", "RECOGNIZED"],
+    'en': ["FAMILIAR", "MINE", "RECOGNIZED"], // these words are not to be translated literally one by one. The translations should always try to find the simplest, clearest words that relate to relevance, familiarity, recognition, importance. (The English "MINE" is actually not the best, but it's good to also have a shorter word and this fits there.)
     'cn': '中文',
     'de': 'Deutsch',
     'hu': ["FELISMERT", "RELEVÁNS", "LÉNYEGES"],
@@ -26,7 +26,7 @@ export class TranslationProvider {
     'pl': ["ZNANE", "ISTOTNE", "ZNACZĄCE"]
   };
   nontargref_words_orig: object = {
-    'en': ["FOREIGN", "IRRELEVANT", "OTHER", "RANDOM", "THEIRS", "UNFAMILIAR"],
+    'en': ["FOREIGN", "IRRELEVANT", "OTHER", "RANDOM", "THEIRS", "UNFAMILIAR"], // these should have the meaning opposite of  relevance, familiarity, importance
     'cn': '中文',
     'de': 'Deutsch',
     'hu': ["MELLÉKES", "LÉNYEGTELEN", "EGYÉB", "RANDOM", "MÁS", "KÖZÖMBÖS"],
@@ -97,7 +97,7 @@ export class TranslationProvider {
 
 
   taptostart: object = {
-    'en': 'TAP HERE TO START',
+    'en': 'TAP HERE TO START', // it can also just be "start test" (should not be long; to be displayed in a small area)
     'cn': '中文',
     'de': 'Deutsch',
     'hu': 'TESZT INDÍTÁSA',
@@ -119,7 +119,7 @@ export class TranslationProvider {
     'de': "Falsch!",
     'hu': 'Hibás!',
     'jp': '日本語',
-    'pl': 'Zbyt wolno!'
+    'pl': 'Źle!'
   };
 
   it_type_feed_dict: object = {
@@ -190,14 +190,14 @@ export class TranslationProvider {
         numprac = 'two';
       }
       let intro = 'During the test, various items will appear in the middle of the screen. There will be two buttons displayed on the screen: one on the left side and one on the right side. You have to categorize each item by touching the left button or the right button. '; // In English it seems unnecessary, but in other languages, it is often better to clarify that the items appear "one by one". It may also be worthwhile to somehow make it clearer that the "buttons" are just touchscreen surfaces.
-      let intro_end = 'There will be ' + numprac + ' short practice rounds.';
+      let intro_end = 'There will be ' + numprac + ' short practice rounds. ';
       let inducers_instructions =
         '</br></br>Touch the <i>right</i> button when you see any of the following items:<br>' + trefs + 'Touch the <i>left</i> button when you see any other item. These other items are:<br>' + nontrefs;
       let main_instruction = 'Touch the <i>right</i> button when you see the following target item:<br>' +
         targs +
         'Touch the <i>left</i> button when you see any other item. These other items are:<br>' +
         nontargs +
-        'In this practice round, you will have a lot of time to choose each response, but <b>you must respond to each item correctly</b>. If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat the practice round. ';
+        'In this practice round, you will have a lot of time to choose each response, but <b>you must respond to each item correctly</b>. If you choose an incorrect response (or not give response for over 10 seconds), you will have to repeat the practice round.';
       // 0: fillers & target, 1: standard CIT, 2: fillers (no target)
       if (cittype !== 1) {
         thetexts.push(
@@ -218,7 +218,7 @@ export class TranslationProvider {
           "Now the actual test begins. The task is the same. Touch the <i>right</i> button when you see the following items:<br>" + targs.replace('<br>', '') + trefs + "Touch the <i>left</i> button for everything else.<br><br>Try to be both accurate and fast.");
       } else {
         trefs = '';
-        thetexts.push(intro + main_instruction + intro_end);
+        thetexts.push(intro_end + intro + main_instruction);
         thetexts.push("<span id='feedback_id2'>Now, in this second and last practice round, you have to respond fast, but a certain rate of error is allowed. The task is the same. Touch the <i>right</i> button when you see the following item:<br>" + targs + "Touch the <i>left</i> button for everything else.</span>");
         thetexts.push(
           "Now the actual test begins. The task is the same. Touch the <i>right</i> button when you see the following item:<br>" + targs + "Touch the <i>left</i> button for everything else.<br><br>Try to be both accurate and fast.");
@@ -236,7 +236,7 @@ export class TranslationProvider {
         numprac = 'két';
       }
       let intro = 'A teszt során különféle elemek ("stimulusok", akár szöveg akár kép) jelennek meg egyesével a képernyő közepén. Két érintőgomb lesz látható az érintőképernyőn: egy baloldalt, és egy jobboldalt. Az bal oldali vagy a jobb oldali gomb megérintésével kell kategorizálni minden elemet. ';
-      let intro_end = 'Először ' + numprac + ' rövid gyakorló feladat jön.';
+      let intro_end = 'Először ' + numprac + ' rövid gyakorló feladat jön. ';
       let inducers_instructions =
         '</br></br>Válaszd a <i>jobb oldali</i> gombot ha a következő elemek bármelyike jelenik meg:<br>' + trefs + 'Válaszd a <i>bal oldali</i> gombot ha bármely más elem jelenik meg. Ezek az elemek:<br>' + nontrefs;
       let main_instruction = 'Válaszd a <i>jobb oldali</i> gombot ha az alábbi "cél" elem jelenik meg:<br>' +
@@ -251,9 +251,9 @@ export class TranslationProvider {
           'Egy adott időn belül kell adni minden választ. Próbálj gyors és ugyanakkor pontos is lenni. Minden kategóriában legalább 80% helyes válasz szükséges, másképp meg kell ismételned a gyakorló feladatot.</span>');
         if (cittype === 0) {
           thetexts.push("<span id='feedback_id2'>In the second practice round, you have to categorize the main test items. The aim of the entire test will be to show whether or not one of these main items is recognized by you. " + main_instruction + '</span>');
-          let ittypes = [this.it_type_feed_dict['en'].nontargflr, this.it_type_feed_dict['en'].targetflr,
-          this.it_type_feed_dict['en'].main_item,
-          this.it_type_feed_dict['en'].target].join(', ');
+          let ittypes = [this.it_type_feed_dict['hu'].nontargflr, this.it_type_feed_dict['hu'].targetflr,
+          this.it_type_feed_dict['hu'].main_item,
+          this.it_type_feed_dict['hu'].target].join(', ');
           thetexts.push(
             "<span id='feedback_id3'>In the third and last practice round all items are present (" + ittypes + "). You again have to respond fast, but a certain number of errors is allowed. The task is the same. Touch the <i>right</i> button when you see the following items:<br>" + targs.replace('<br>', '') + trefs + "Touch the <i>left</i> button for everything else.</span>");
         } else {
@@ -264,7 +264,7 @@ export class TranslationProvider {
           "Now the actual test begins. The task is the same. Touch the <i>right</i> button when you see the following items:<br>" + targs.replace('<br>', '') + trefs + "Touch the <i>left</i> button for everything else.<br><br>Try to be both accurate and fast.");
       } else {
         trefs = '';
-        thetexts.push(intro + main_instruction + intro_end);
+        thetexts.push(intro_end + intro + main_instruction);
         thetexts.push("<span id='feedback_id2'>A következő, utolsó gyakorló feladatban gyorsan kell választ adnod, de egy bizonyos számú hibás (vagy túl lassú) válasz megengedett. A feladat ugyanaz. Válaszd a <i>jobb oldali</i> gombot ha az alábbi elem jelenik meg:<br>" + targs + "Válaszd a <i>bal oldali</i> gombot ha bármely más elem jelenik meg.</span>");
         thetexts.push(
           "Most következik az éles teszt. A feladat ugyanaz. Válaszd a <i>jobb oldali</i> gombot ha az alábbi elem jelenik meg:<br>" + targs + "Válaszd a <i>bal oldali</i> gombot ha bármely más elem jelenik meg.<br><br>Probálj pontos és gyors lenni.");
@@ -281,38 +281,38 @@ export class TranslationProvider {
         numprac = 'dwie';
       }
       let intro = 'Podczas testu na środku ekranu będą pojawiać się kolejno różne elementy (słowa lub obrazy). Na ekranie wyświetlone zostaną dwa przyciski: jeden po prawej, drugi po lewej stronie. Każdy z elementów należy odpowiednio przyporządkować, dotykając przycisku po lewej stronie lub przycisku po prawej stronie. ';
-      let intro_end = 'Na początku pojawią się' + numprac + ' krótkie rundy treningowe.';
+      let intro_end = 'Na początku pojawią się ' + numprac + ' krótkie rundy treningowe. ';
       let inducers_instructions =
-        '</br></br>Dotknij przycisku <i>po prawej stronie</i>, gdy zobaczysz któryś z poniższych elementów:<br>' + trefs + 'Dotknij przycisku <i>po lewej stronie</i>, gdy zobaczysz jakikolwiek inny element. Te inne elementy to:<br>' + nontrefs;
-      let main_instruction = 'Dotknij przycisku <i>po prawej stronie</i>, gdy zobaczysz następujący element docelowy:<br>' +
+        '</br></br>Dotknij przycisku po <i>prawej</i> stronie, gdy zobaczysz któryś z poniższych elementów:<br>' + trefs + 'Dotknij przycisku po <i>lewej</i> stronie, gdy zobaczysz jakikolwiek inny element. Te inne elementy to:<br>' + nontrefs;
+      let main_instruction = 'Dotknij przycisku po <i>prawej</i> stronie, gdy zobaczysz następujący element docelowy:<br>' +
         targs +
-        'Dotknij przycisku <i>po lewej stronie</i>, gdy zobaczysz jakikolwiek inny element. Te inne elementy to:<br>' +
+        'Dotknij przycisku po <i>lewej</i> stronie, gdy zobaczysz jakikolwiek inny element. Te inne elementy to:<br>' +
         nontargs +
         'W tej rundzie treningowej będziesz mieć dużo czasu na reakcję, jednak <b>musisz udzielić poprawnej odpowiedzi dla każdego elementu</b>. Jeżeli udzielisz niepoprawnej odpowiedzi (lub nie udzielisz odpowiedzi przez ponad 10 sekund), konieczne będzie powtórzenie rundy treningowej. ';
       // 0: fillers & target, 1: standard CIT, 2: fillers (no target)
       if (cittype !== 1) {
         thetexts.push(
           '<span id="feedback_id1">' + intro + intro_end + '</br></br>W pierwszej rundzie treningowej Twoim zadaniem jest odpowiednio przyporządkować dwa typy elementów. ' + inducers_instructions +
-          'Istnieje pewien limit czasu na udzielenie każdej odpowiedzi. Postaraj się udzielać odpowiedzi zarówno szybko, jak i poprawnie. Dla każdego typu elementów musisz udzielić co najmniej 80% poprawnych odpowiedzi w odpowiednim czasie – przeciwnym razie konieczne będzie powtórzenie rundy treningowej.</span>');
+          'Istnieje pewien limit czasu na udzielenie każdej odpowiedzi. Postaraj się udzielać odpowiedzi zarówno szybko, jak i poprawnie. Dla każdego typu elementów musisz uzyskać co najmniej 80% poprawnych odpowiedzi w odpowiednim czasie – w przeciwnym razie konieczne będzie powtórzenie rundy treningowej.</span>');
         if (cittype === 0) {
           thetexts.push("<span id='feedback_id2'>W drugiej rundzie treningowej Twoim zadaniem jest przyporządkować główne elementy testowe. Celem całego testu będzie wykazanie, czy jeden z tych elementów głównych jest przez Ciebie rozpoznawany, czy też nie. " + main_instruction + '</span>');
-          let ittypes = [this.it_type_feed_dict['en'].nontargflr, this.it_type_feed_dict['en'].targetflr,
-          this.it_type_feed_dict['en'].main_item,
-          this.it_type_feed_dict['en'].target].join(', ');
+          let ittypes = [this.it_type_feed_dict['pl'].nontargflr, this.it_type_feed_dict['pl'].targetflr,
+          this.it_type_feed_dict['pl'].main_item,
+          this.it_type_feed_dict['pl'].target].join(', ');
           thetexts.push(
-            "<span id='feedback_id3'>W trzeciej i ostatniej rundzie treningowej obecne są wszystkie elementy (" + ittypes + "). Również tym razem musisz reagować szybko, jednak dopuszczalna jest pewna liczba błędów. Zadanie polega na tym samym. Dotknij przycisku <i>po prawej strony</i>, gdy zobaczysz następujące elementy:<br>" + targs.replace('<br>', '') + trefs + "Dotknij przycisku <i>po lewej stronie</i>, gdy zobaczysz jakikolwiek inny element.</span>");
+            "<span id='feedback_id3'>W trzeciej i ostatniej rundzie treningowej obecne są wszystkie elementy (" + ittypes + "). Również tym razem musisz reagować szybko, jednak dopuszczalna jest pewna liczba błędów. Zadanie polega na tym samym. Dotknij przycisku <i>po prawej stronie</i>, gdy zobaczysz następujące elementy:<br>" + targs.replace('<br>', '') + trefs + "Dotknij przycisku po <i>lewej</i> stronie, gdy zobaczysz jakikolwiek inny element.</span>");
         } else {
-          thetexts.push('<span id="feedback_id2">W drugiej i ostatniej rundzie treningowej Twoim zadaniem będzie dodatkowo przyporządkować główne elementy testowe. Celem całego testu będzie wykazanie, czy jeden z tych elementów głównych jest przez Ciebie rozpoznawany, czy też nie. Te elementy główne to:<br>' + nontargs + 'Wszystkie elementy główne należy przyporządkować, dotykając przycisku <i>po lewej stronie</i>. Również w tym przypadku konieczne jest uzyskanie co najmniej 80% poprawnych odpowiedzi, zarówno dla poprzednich typów elementów (elementy drugorzędne do przyporządkowania na prawo oraz elementy drugorzędne do przyporządkowania na lewo), jak i dla nowego typu elementów (elementy główne).</span>');
+          thetexts.push('<span id="feedback_id2">W drugiej i ostatniej rundzie treningowej Twoim zadaniem będzie dodatkowo przyporządkować główne elementy testowe. Celem całego testu będzie wykazanie, czy jeden z tych elementów głównych jest przez Ciebie rozpoznawany, czy też nie. Te elementy główne to:<br>' + nontargs + 'Wszystkie elementy główne należy przyporządkować, dotykając przycisku po <i>lewej</i> stronie. Również w tym przypadku konieczne jest uzyskanie co najmniej 80% poprawnych odpowiedzi, zarówno dla poprzednich typów elementów (elementy drugorzędne do przyporządkowania na prawo oraz elementy drugorzędne do przyporządkowania na lewo), jak i dla nowego typu elementów (elementy główne).</span>');
           targs = '';
         }
         thetexts.push(
-          "Czas na właściwą część testu. Zadanie polega na tym samym. Dotknij przycisku <i>po prawej stronie</i>, gdy zobaczysz któryś z poniższych elementów:<br>" + targs.replace('<br>', '') + trefs + "Dotknij przycisku <i>po lewej stronie</i>, gdy zobaczysz jakikolwiek inny element.<br><br>Postaraj się udzielać odpowiedzi zarówno poprawnie, jak i szybko.");
+          "Czas na właściwą część testu. Zadanie polega na tym samym. Dotknij przycisku po <i>prawej</i> stronie, gdy zobaczysz któryś z poniższych elementów:<br>" + targs.replace('<br>', '') + trefs + "Dotknij przycisku po <i>lewej</i> stronie, gdy zobaczysz jakikolwiek inny element.<br><br>Postaraj się udzielać odpowiedzi zarówno poprawnie, jak i szybko.");
       } else {
         trefs = '';
-        thetexts.push(intro + main_instruction + intro_end);
-        thetexts.push("<span id='feedback_id2'>W drugiej i ostatniej rundzie treningowej musisz reagować szybko, jednak dopuszczalna jest pewna liczba błędów. Zadanie polega na tym samym. Dotknij przycisku <i>po prawej stronie</i>, gdy zobaczysz poniższy element:<br>" + targs + "Dotknij przycisku <i>po lewej stronie</i>, gdy zobaczysz jakikolwiek inny element.</span>");
+        thetexts.push(intro_end + intro + main_instruction);
+        thetexts.push("<span id='feedback_id2'>W drugiej i ostatniej rundzie treningowej musisz reagować szybko, jednak dopuszczalna jest pewna liczba błędów. Zadanie polega na tym samym. Dotknij przycisku po <i>prawej</i> stronie, gdy zobaczysz poniższy element:<br>" + targs + "Dotknij przycisku po <i>lewej</i> stronie, gdy zobaczysz jakikolwiek inny element.</span>");
         thetexts.push(
-          "Czas na właściwą część testu. Zadanie polega na tym samym. Dotknij przycisku <i>po prawej stronie</i>, gdy zobaczysz poniższy element:<br>" + targs + "Dotknij przycisku <i>po lewej stronie</i>, gdy zobaczysz jakikolwiek inny element.<br><br>Postaraj się udzielać odpowiedzi zarówno poprawnie, jak i szybko.");
+          "Czas na właściwą część testu. Zadanie polega na tym samym. Dotknij przycisku po <i>prawej</i> stronie, gdy zobaczysz poniższy element:<br>" + targs + "Dotknij przycisku po <i>lewej</i> stronie, gdy zobaczysz jakikolwiek inny element.<br><br>Postaraj się udzielać odpowiedzi zarówno poprawnie, jak i szybko.");
       }
       return thetexts;
     }

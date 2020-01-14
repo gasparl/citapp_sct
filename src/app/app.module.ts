@@ -13,9 +13,8 @@ import { File } from '@ionic-native/file';
 import { Network } from '@ionic-native/network';
 import { NavigationBar } from '@ionic-native/navigation-bar';
 import { Insomnia } from '@ionic-native/insomnia';
-import { PopoverItems } from '../pages/home/popover_menu';
-import { PopoverImg } from '../pages/home/popover_img';
 import { HttpClientModule } from '@angular/common/http';
+import { ScreenOrientation } from '@ionic-native/screen-orientation';
 import { DataShareProvider } from '../providers/data-share/data-share';
 import { CitProvider } from '../providers/cit/cit';
 import { TranslationProvider } from '../providers/translations/translations';
@@ -24,9 +23,7 @@ import { ItemgenProvider } from '../providers/itemgen/itemgen';
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
-    PopoverItems,
-    PopoverImg
+    HomePage
   ],
   imports: [
     BrowserModule,
@@ -37,9 +34,7 @@ import { ItemgenProvider } from '../providers/itemgen/itemgen';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
-    PopoverItems,
-    PopoverImg
+    HomePage
   ],
   providers: [
     StatusBar,
@@ -50,6 +45,7 @@ import { ItemgenProvider } from '../providers/itemgen/itemgen';
     Clipboard,
     BackgroundMode,
     EmailComposer,
+    ScreenOrientation,
     File,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     DataShareProvider,

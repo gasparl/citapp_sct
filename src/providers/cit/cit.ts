@@ -51,7 +51,7 @@ export class CitProvider {
   to_slice: number = 10;
 
   subj_id: string = '';
-  current_div: string = "div_start"; // ddd default: "div_start", div_settings, div_dems, div_cit_main, div_end
+  current_div: string = "div_settings"; // ddd default: "div_start", div_settings, div_dems, div_cit_main, div_end
   current_segment: string = 'main';
   current_menu: string = '';
   false_delay: number = 400;
@@ -133,11 +133,6 @@ export class CitProvider {
     Object.keys(this.pointev).forEach(ky => this.pointev[ky] = "none");
     setTimeout(() => {
       this.pointev[div_to_show] = "auto";
-      if (goto == true) {
-        this.current_menu = 'm_prevs';
-        this.current_segment = 'menus';
-        this.content.scrollToTop(0);
-      }
     }, 300);
     this.navigationBar.hideNavigationBar();
     this.statusBar.hide();

@@ -1,7 +1,3 @@
-:root {
-  --inputcase: uppercase;
-}
-
 html {
   font-size: 2.4vw;
   text-align: justify;
@@ -24,11 +20,6 @@ hr {
   padding: 0;
 }
 
-.popover_class .popover-content {
-  min-width: 50vw;
-  width: auto;
-}
-
 .selectable {
   -webkit-user-select: text;
   -moz-user-select: text;
@@ -36,10 +27,24 @@ hr {
   user-select: text;
 }
 
+@media screen and (orientation:landscape) {
+  .alert-wrapper {
+    max-height: 280px;
+    min-height: 100px;
+  }
+
+  [ng-reflect-ng-switch] {
+    overflow: auto;
+  }
+
+  .alert-radio-group {
+    max-height: 180px !important;
+  }
+}
+
 page-home {
   ion-input {
     font-size: 3.1vw;
-    text-transform: var(--inputcase);
     font-style: italic;
   }
 

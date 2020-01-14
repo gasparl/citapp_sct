@@ -6,14 +6,14 @@ import { EmailComposer } from "@ionic-native/email-composer";
 import { Platform } from "ionic-angular";
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 import { PopoverController } from 'ionic-angular';
-import { PopoverItems } from './popover_menu';
-import { PopoverImg } from './popover_img';
 import { HttpClient } from '@angular/common/http';
 import { DataShareProvider } from '../../providers/data-share/data-share';
 import { CitProvider } from '../../providers/cit/cit';
 import { TranslationProvider } from '../../providers/translations/translations';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Clipboard } from '@ionic-native/clipboard/';
+import { ScreenOrientation } from '@ionic-native/screen-orientation';
+
 
 @Component({
   selector: "page-home",
@@ -52,6 +52,7 @@ export class HomePage {
   email_valid: boolean = false;
   email_for_pw: string = "";
   consentset: any[] = [];
+  allpossiblewords: any[] = [];
   img_dict: any = {};
   on_device: boolean;
   submit_failed: boolean = false;
@@ -73,36 +74,15 @@ export class HomePage {
     public trP: TranslationProvider,
     protected _sanitizer: DomSanitizer,
     public navParams: NavParams,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    private screenOrientation: ScreenOrientation
   ) {
-    this.load_from_device();
-    let validator_dict = {
-      sub_id: [
-        "",
-        Validators.compose([Validators.maxLength(30),
-        Validators.pattern("[a-zA-Z0-9_]*"), Validators.required])
-      ]
-    }
-    let input_names = ['target', 'probe1', 'probe2', 'probe3', 'probe4', 'probe5', 'filler1', 'filler2', 'filler3', 'filler4', 'filler5', 'filler6', 'filler7', 'filler8', 'filler9'];
-    input_names.forEach(ky => validator_dict[ky] = [
-      "",
-      Validators.compose([
-        Validators.maxLength(30),
-        Validators.required
-      ])
-    ]);
-    this.form_items = formBuilder.group(validator_dict);
-    this.dataShare.storage.get('imgs').then((cntent) => {
+    this.dataShare.storage.get('result').then((cntent) => {
       if (cntent) {
-        dataShare.stored_images = cntent;
+        this.citP.cit_results = cntent;
+        this.citP.switch_divs('div_results');
       }
     });
-    this.dataShare.storage.get('reslts').then((cntent) => {
-      if (cntent) {
-        this.citP.stored_results = cntent;
-      }
-    });
-    this.send_stat();
   }
   internet_on: boolean = false;
   checknet: any;
@@ -148,115 +128,6 @@ export class HomePage {
     } catch {
       console.log("Failed to get dictionary values.");
       return []
-    }
-  }
-
-  send_single_stat = function(test_info, key_to_del) {
-    this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_stat.php',
-      JSON.stringify({
-        "testdate": test_info.slice(2),
-        "testlang": test_info.slice(0, 2)
-      }),
-      { responseType: "text" }).subscribe((response) => {
-        if (response == 'victory') {
-          console.log('Saved to stats: ', key_to_del);
-          this.dataShare.storage.remove(key_to_del);
-        } else {
-          console.log('Failed SQL:' + response);
-        }
-      },
-        err => {
-          console.log('Request failed: ', err);
-        });
-  }
-
-  send_stat = function() {
-    this.dataShare.storage.forEach((value, key) => {
-      if (key.slice(0, 4) == 'test') {
-        this.send_single_stat(value, key);
-      }
-    });
-  }
-
-  store_on_device = async function() {
-    await this.dataShare.storage.set('local', {
-      'subject_id': this.citP.subj_id,
-      'cit_version': this.citP.cit_type,
-      'num_of_blocks': this.citP.num_of_blocks,
-      'timelimit': this.citP.response_timelimit_main,
-      'isi_min': this.citP.isi_delay_minmax[0],
-      'isi_max': this.citP.isi_delay_minmax[1],
-      'target': this.cit_items[0],
-      'probe1': this.cit_items[1],
-      'probe2': this.cit_items[2],
-      'probe3': this.cit_items[3],
-      'probe4': this.cit_items[4],
-      'probe5': this.cit_items[5],
-      'filler1': this.targetref_words[0],
-      'filler2': this.targetref_words[1],
-      'filler3': this.targetref_words[2],
-      'filler4': this.nontargref_words[0],
-      'filler5': this.nontargref_words[1],
-      'filler6': this.nontargref_words[2],
-      'filler7': this.nontargref_words[3],
-      'filler8': this.nontargref_words[4],
-      'filler9': this.nontargref_words[5],
-      'img_dict': this.img_dict,
-      'texttrans': this.texttrans,
-      'save_on_citstart': this.save_on_citstart,
-      'consent': this.consentset,
-      'language': this.trP.lang,
-      'mails': this.mails
-    });
-    try {
-      let el = document.getElementById("storefeed_id2")
-      el.style.color = 'green';
-      setTimeout(() => {
-        el.style.color = 'white';
-      }, 2000);
-    } catch { }
-  }
-
-  load_from_device = function() {
-    try {
-      this.dataShare.storage.get('local').then((cntent) => {
-        let data_dict = cntent;
-        try {
-          this.citP.subj_id = data_dict.subject_id;
-          this.citP.cit_type = data_dict.cit_version;
-          this.citP.num_of_blocks = data_dict.num_of_blocks;
-          this.citP.response_timelimit_main = data_dict.timelimit;
-          this.citP.isi_delay_minmax[0] = data_dict.isi_min;
-          this.citP.isi_delay_minmax[1] = data_dict.isi_max;
-          this.cit_items[0] = data_dict.target;
-          this.cit_items[1] = data_dict.probe1;
-          this.cit_items[2] = data_dict.probe2;
-          this.cit_items[3] = data_dict.probe3;
-          this.cit_items[4] = data_dict.probe4;
-          this.cit_items[5] = data_dict.probe5;
-          this.targetref_words[0] = data_dict.filler1;
-          this.targetref_words[1] = data_dict.filler2;
-          this.targetref_words[2] = data_dict.filler3;
-          this.nontargref_words[0] = data_dict.filler4;
-          this.nontargref_words[1] = data_dict.filler5;
-          this.nontargref_words[2] = data_dict.filler6;
-          this.nontargref_words[3] = data_dict.filler7;
-          this.nontargref_words[4] = data_dict.filler8;
-          this.nontargref_words[5] = data_dict.filler9;
-          this.img_dict = data_dict.img_dict;
-          this.show_imgs();
-          this.texttrans = data_dict.texttrans;
-          this.save_on_citstart = data_dict.save_on_citstart;
-          this.consentset = data_dict.consent;
-          this.trP.lang = data_dict.language,
-            this.mails = data_dict.mails;
-          this.change_texttrans();
-        } catch (e) {
-          console.log('(No locally saved data.)');
-        }
-      });
-    } catch (e) {
-      console.log('(No locally saved data.)');
     }
   }
 
@@ -420,79 +291,6 @@ export class HomePage {
 
 
   seg_values: string[] = ['main', 'fillers', 'settings', 'autofill', 'start'];
-  pop_menu(myEvent) {
-    let popover = this.popoverCtrl.create(PopoverItems);
-    popover.present({
-      ev: myEvent
-    });
-    popover.onDidDismiss(pop_data => {
-      if (pop_data != null) {
-        this.goto_menu(pop_data);
-      }
-    })
-  }
-
-  results_remove(to_del) {
-    let delmsg;
-    if (to_del == 'all') {
-      delmsg = 'Are you sure you want to remove all CIT results?';
-    } else {
-      delmsg = 'Do you want to remove the CIT results with subject ID ' + this.citP.stored_results[to_del].subj_id + '?';
-    }
-    let alert = this.alertCtrl.create({
-      title: 'Confirm removal',
-      message: delmsg,
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        },
-        {
-          text: 'Remove',
-          handler: () => {
-            if (to_del == 'all') {
-              this.citP.stored_results = {};
-              this.dataShare.storage.set('reslts', {});
-            } else {
-              delete this.citP.stored_results[to_del];
-              this.dataShare.storage.set('reslts', this.citP.stored_results);
-            }
-          }
-        }
-      ]
-    });
-    alert.present();
-  }
-
-  show_res(res_id, menu) {
-    this.citP.cit_results = this.citP.stored_results[res_id];
-    this.citP.current_menu = menu;
-    this.citP.current_segment = 'menus';
-    this.citP.content.scrollToTop(0);
-  }
-
-  goto_menu(menu_name) {
-    this.citP.current_menu = menu_name;
-    this.citP.current_segment = 'menus';
-    this.citP.content.scrollToTop(0);
-  }
-
-  pop_imgs(myEvent, parent_id) {
-    let popover = this.popoverCtrl.create(PopoverImg,
-      {}, // nothing to pass
-      { cssClass: 'popover_class' });
-    popover.present({
-      ev: myEvent
-    });
-    popover.onDidDismiss(selected_img => {
-      if (selected_img != null) {
-        this.add_img(parent_id, selected_img);
-      }
-    });
-  }
 
   add_img(img_key, filename) {
     this.img_dict[img_key] = filename;
@@ -592,7 +390,6 @@ export class HomePage {
         // for TESTING:
         console.log('testing');
         this.auto_img();
-        this.fill_demo();
       } else {
         clearInterval(this.checknet);
         if (this.texttrans === true) {
@@ -600,27 +397,23 @@ export class HomePage {
           this.targetref_words = this.targetref_words.map(w => w.toUpperCase())
           this.nontargref_words = this.nontargref_words.map(w => w.toUpperCase())
         }
-        if (this.save_on_citstart === true) {
-          this.store_on_device();
-        }
         this.citP.cit_type = parseInt(this.citP.cit_type);
         this.citP.num_of_blocks = parseInt(this.citP.num_of_blocks);
 
-        if (this.consentset.indexOf('1') !== -1 || this.consentset.indexOf('2') !== -1) {
-          this.consentitems = '';
-          if (this.consentset.indexOf('1') !== -1 && this.consentset.indexOf('2') !== -1) {
-            this.consentitems = this.trP.consentitems_chosen[this.trP.lang];
-          } else if (this.consentset.indexOf('2') !== -1) {
-            this.consentitems = this.trP.consentitems_conf[this.trP.lang];;
-          }
-          this.citP.switch_divs('div_consent')
-        } else {
-          this.init_cit(99);
+        this.init_cit(99);
+        if (this.on_device) {
+          this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE_PRIMARY);
         }
       }
     }
   }
 
+  start_test() {
+    this.citP.switch_divs('div_settings')
+    if (this.on_device) {
+      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+    }
+  }
   init_cit(chosen) {
     this.citP.consented = chosen;
     this.create_stim_base();
@@ -688,27 +481,10 @@ export class HomePage {
     this.mails = '';
   }
 
-  fill_demo = function() {
-    this.default_core();
-    this.citP.subj_id = 'CIT_demo_suspect_01';
-    this.cit_items[0] = 'AUG 25';
-    this.cit_items[1] = 'FEB 12';
-    this.cit_items[2] = 'MAY 09';
-    this.cit_items[3] = 'JUN 14';
-    this.cit_items[4] = 'OCT 23';
-    this.cit_items[5] = 'DEC 05';
-    document.getElementById("demofeed_id").style.color = 'green';
-    setTimeout(() => {
-      try {
-        document.getElementById("demofeed_id").style.color = 'white';
-      } catch { };
-    }, 2000);
-  }
 
   auto_img() {
     let feed;
     let added = [];
-    document.getElementById("imgfeed_id").style.color = 'red';
     if (Object.keys(this.dataShare.stored_images).length === 0) {
       feed = 'No images are loaded.'
     } else {
@@ -835,6 +611,5 @@ export class HomePage {
     this.citP.switch_divs('div_settings');
     this.citP.current_menu = 'm_testres';
     this.citP.current_segment = 'menus';
-    this.send_stat();
   }
 }

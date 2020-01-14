@@ -1,43 +1,13 @@
-<ion-header *ngIf="citP.current_div == 'div_settings'">
-  <ion-toolbar>
-    <ion-segment [(ngModel)]='citP.current_segment'>
-      <ion-segment-button value="menus" icon-only (tap)="pop_menu($event)">
-        <ion-icon name="menu"></ion-icon>
-      </ion-segment-button>
-      <ion-segment-button value="main" (tap)="goto_slide(0)">
-        Core
-      </ion-segment-button>
-      <ion-segment-button value="fillers" (tap)="goto_slide(1)">
-        Fillers
-      </ion-segment-button>
-      <ion-segment-button value="settings" (tap)="goto_slide(2)">
-        Settings
-      </ion-segment-button>
-      <ion-segment-button value="autofill" (tap)="goto_slide(3)">
-        Storing
-      </ion-segment-button>
-      <ion-segment-button value="start" (tap)="goto_slide(4)">
-        Start
-      </ion-segment-button>
-    </ion-segment>
-
-  </ion-toolbar>
-</ion-header>
-
 <ion-content hide-nav-bar="true" padding [ngSwitch]="citP.current_div" [ngStyle]="{ 'background-color': citP.bg_color }" text-wrap>
 
   <div *ngSwitchCase="'div_start'" style="text-align:center">
     <div class='center'>
 
       <div>
-        <button ion-button type="button" (tap)="citP.switch_divs('div_settings');">
-          <b>Concealed Information Test</b>
+        <button ion-button type="button" (tap)="start_test();">
+          <b>Start Test</b>
         </button></div>
       <br />
-      <div>
-        <button ion-button type="button" (tap)="citP.switch_divs('div_settings');goto_menu('m_info')">Info</button>
-        <button ion-button type="button" (tap)="citP.switch_divs('div_settings');goto_menu('m_demo')">Demo</button>
-      </div>
       <br />
       <div>
         <button ion-button type="button" (tap)="citP.switch_divs('div_settings', true);">Previous results</button>
@@ -47,614 +17,38 @@
   </div>
 
 
-  <div *ngSwitchCase="'div_settings'">
+  <div *ngSwitchCase="'div_settings'" style="font-size: 200% !important;">
 
-    <div [hidden]="citP.current_menu == ''" style="line-height: 150%;">
+    <i>
+      <p *ngIf="internet_on" style="color: red;">Warning: it seems you are connected to the internet. Please turn it off to avoid interruptions!</p>
+    </i>
 
-      <div [hidden]="citP.current_menu != 'm_info'">
-        <div style="font-size:110%;">
-          <b>Info about this application</b>
-        </div>
-        <br />
-        Below you find a very brief summary about the Concealed Information Test that is implemented in this app. To properly understand the test, please read the <a href="https://github.com/gasparl/citapp_phone" target="_blank">online
-          documentation</a>.
-        <br /><br />
-        The <i>standard</i> and <i>enhanced</i> versions aim to reveal whether or not a certain information detail – the "probe" – is known to the tested person. The "irrelevant" and "target" items must be similar to the probe, and indistinguishable
-        for a person who does not know the relevance of the probe (e.g. the probe is a stolen suitcase, and the irrelevant and targets are other suitcases). In this app, the input requires no designated "irrelevant" items: all items are potential
-        probes, and the real probe can be given as any of these items. In the end, each of the items (except the target) will be automatically evaluated as potential probes (in each case with the given other four items, excluding the target, being
-        irrelevants).
-        <br /><br />
-        The <i>enhanced</i> version is much more effective than the <i>standard</i>; the latter is only for experimental purposes. The <i>no-target</i> version is a tentative approach in development to make the test applicable in cases where the
-        probe is actually known to the participant.
-        <br /><br />
-        At the end of the test there are no instructions or button, but only the text "<i>Test completed.</i>" (in the selected language). This is to prevent subjects to see the results without permission. To show results, <i>swipe right</i> on the
-        text.
-        <br />
-      </div>
+    %% SUBJECT NUMBER %%
+    %% age, gender %%
 
-      <div [hidden]="citP.current_menu != 'm_demo'">
-        <div style="font-size:110%;">
-          <b>Demo</b>
-        </div>
-        <br />
-        For demonstration's sake, take a situation in which you want to reveal whether a person is aware of a certain date. For example, someone is suspected to be concealing the knowledge of an upcoming terrorist attack on <i>May 9</i>. In this
-        case, five
-        different, additional dates should be chosen randomly. For example, <i>June 14</i>, <i>December 5</i>, <i>August 25</i>, <i>February 12</i>, and <i>October 23</i>. From among these, one should be chosen randomly as target, for example, <i>August
-          25</i>. These should be filled in
-        accordingly on the starting page: <i>AUG 25</i> as Target, and the other dates as Probes (1-5). (In this case, the real "probe" is <i>MAY 09</i>, but the app automatically evaluates all items as potential probes.) The Subject ID could be "<i>CIT_demo_suspect_01</i>".
-        <br /><br />
-        All these data can be filled in automatically for a demonstration using the following button:
-        <br />
-        <div id="demofeed_id" style="color:white;text-align:center;">
-          Demo data loaded.
-        </div>
-        <button ion-button type='button' (tap)="fill_demo()" color="light" block>Fill in demo data</button>
-        <br />
-        <hr /><br />
-        If you would like to do a pilot test to see that the method truly detects a relevant detail, one good way is to enter your own personal name (e.g. family name) as one probe and, as target and other probes, enter other, randomly chosen names.
-        If you then
-        complete the test in the enhanced version with, say, two blocks, it is very likely that you will be detected. (Personal names are typically highly personally relevant, and thus appear highly salient in the task.) For a control test, to show
-        a no effect (simulating innocence), you may enter random names for all items. Note that, in this case, the person tested should not know which item is the presumed real probe item! The mere knowledge of the
-        relevance of this item (as the probe to be tested) can cause different responding.
-        <br />
-      </div>
+    <ion-item>
+      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Words words</ion-label>
+      <ion-select [(ngModel)]="allpossiblewords" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;" multiple="true" [selectOptions]="{title:'Choose max. 4'}">
+        <ion-option value='0'>No</ion-option>
+        <ion-option value='1'>Yes</ion-option>
+        <ion-option value='2'>Yes2</ion-option>
+        <ion-option value='3'>Yes3</ion-option>
+        <ion-option value='4'>Yes5</ion-option>
+        <ion-option value='5'>Yes6</ion-option>
+        <ion-option value='6'>Yes7</ion-option>
+      </ion-select>
+    </ion-item>
 
-      <div [hidden]="citP.current_menu != 'm_prevs'">
-        <div style="font-size:110%;padding-bottom:1.5vw;">
-          <b>Results</b>
-          <div style="float:right">
-            <button ion-button color='danger' style="padding: 16px;padding-right: 16px;" type="button" small (tap)="results_remove('all')">
-              REMOVE ALL
-            </button>
-          </div>
-        </div>
-        <br />
+    <br />
 
-        <div (tap)="ele_p.class = ele_p.class == 'show' ? '' :  'show'" [ngClass]="{ expandable : true, hideChildren : ele_p.class !== 'show', showChildren : ele_p.class === 'show' }" style="float:right;max-width:100%;margin-bottom:3.5vw;padding-top:1vw;padding-bottom:1vw;"
-            #ele_p>
-          <b>Path to files on the device</b>
-          <span id='expand'><b>(tap to show)</b></span>
-          <span id='collapse'><b>(tap to hide)</b></span>
-          <div class='selectable'>
-            {{citP.path}}
-          </div>
-        </div>
-
-        <ion-list>
-          <ion-segment *ngFor="let citres of dictitems(citP.stored_results)">
-            <ion-segment-button (ionSelect)="show_res(citres.k, 'm_testres')" value='1' style="text-transform:none;text-align:left">
-              <b>{{citres.v.subj_id}}</b> ({{citres.v.date}})
-            </ion-segment-button>
-
-            <ion-segment-button (ionSelect)="results_remove(citres.k)" value='' style="max-width: 11vw">
-              <ion-icon name="trash" color='danger'></ion-icon>
-            </ion-segment-button>
-            <ion-segment-button (ionSelect)="show_res(citres.k, 'm_sendin')" value='' style="max-width: 11vw">
-              <ion-icon name="send" color='dark'></ion-icon>
-            </ion-segment-button>
-
-          </ion-segment>
-        </ion-list>
-
-      </div>
-
-      <div [hidden]="citP.current_menu != 'm_testres'">
-
-        <button ion-button small type='button' (tap)="goto_menu('m_prevs')" color="light" block>Back to list</button>
-        <hr>
-
-        <div style="clear:both;font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
-          Summary CIT results for <b>{{citP.cit_results.subj_id}}</b>
-        </div>
-        <div style="text-align:center;padding-bottom:4.5vw">
-          (Date: <b>{{citP.cit_results.date}}</b>)
-        </div>
-
-        <div style="overflow-x:auto;background:#f1f1f1">
-          <table class='results_table'>
-            <tr>
-              <th></th>
-              <th>RT<sub>P&nbsp;vs&nbsp;I</sub><br /><span class='res_unit'>(ms)</span></th>
-              <th>RT<sub>P&nbsp;(SD)</sub><br /><span class='res_unit'>(ms)</span></th>
-              <th>RT<sub>I&nbsp;(SD)</sub><br /><span class='res_unit'>(ms)</span></th>
-              <th><i>d</i><sub>CIT</sub><br /><span class='res_unit'>&nbsp;</span></th>
-              <th>AR<sub>P&nbsp;vs&nbsp;I</sub><br /><span class='res_unit'>(%)</span></th>
-              <th>AR<sub>P</sub><br /><span class='res_unit'>(%)</span></th>
-              <th>AR<sub>I</sub><br /><span class='res_unit'>(%)</span></th>
-            </tr>
-            <tr *ngFor="let num of [1, 2, 3, 4, 5];">
-              <td>
-                Probe&nbsp;{{num}}
-              </td>
-              <td>
-                {{citP.cit_results['probe' + num]['rt_p_vs_i']}}
-              </td>
-              <td>
-                {{citP.cit_results['probe' + num]['rt_probe']}}&nbsp;({{citP.cit_results['probe' + num]['rt_probe_sd']}})
-              </td>
-              <td>
-                {{citP.cit_results['probe' + num]['rt_irr']}}&nbsp;({{citP.cit_results['probe' + num]['rt_irr_sd']}})
-              </td>
-              <td style="color:#8b0000;">
-                {{citP.cit_results['probe' + num]['dcit']}}
-              </td>
-              <td>
-                {{citP.cit_results['probe' + num]['acc_probe']}}
-              </td>
-              <td>
-                {{citP.cit_results['probe' + num]['acc_irr']}}
-              </td>
-              <td>
-                {{citP.cit_results['probe' + num]['acc_p_vs_i']}}
-              </td>
-            </tr>
-          </table>
-        </div>
-        <br />
-
-        Overall accuracy rates (number of correct responses per number of all trials): {{citP.cit_results.ar_overall}}.
-        <br />
-        <br />
-        <div (tap)="ele.class = ele.class == 'show' ? '' :  'show'" [ngClass]="{ expandable : true, hideChildren : ele.class !== 'show', showChildren : ele.class === 'show' }" #ele>
-          <b>Description of variables</b>
-          <span id='expand'><b>(tap to show)</b></span>
-          <span id='collapse'><b>(tap to hide)</b></span>
-          <div>
-            Response times (for all correct responses, in milliseconds): probe RT mean minus irrelevant RT mean (RT<sub>P&nbsp;vs&nbsp;I</sub>), probe RT mean and standard deviation (RT<sub>P&nbsp;(SD)</sub>), irrelevant RT mean and standard
-            deviation (RT<sub>I&nbsp;(SD)</sub>),
-            uncorrected Cohen's d between all probe and all irrelevant RTs (<i>d</i><sub>CIT</sub>). Accuracy rates (ratio of correct responses compared to incorrect and too slow responses, in percentage): probe accuracy rate minus irrelevant
-            accuracy
-            rate (AR<sub>P&nbsp;vs&nbsp;I</sub>), probe accuracy rate (AR<sub>P</sub>), irrelevant accuracy rate (AR<sub>I</sub>). Responses with RT below 150 ms are excluded from all RT and AR analysis, except for the overall accuracy rate
-            calculation. Trials (i.e., responses) from practice rounds are not included in any of the statistics above.
-          </div>
-        </div>
-
-        <br />
-
-        <div (tap)="ele2.class = ele2.class == 'show' ? '' :  'show'" [ngClass]="{ expandable : true, hideChildren : ele2.class !== 'show', showChildren : ele2.class === 'show' }" #ele2>
-          <b>Evaluation using <i>d</i><sub>CIT</sub></b>
-          <span id='expand'><b>(tap to show)</b></span>
-          <span id='collapse'><b>(tap to hide)</b></span>
-          <div>
-            The <i>d</i><sub>CIT</sub> measure might be used to evaluate whether or not a given probe was recognized. The <i>d</i><sub>CIT</sub> typically falls between around −0.3 and 0.8, where a larger number always indicates a larger likelihood
-            of
-            the
-            recognition of the given probe. As of yet, there is no established optimal cut-off value for the evaluation, but, based on a rough approximation in view of previous results, the following table depicts some possible evaluative labels for
-            given boundaries.
-            <br />
-            <br />
-
-            <div style="overflow-x:auto;white-space: nowrap;">
-              <table class='dcit_table'>
-                <tr>
-                  <td><i>d</i><sub>CIT</sub> > 0.4</td>
-                  <td>strong indication of recognition</td>
-                </tr>
-                <tr>
-                  <td><i>d</i><sub>CIT</sub> > 0.3 and <i>d</i><sub>CIT</sub>
-                    <= 0.4</td> <td>fair indication of recognition
-                  </td>
-                </tr>
-                <tr>
-                  <td><i>d</i><sub>CIT</sub> > 0.1 and <i>d</i><sub>CIT</sub>
-                    <= 0.3</td> <td>weak indication of recognition
-                  </td>
-                </tr>
-                <tr>
-                  <td><i>d</i><sub>CIT</sub> > 0 and <i>d</i><sub>CIT</sub>
-                    <= 0.1</td> <td>indeterminate
-                  </td>
-                </tr>
-                <tr>
-                  <td><i>d</i><sub>CIT</sub> > −0.1 and <i>d</i><sub>CIT</sub>
-                    <= 0</td> <td>weak indication of non-recognition
-                  </td>
-                </tr>
-                <tr>
-                  <td><i>d</i><sub>CIT</sub>
-                    <= −0.1</td> <td>fair indication of non-recognition
-                  </td>
-                </tr>
-              </table>
-            </div>
-
-            <br />
-            (There is no strong indication of innocence: a very fast probe response is no more expected in case of innocence than in case of guilt.)
-          </div>
-        </div>
-
-        <br />
-        For more details, see the <a href="https://github.com/gasparl/citapp_phone" target="_blank">online
-          documentation</a>.
-        <br />
-        <br />
-        <hr />
-        <br />
-
-        <div style="padding-bottom:3.5vw">
-          <i>Path to full data file:</i><br />
-          <div style="overflow-x:auto" class='selectable'>
-            <b>{{citP.path}}</b>
-          </div>
-        </div>
-
-        <div style="padding-bottom:3.5vw">
-          <i>File name:</i><br />
-          <div style="overflow-x:auto" class='selectable'>
-            <b>{{citP.cit_results.file_nam_disp}}</b>
-          </div>
-        </div>
-        <hr />
-        <button ion-button small type='button' (tap)="goto_menu('m_sendin')" color="light" block>Get full data</button>
-      </div>
-
-
-      <div [hidden]="citP.current_menu != 'm_sendin'">
-
-        <button ion-button small type='button' (tap)="goto_menu('m_prevs')" color="light" block>Back to list</button>
-        <hr>
-
-        <div style="font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
-          Forward data with subject ID <b>{{citP.cit_results.subj_id}}</b>
-        </div>
-        <div style="text-align:center;padding-bottom:4.5vw">
-          (Date: <b>{{citP.cit_results.date}}</b>)
-        </div>
-
-        <!--
-        <div style="text-align:left;padding-left: 16px;">
-          The data can be sent automatically via a server to a specified email address, or to several email addresses separated by semicolon (e.g., "exam@ple.com;exa@mple.org").
-        </div>
-
-        <ion-item style="margin-bottom: 2vw;">
-          <ion-label style="color:black;min-width:21vw;" fixed>Email(s)</ion-label>
-          <ion-input (keypress)="emails_input($event)" [(ngModel)]="mails" type="text" (ngModelChange)="checkmail()" [ngModelOptions]="{standalone: true}" style="font-style:normal;text-transform:none;"></ion-input>
-        </ion-item>
-
-        <span id="sentfeed_id" style="color:green;">&nbsp;</span>
-        <button [disabled]="mails_sending === ''" style="text-transform:none;text-align:center;line-height: 120%;" ion-button type='button' (tap)="test()" color="light" block>SEND VIA SERVER TO:<br>{{mails_sending}}</button>
-        <br />
-        -->
-
-        <div style="text-align:left;padding-left: 16px;padding-top:1.5vw;">
-          The data can be sent (shared, stored) via any chosen local application (e.g. email, cloud storage, etc.).
-        </div>
-        <span>&nbsp;</span>
-        <button ion-button type='button' (tap)="sendviaapp()" color="light" block>Choose application</button>
-
-        <br />
-        <div style="text-align:left;padding-left: 16px;padding-top:1.5vw;">
-          You can also just simply copy the data to the clipboard. Afterwards it can be pasted into any other application.
-        </div>
-        <span id="copyfeed_id" style="color:green;">&nbsp;</span>
-        <button ion-button type='button' (tap)="to_clipboard()" color="light" block>Copy to clipboard</button>
-
-        <br />
-        <hr />
-        <br />
-
-        <div style="padding-bottom:3.5vw">
-          <i>Path to all CIT results files on the device:</i><br />
-          <div style="overflow-x:auto" class='selectable'>
-            <b>{{citP.path}}</b>
-          </div>
-        </div>
-
-        <div style="padding-bottom:3.5vw">
-          <i>File name:</i><br />
-          <div style="overflow-x:auto" class='selectable'>
-            <b>{{citP.cit_results.file_nam_disp}}</b>
-          </div>
-        </div>
-        <hr />
-        <button ion-button small type='button' (tap)="goto_menu('m_testres')" color="light" block>Show main results</button>
-      </div>
+    <div style="text-align:center">
+      <button ion-button type="button" onclick="initials();" style="font-size: 120% !important;">Start task<span *ngIf="citP.subj_id != ''">&nbsp; ({{citP.subj_id}})</span></button>
     </div>
 
-    <form *ngIf="citP.current_menu === ''" (ngSubmit)="initials()" [formGroup]="form_items" (keydown.enter)="$event.preventDefault()">
-
-      <ion-slides (ionSlideWillChange)='citP.current_segment = seg_values[slides.getActiveIndex()];' [initialSlide]="initslide">
-        <ion-slide>
-
-          <ion-item>
-            <ion-label style="min-width:21vw;" fixed><b>Subject ID:</b></ion-label>
-            <ion-input style="text-transform:none;" [(ngModel)]="citP.subj_id" formControlName="sub_id" type="text" [class.invalid]="!form_items.controls.sub_id.valid && submit_failed"></ion-input>
-          </ion-item>
-          <br /><br />
-          <div style="font-weight:bold;font-size:130%;text-align:left;padding-left: 16px;">
-            Main items in the test</div>
-
-          <ion-item id='target' [ngStyle]="{ 'background-color' : (citP.cit_type === '2') ? '#cccccc' : undefined,
-          'color' : (citP.cit_type === '2') ? '#343434' : undefined,
-          'opacity' : (citP.cit_type === '2') ? 0.5 : undefined }">
-            <ion-label fixed>Target:</ion-label>
-            <ion-input [(ngModel)]="cit_items[0]" formControlName="target" type="text" [class.invalid]="!form_items.controls.target.valid && submit_failed" (tap)="remove_img_el('target');"></ion-input>
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'target')">
-              <ion-icon name="images" color='dark'></ion-icon>
-            </button>
-          </ion-item>
-
-
-          <ion-item id='probe1'>
-            <ion-label fixed>Probe 1:</ion-label>
-            <ion-input [(ngModel)]="cit_items[1]" formControlName="probe1" type="text" [class.invalid]="!form_items.controls.probe1.valid && submit_failed" (tap)="remove_img_el('probe1');"></ion-input>
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'probe1')">
-              <ion-icon name="images" color='dark'></ion-icon>
-            </button>
-          </ion-item>
-
-          <ion-item id='probe2'>
-            <ion-label fixed>Probe 2:</ion-label>
-            <ion-input [(ngModel)]="cit_items[2]" formControlName="probe2" type="text" [class.invalid]="!form_items.controls.probe2.valid && submit_failed" (tap)="remove_img_el('probe2');"></ion-input>
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'probe2')">
-              <ion-icon name="images" color='dark'></ion-icon>
-            </button>
-          </ion-item>
-
-          <ion-item id='probe3'>
-            <ion-label fixed>Probe 3:</ion-label>
-            <ion-input [(ngModel)]="cit_items[3]" formControlName="probe3" type="text" [class.invalid]="!form_items.controls.probe3.valid && submit_failed" (tap)="remove_img_el('probe3');"></ion-input>
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'probe3')">
-              <ion-icon name="images" color='dark'></ion-icon>
-            </button>
-          </ion-item>
-
-          <ion-item id='probe4'>
-            <ion-label fixed>Probe 4:</ion-label>
-            <ion-input [(ngModel)]="cit_items[4]" formControlName="probe4" type="text" [class.invalid]="!form_items.controls.probe4.valid && submit_failed" (tap)="remove_img_el('probe4');"></ion-input>
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'probe4')">
-              <ion-icon name="images" color='dark'></ion-icon>
-            </button>
-          </ion-item>
-
-          <ion-item id='probe5'>
-            <ion-label fixed>Probe 5:</ion-label>
-            <ion-input [(ngModel)]="cit_items[5]" formControlName="probe5" type="text" [class.invalid]="!form_items.controls.probe5.valid && submit_failed" (tap)="remove_img_el('probe5');"></ion-input>
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'probe5')">
-              <ion-icon name="images" color='dark'></ion-icon>
-            </button>
-          </ion-item>
-          <br />
-          <br />
-          <button ion-button type='button' (tap)="default_core()" color="light" block>Restore default (empty)</button>
-          <br />
-          <span id="imgfeed_id" style="color:white;font-size:110%;"></span>
-          <button ion-button type='button' (tap)="auto_img()" color="light" block>Autofill all images</button>
-
-        </ion-slide>
-        <ion-slide>
-
-          <ion-item id='filler1'>
-            <ion-label style="min-width:28vw;" fixed>Target filler 1:</ion-label>
-            <ion-input [(ngModel)]="targetref_words[0]" type="text" formControlName="filler1" [class.invalid]="!form_items.controls.filler1.valid && submit_failed" (tap)="remove_img_el('filler1');"></ion-input>
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler1')">
-              <ion-icon name="images" color='dark'></ion-icon>
-            </button>
-          </ion-item>
-
-          <ion-item id='filler2'>
-            <ion-label style="min-width:28vw;" fixed>Target filler 2:</ion-label>
-            <ion-input [(ngModel)]="targetref_words[1]" type="text" formControlName="filler2" [class.invalid]="!form_items.controls.filler2.valid && submit_failed" (tap)="remove_img_el('filler2');"></ion-input>
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler2')">
-              <ion-icon name="images" color='dark'></ion-icon>
-            </button>
-          </ion-item>
-
-          <ion-item id='filler3'>
-            <ion-label style="min-width:28vw;" fixed>Target filler 3:</ion-label>
-            <ion-input [(ngModel)]="targetref_words[2]" type="text" formControlName="filler3" [class.invalid]="!form_items.controls.filler3.valid && submit_failed" (tap)="remove_img_el('filler3');"></ion-input>
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler3')">
-              <ion-icon name="images" color='dark'></ion-icon>
-            </button>
-          </ion-item>
-
-          <ion-item id='filler4'>
-            <ion-label style="min-width:28vw;" fixed>Nontarget filler 1:</ion-label>
-            <ion-input [(ngModel)]="nontargref_words[0]" type="text" formControlName="filler4" [class.invalid]="!form_items.controls.filler4.valid && submit_failed" (tap)="remove_img_el('filler4');"></ion-input>
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler4')">
-              <ion-icon name="images" color='dark'></ion-icon>
-            </button>
-          </ion-item>
-
-          <ion-item id='filler5'>
-            <ion-label style="min-width:28vw;" fixed>Nontarget filler 2:</ion-label>
-            <ion-input [(ngModel)]="nontargref_words[1]" type="text" formControlName="filler5" [class.invalid]="!form_items.controls.filler5.valid && submit_failed" (tap)="remove_img_el('filler5');"></ion-input>
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler5')">
-              <ion-icon name="images" color='dark'></ion-icon>
-            </button>
-          </ion-item>
-
-          <ion-item id='filler6'>
-            <ion-label style="min-width:28vw;" fixed>Nontarget filler 3:</ion-label>
-            <ion-input [(ngModel)]="nontargref_words[2]" type="text" formControlName="filler6" [class.invalid]="!form_items.controls.filler6.valid && submit_failed" (tap)="remove_img_el('filler6');"></ion-input>
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler6')">
-              <ion-icon name="images" color='dark'></ion-icon>
-            </button>
-          </ion-item>
-
-          <ion-item id='filler7'>
-            <ion-label style="min-width:28vw;" fixed>Nontarget filler 4:</ion-label>
-            <ion-input [(ngModel)]="nontargref_words[3]" type="text" formControlName="filler7" [class.invalid]="!form_items.controls.filler7.valid && submit_failed" (tap)="remove_img_el('filler7');"></ion-input>
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler7')">
-              <ion-icon name="images" color='dark'></ion-icon>
-            </button>
-          </ion-item>
-
-          <ion-item id='filler8'>
-            <ion-label style="min-width:28vw;" fixed>Nontarget filler 5:</ion-label>
-            <ion-input [(ngModel)]="nontargref_words[4]" type="text" formControlName="filler8" [class.invalid]="!form_items.controls.filler8.valid && submit_failed" (tap)="remove_img_el('filler8');"></ion-input>
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler8')">
-              <ion-icon name="images" color='dark'></ion-icon>
-            </button>
-          </ion-item>
-
-          <ion-item id='filler9'>
-            <ion-label style="min-width:28vw;" fixed>Nontarget filler 6:</ion-label>
-            <ion-input [(ngModel)]="nontargref_words[5]" type="text" formControlName="filler9" [class.invalid]="!form_items.controls.filler9.valid && submit_failed" (tap)="remove_img_el('filler9');"></ion-input>
-
-            <button ion-button icon-only clear item-right (tap)="pop_imgs($event, 'filler9')">
-              <ion-icon name="images" color='dark'></ion-icon>
-            </button>
-          </ion-item>
-
-          <br />
-          <br />
-          <button ion-button type='button' (tap)="default_fillers()" color="light" block>Restore default</button>
-
-        </ion-slide>
-
-        <ion-slide>
-
-          <ion-item>
-            <ion-label style="margin-bottom:0;color:black">Choose language</ion-label>
-            <ion-select [(ngModel)]="trP.lang" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;">
-              <ion-option *ngFor="let lg_code of trP.lg_keys" value="{{lg_code}}" default>
-                {{trP.lgs[lg_code]}} ({{lg_code.toUpperCase()}})
-              </ion-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-item>
-            <ion-label style="margin-bottom:0;color:black">Version</ion-label>
-            <ion-select [(ngModel)]="citP.cit_type" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;">
-              <ion-option value='0'>Enhanced</ion-option>
-              <ion-option value='1'>Standard</ion-option>
-              <ion-option value='2'>No-target</ion-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-item>
-            <ion-label style="margin-bottom:0;color:black">Number of blocks</ion-label>
-            <ion-select [(ngModel)]="citP.num_of_blocks" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;">
-              <ion-option value="1">1</ion-option>
-              <ion-option value="2">2</ion-option>
-              <ion-option value="3">3</ion-option>
-              <ion-option value="4">4</ion-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-item>
-            <ion-label style="min-width:40vw;color:black;" fixed>Response time limit (ms)</ion-label>
-            <ion-input [(ngModel)]="citP.response_timelimit_main" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label style="min-width:65vw;color:black;" fixed>Interstimulus interval min.-max. (ms)</ion-label>
-            <ion-input [(ngModel)]="citP.isi_delay_minmax[0]" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
-            <ion-input [(ngModel)]="citP.isi_delay_minmax[1]" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label style="margin-bottom:0;color:black">Auto-transform input to uppercase</ion-label>
-            <ion-toggle [(ngModel)]='texttrans' [ngModelOptions]="{standalone: true}" (ionChange)="change_texttrans();"></ion-toggle>
-          </ion-item>
-
-
-          <br />
-          <div style="font-weight:bold;font-size:110%;text-align:left;padding-left: 16px;">
-            Optionally, default email address (or addresses) can be given for data sending. The text given below will be filled in automatically (but can always be changed before sending) in the <i>to:</i> field when choosing an email application to
-            send data (under the <i>Results</i> menu).
-          </div>
-          <ion-item>
-            <ion-label style="color:black;min-width:25vw;" fixed>Default email(s)</ion-label>
-            <ion-input (keypress)="emails_input($event)" [(ngModel)]="mails" type="text" [ngModelOptions]="{standalone: true}" style="font-style:normal;text-transform:none;"></ion-input>
-          </ion-item>
-
-          <br />
-          <br />
-
-          <button ion-button type='button' (tap)="default_settings()" color="light" block>Restore default</button>
-
-        </ion-slide>
-
-        <ion-slide>
-
-          <div style="font-weight:bold;font-size:130%;text-align:left;padding-left: 16px;">
-            Current settings can be stored in an online database, which can be reloaded using the given Identifier and Password. (See documentation for details.)
-          </div>
-
-          <ion-item>
-            <ion-label style="color:black;min-width:21vw;" fixed>Identifier</ion-label>
-            <ion-input (keypress)="valid_chars2($event)" [(ngModel)]="mailpost" type="text" [ngModelOptions]="{standalone: true}" style="font-style:normal;text-transform:none;"></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label style="color:black;min-width:21vw;" fixed>Password</ion-label>
-            <ion-input (keypress)="valid_chars($event)" [(ngModel)]="pwpost" type="text" [ngModelOptions]="{standalone: true}" style="font-style:normal;text-transform:none;"></ion-input>
-          </ion-item>
-
-          <br />
-          <span id="storefeed_id" style="font-size:110%;"></span>
-
-          <button ion-button type='button' (tap)="settings_storage('loadit')" color="light" block>Load settings</button>
-
-          <div *ngIf="email_valid==true">
-            <br />
-            <i><button style="flex-flow: column;text-transform:none;" ion-button type='button' (tap)="settings_storage('sendpass')" color="light">SEND PASSWORD TO:<br>{{email_for_pw}}</button></i>
-          </div>
-
-          <br />
-          <button ion-button type='button' (tap)="settings_storage('yes')" color="light" block>Save settings online</button>
-
-          <br />
-          <hr />
-          <br />
-
-          <div style="font-weight:bold;font-size:130%;text-align:left;padding-left: 16px;">
-            Local offline storage on this device will simply reload current settings whenever the app starts. (Default values remain unchanged and can be reset anytime.)
-          </div>
-
-          <span id="storefeed_id2" style="color:white;font-size:110%;">Settings were saved.</span>
-          <button ion-button type='button' (tap)="store_on_device()" color="light" block>Save settings locally</button>
-
-        </ion-slide>
-
-        <ion-slide>
-          <ion-item>
-            <ion-label style="margin-bottom:0;color:black">"START CIT" also saves current settings</ion-label>
-            <ion-toggle [(ngModel)]='store_on_device' [ngModelOptions]="{standalone: true}"></ion-toggle>
-          </ion-item>
-          <ion-item>
-            <ion-label style="margin-bottom:0;color:black">Data sharing consent choices</ion-label>
-            <ion-select [(ngModel)]="consentset" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 3.4vw;" multiple="true" [selectOptions]="{title:'Consent choices'}">
-              <ion-option value='0'>No</ion-option>
-              <ion-option value='1'>Yes</ion-option>
-              <ion-option value='2'>Yes but without items</ion-option>
-            </ion-select>
-          </ion-item>
-          <br />
-          <br />
-          <i>
-            <p *ngIf="internet_on" style="color: red;">Warning: it seems you are connected to the internet. It is best to turn it off to avoid interruptions.</p>
-          </i>
-          <i>
-            <p *ngIf="duplicates !== ''" style="color: red;">There are duplicate item names: {{duplicates}}. All item names must be unique to start the test.</p>
-          </i>
-          <p *ngIf="!form_items.valid && submit_failed" style="color: red;">Please fill in all necessary details.</p>
-          <button ion-button type="submit">Start CIT<span *ngIf="citP.subj_id != ''">&nbsp; ({{citP.subj_id}})</span></button>
-
-        </ion-slide>
-
-      </ion-slides>
-      <br />
-      <br />
-      <br />
-      <br />
-    </form>
+    <br />
+    <br />
+    <br />
+    <br />
   </div>
 
 
@@ -712,6 +106,221 @@
     <ion-title class='center' style="padding:8vw" (swiperight)="sethome();">
       {{trP.cit_completed[trP.lang]}}
     </ion-title>
+  </div>
+
+
+  <div *ngSwitchCase="'div_results'">
+
+    <div [hidden]="citP.current_menu != 'm_testres'">
+
+      <button ion-button small type='button' (tap)="goto_menu('m_prevs')" color="light" block>Back to list</button>
+      <hr>
+
+      <div style="clear:both;font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
+        Summary CIT results for <b>{{citP.cit_results.subj_id}}</b>
+      </div>
+      <div style="text-align:center;padding-bottom:4.5vw">
+        (Date: <b>{{citP.cit_results.date}}</b>)
+      </div>
+
+      <div style="overflow-x:auto;background:#f1f1f1">
+        <table class='results_table'>
+          <tr>
+            <th></th>
+            <th>RT<sub>P&nbsp;vs&nbsp;I</sub><br /><span class='res_unit'>(ms)</span></th>
+            <th>RT<sub>P&nbsp;(SD)</sub><br /><span class='res_unit'>(ms)</span></th>
+            <th>RT<sub>I&nbsp;(SD)</sub><br /><span class='res_unit'>(ms)</span></th>
+            <th><i>d</i><sub>CIT</sub><br /><span class='res_unit'>&nbsp;</span></th>
+            <th>AR<sub>P&nbsp;vs&nbsp;I</sub><br /><span class='res_unit'>(%)</span></th>
+            <th>AR<sub>P</sub><br /><span class='res_unit'>(%)</span></th>
+            <th>AR<sub>I</sub><br /><span class='res_unit'>(%)</span></th>
+          </tr>
+          <tr *ngFor="let num of [1, 2, 3, 4, 5];">
+            <td>
+              Probe&nbsp;{{num}}
+            </td>
+            <td>
+              {{citP.cit_results['probe' + num]['rt_p_vs_i']}}
+            </td>
+            <td>
+              {{citP.cit_results['probe' + num]['rt_probe']}}&nbsp;({{citP.cit_results['probe' + num]['rt_probe_sd']}})
+            </td>
+            <td>
+              {{citP.cit_results['probe' + num]['rt_irr']}}&nbsp;({{citP.cit_results['probe' + num]['rt_irr_sd']}})
+            </td>
+            <td style="color:#8b0000;">
+              {{citP.cit_results['probe' + num]['dcit']}}
+            </td>
+            <td>
+              {{citP.cit_results['probe' + num]['acc_probe']}}
+            </td>
+            <td>
+              {{citP.cit_results['probe' + num]['acc_irr']}}
+            </td>
+            <td>
+              {{citP.cit_results['probe' + num]['acc_p_vs_i']}}
+            </td>
+          </tr>
+        </table>
+      </div>
+      <br />
+
+      Overall accuracy rates (number of correct responses per number of all trials): {{citP.cit_results.ar_overall}}.
+      <br />
+      <br />
+      <div (tap)="ele.class = ele.class == 'show' ? '' :  'show'" [ngClass]="{ expandable : true, hideChildren : ele.class !== 'show', showChildren : ele.class === 'show' }" #ele>
+        <b>Description of variables</b>
+        <span id='expand'><b>(tap to show)</b></span>
+        <span id='collapse'><b>(tap to hide)</b></span>
+        <div>
+          Response times (for all correct responses, in milliseconds): probe RT mean minus irrelevant RT mean (RT<sub>P&nbsp;vs&nbsp;I</sub>), probe RT mean and standard deviation (RT<sub>P&nbsp;(SD)</sub>), irrelevant RT mean and standard
+          deviation (RT<sub>I&nbsp;(SD)</sub>),
+          uncorrected Cohen's d between all probe and all irrelevant RTs (<i>d</i><sub>CIT</sub>). Accuracy rates (ratio of correct responses compared to incorrect and too slow responses, in percentage): probe accuracy rate minus irrelevant
+          accuracy
+          rate (AR<sub>P&nbsp;vs&nbsp;I</sub>), probe accuracy rate (AR<sub>P</sub>), irrelevant accuracy rate (AR<sub>I</sub>). Responses with RT below 150 ms are excluded from all RT and AR analysis, except for the overall accuracy rate
+          calculation. Trials (i.e., responses) from practice rounds are not included in any of the statistics above.
+        </div>
+      </div>
+
+      <br />
+
+      <div (tap)="ele2.class = ele2.class == 'show' ? '' :  'show'" [ngClass]="{ expandable : true, hideChildren : ele2.class !== 'show', showChildren : ele2.class === 'show' }" #ele2>
+        <b>Evaluation using <i>d</i><sub>CIT</sub></b>
+        <span id='expand'><b>(tap to show)</b></span>
+        <span id='collapse'><b>(tap to hide)</b></span>
+        <div>
+          The <i>d</i><sub>CIT</sub> measure might be used to evaluate whether or not a given probe was recognized. The <i>d</i><sub>CIT</sub> typically falls between around −0.3 and 0.8, where a larger number always indicates a larger likelihood
+          of
+          the
+          recognition of the given probe. As of yet, there is no established optimal cut-off value for the evaluation, but, based on a rough approximation in view of previous results, the following table depicts some possible evaluative labels for
+          given boundaries.
+          <br />
+          <br />
+
+          <div style="overflow-x:auto;white-space: nowrap;">
+            <table class='dcit_table'>
+              <tr>
+                <td><i>d</i><sub>CIT</sub> > 0.4</td>
+                <td>strong indication of recognition</td>
+              </tr>
+              <tr>
+                <td><i>d</i><sub>CIT</sub> > 0.3 and <i>d</i><sub>CIT</sub>
+                  <= 0.4</td> <td>fair indication of recognition
+                </td>
+              </tr>
+              <tr>
+                <td><i>d</i><sub>CIT</sub> > 0.1 and <i>d</i><sub>CIT</sub>
+                  <= 0.3</td> <td>weak indication of recognition
+                </td>
+              </tr>
+              <tr>
+                <td><i>d</i><sub>CIT</sub> > 0 and <i>d</i><sub>CIT</sub>
+                  <= 0.1</td> <td>indeterminate
+                </td>
+              </tr>
+              <tr>
+                <td><i>d</i><sub>CIT</sub> > −0.1 and <i>d</i><sub>CIT</sub>
+                  <= 0</td> <td>weak indication of non-recognition
+                </td>
+              </tr>
+              <tr>
+                <td><i>d</i><sub>CIT</sub>
+                  <= −0.1</td> <td>fair indication of non-recognition
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <br />
+          (There is no strong indication of innocence: a very fast probe response is no more expected in case of innocence than in case of guilt.)
+        </div>
+      </div>
+
+      <br />
+      For more details, see the <a href="https://github.com/gasparl/citapp_phone" target="_blank">online
+        documentation</a>.
+      <br />
+      <br />
+      <hr />
+      <br />
+
+      <div style="padding-bottom:3.5vw">
+        <i>Path to full data file:</i><br />
+        <div style="overflow-x:auto" class='selectable'>
+          <b>{{citP.path}}</b>
+        </div>
+      </div>
+
+      <div style="padding-bottom:3.5vw">
+        <i>File name:</i><br />
+        <div style="overflow-x:auto" class='selectable'>
+          <b>{{citP.cit_results.file_nam_disp}}</b>
+        </div>
+      </div>
+      <hr />
+      <button ion-button small type='button' (tap)="goto_menu('m_sendin')" color="light" block>Get full data</button>
+    </div>
+
+
+    <div [hidden]="citP.current_menu != 'm_sendin'">
+
+      <button ion-button small type='button' (tap)="goto_menu('m_prevs')" color="light" block>Back to list</button>
+      <hr>
+
+      <div style="font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
+        Forward data with subject ID <b>{{citP.cit_results.subj_id}}</b>
+      </div>
+      <div style="text-align:center;padding-bottom:4.5vw">
+        (Date: <b>{{citP.cit_results.date}}</b>)
+      </div>
+
+      <div style="text-align:left;padding-left: 16px;padding-top:1.5vw;">
+        First, please try to upload the data to the server by pressing the button below. If the upload is successfull, the button will disappear and a success message will appear in its place. If the upload fails, you will get an error message:
+        try again or send data using one of the other options below.
+      </div>
+      %%%% WARN ABOUT INTERNET
+      <span>&nbsp;</span>
+      <button ion-button type='button' (tap)="sendviaphp()" color="light" block>Send to server</button>
+
+
+      <div style="text-align:left;padding-left: 16px;padding-top:1.5vw;">
+        The data can be sent (shared, stored) via any chosen local application (e.g. email, cloud storage, etc.).
+      </div>
+      <span>&nbsp;</span>
+      <button ion-button type='button' (tap)="sendviaapp()" color="light" block>Choose application</button>
+
+      <br />
+      <div style="text-align:left;padding-left: 16px;padding-top:1.5vw;">
+        You can also just simply copy the data to the clipboard. Afterwards it can be pasted into any other application.
+      </div>
+      <span id="copyfeed_id" style="color:green;">&nbsp;</span>
+      <button ion-button type='button' (tap)="to_clipboard()" color="light" block>Copy to clipboard</button>
+
+      <br />
+      <hr />
+      <br />
+
+      <div style="padding-bottom:3.5vw">
+        <i>Path to all CIT results files on the device:</i><br />
+        <div style="overflow-x:auto" class='selectable'>
+          <b>{{citP.path}}</b>
+        </div>
+      </div>
+
+      <div style="padding-bottom:3.5vw">
+        <i>File name:</i><br />
+        <div style="overflow-x:auto" class='selectable'>
+          <b>{{citP.cit_results.file_nam_disp}}</b>
+        </div>
+      </div>
+      <hr />
+      <button ion-button small type='button' (tap)="goto_menu('m_testres')" color="light" block>Show main results</button>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <br />
   </div>
 
   <!-- app console for testing

@@ -51,6 +51,8 @@ export class CitProvider {
   to_slice: number = 10;
 
   subj_id: string = '';
+  age: string = '';
+  gender: string = '';
   current_div: string = "div_settings"; // ddd default: "div_start", div_settings, div_dems, div_cit_main, div_end
   current_segment: string = 'main';
   current_menu: string = '';

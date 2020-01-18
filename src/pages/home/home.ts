@@ -52,7 +52,6 @@ export class HomePage {
   email_valid: boolean = false;
   email_for_pw: string = "";
   consentset: any[] = [];
-  allpossiblewords: any[] = [];
   img_dict: any = {};
   on_device: boolean;
   submit_failed: boolean = false;

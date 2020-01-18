@@ -1,21 +1,5 @@
 <ion-content hide-nav-bar="true" padding [ngSwitch]="citP.current_div" [ngStyle]="{ 'background-color': citP.bg_color }" text-wrap>
 
-  <div *ngSwitchCase="'div_start'" style="text-align:center">
-    <div class='center'>
-
-      <div>
-        <button ion-button type="button" (tap)="start_test();">
-          <b>Start Test</b>
-        </button></div>
-      <br />
-      <br />
-      <div>
-        <button ion-button type="button" (tap)="citP.switch_divs('div_settings', true);">Previous results</button>
-      </div>
-
-    </div>
-  </div>
-
 
   <div *ngSwitchCase="'div_settings'" style="font-size: 200% !important;">
 
@@ -23,25 +7,43 @@
       <p *ngIf="internet_on" style="color: red;">Warning: it seems you are connected to the internet. Please turn it off to avoid interruptions!</p>
     </i>
 
-    %% SUBJECT NUMBER %%
-    %% age, gender %%
+    <br />
+    <div style="font-size: 90%;line-height:150%;font-weight:bold">
+      Please fill in your gender and age below.
+    </div>
 
     <ion-item>
-      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Words words</ion-label>
-      <ion-select [(ngModel)]="allpossiblewords" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;" multiple="true" [selectOptions]="{title:'Choose max. 4'}">
-        <ion-option value='0'>No</ion-option>
-        <ion-option value='1'>Yes</ion-option>
-        <ion-option value='2'>Yes2</ion-option>
-        <ion-option value='3'>Yes3</ion-option>
-        <ion-option value='4'>Yes5</ion-option>
-        <ion-option value='5'>Yes6</ion-option>
-        <ion-option value='6'>Yes7</ion-option>
+      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Gender</ion-label>
+      <ion-select [(ngModel)]="citP.gender" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
+        <ion-option value='1'>Male</ion-option>
+        <ion-option value='2'>Female</ion-option>
+      </ion-select>
+    </ion-item>
+    <br />
+    <ion-item>
+      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black;" fixed>Age</ion-label>
+      <ion-input [(ngModel)]="citP.age" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
+    </ion-item>
+    <br />
+    <br />
+    <div style="font-size: 90%;line-height:150%;font-weight:bold">
+      Please look through the list of words below and select maximum three words that seem to you meaningful or in any way notably different from the rest of the words in this list.
+    </div>
+    <br />
+
+
+
+    <ion-item>
+      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Words</ion-label>
+      <ion-select [(ngModel)]="dataShare.checkboxed" interface='popover' style="font-size: 140%;" multiple="true" [selectOptions]="{title:'Choose max. 4'}" (ionChange)="dataShare.chb_change('the_item')">
+        <ion-option *ngFor="let the_item of dataShare.allpossiblewords" (ionSelect)="dataShare.chb_change(the_item)">{{the_item}}</ion-option>
       </ion-select>
     </ion-item>
 
-    <br />
-
     <div style="text-align:center">
+      <br />
+      <br />
+      <hr />
       <button ion-button type="button" onclick="initials();" style="font-size: 120% !important;">Start task<span *ngIf="citP.subj_id != ''">&nbsp; ({{citP.subj_id}})</span></button>
     </div>
 

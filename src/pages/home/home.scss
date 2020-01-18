@@ -27,21 +27,6 @@ hr {
   user-select: text;
 }
 
-@media screen and (orientation:landscape) {
-  .alert-wrapper {
-    max-height: 280px;
-    min-height: 100px;
-  }
-
-  [ng-reflect-ng-switch] {
-    overflow: auto;
-  }
-
-  .alert-radio-group {
-    max-height: 180px !important;
-  }
-}
-
 page-home {
   ion-input {
     font-size: 3.1vw;
@@ -228,5 +213,29 @@ page-home {
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     left: 50%;
     top: 68%;
+  }
+}
+@media screen and (orientation:landscape) {
+  .alert-wrapper {
+    max-height: 280px;
+    min-height: 100px;
+  }
+
+  [ng-reflect-ng-switch] {
+    overflow: auto;
+  }
+
+  .alert-radio-group {
+    max-height: 180px !important;
+  }
+}
+@media screen and (orientation:portrait) {
+
+  ion-input {
+    font-size: 160% !important;
+  }
+
+  ion-label {
+    font-size: 140% !important;
   }
 }

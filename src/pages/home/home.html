@@ -11,6 +11,7 @@
     <div style="font-size: 90%;line-height:150%;font-weight:bold">
       Please fill in your gender and age below.
     </div>
+    <br />
 
     <ion-item>
       <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Gender</ion-label>
@@ -24,27 +25,40 @@
       <ion-label style="font-size: 160% !important;margin-bottom:0;color:black;" fixed>Age</ion-label>
       <ion-input [(ngModel)]="citP.age" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
     </ion-item>
+    <div style="text-align:center">
+      <br />
+      <br />
+      <button large *ngIf='citP.age > 18 && citP.age < 60 && citP.gender != ""' ion-button type="button" (tap)="citP.switch_divs('div_items');" style="font-size: 120% !important;">OK</button>
+    </div>
+
     <br />
     <br />
+    <br />
+    <br />
+  </div>
+
+  <div *ngSwitchCase="'div_items'" style="font-size: 200% !important;">
+
+    <i>
+      <p *ngIf="internet_on" style="color: red;">Warning: it seems you are connected to the internet. Please turn it off to avoid interruptions!</p>
+    </i>
+
     <div style="font-size: 90%;line-height:150%;font-weight:bold">
       Please look through the list of words below and select maximum three words that seem to you meaningful or in any way notably different from the rest of the words in this list.
     </div>
     <br />
 
-
-
-    <ion-item>
-      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Words</ion-label>
-      <ion-select [(ngModel)]="dataShare.checkboxed" interface='popover' style="font-size: 140%;" multiple="true" [selectOptions]="{title:'Choose max. 4'}" (ionChange)="dataShare.chb_change('the_item')">
-        <ion-option *ngFor="let the_item of dataShare.allpossiblewords" (ionSelect)="dataShare.chb_change(the_item)">{{the_item}}</ion-option>
-      </ion-select>
-    </ion-item>
+    <ion-list>
+      <ion-item *ngFor="let the_item of dataShare.allpossiblewords">
+        <ion-label style="font-size: 150% !important;">{{the_item}}</ion-label>
+        <ion-checkbox [disabled]="dataShare.checkboxed.length >= 4 && dataShare.checkboxed.indexOf(the_item) === -1" (ionChange)="dataShare.chb_change($event, the_item)" item-right></ion-checkbox>
+      </ion-item>
+    </ion-list>
 
     <div style="text-align:center">
       <br />
-      <br />
       <hr />
-      <button ion-button type="button" onclick="initials();" style="font-size: 120% !important;">Start task<span *ngIf="citP.subj_id != ''">&nbsp; ({{citP.subj_id}})</span></button>
+      <button ion-button type="button" (tap)="initials();" style="font-size: 120% !important;" large>OK</button>
     </div>
 
     <br />

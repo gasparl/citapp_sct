@@ -46,7 +46,6 @@ export class HomePage {
 
   initslide: any = 0;
   cit_items: string[] = [];
-  form_items: FormGroup;
   mailpost: string = "";
   pwpost: string = "";
   email_valid: boolean = false;
@@ -384,26 +383,20 @@ export class HomePage {
       this.duplicates = '"' + dupls.join('", "') + '"';
     } else {
       this.duplicates = '';
-      if (!this.form_items.valid) {
-        this.submit_failed = true;
-        // for TESTING:
-        console.log('testing');
-        this.auto_img();
-      } else {
-        clearInterval(this.checknet);
-        if (this.texttrans === true) {
-          this.cit_items = this.cit_items.map(w => w.toUpperCase())
-          this.targetref_words = this.targetref_words.map(w => w.toUpperCase())
-          this.nontargref_words = this.nontargref_words.map(w => w.toUpperCase())
-        }
-        this.citP.cit_type = parseInt(this.citP.cit_type);
-        this.citP.num_of_blocks = parseInt(this.citP.num_of_blocks);
-
-        this.init_cit(99);
-        if (this.on_device) {
-          this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE_PRIMARY);
-        }
+      clearInterval(this.checknet);
+      if (this.texttrans === true) {
+        this.cit_items = this.cit_items.map(w => w.toUpperCase())
+        this.targetref_words = this.targetref_words.map(w => w.toUpperCase())
+        this.nontargref_words = this.nontargref_words.map(w => w.toUpperCase())
       }
+      this.citP.cit_type = parseInt(this.citP.cit_type);
+      this.citP.num_of_blocks = parseInt(this.citP.num_of_blocks);
+
+      this.init_cit(99);
+      if (this.on_device) {
+        this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE_PRIMARY);
+      }
+
     }
   }
 

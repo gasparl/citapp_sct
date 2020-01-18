@@ -13,8 +13,14 @@ export class DataShareProvider {
     this.allpossiblewords = this.the_items.meaningful.concat(this.the_items.pseudo).sort();
   }
 
-  chb_change(ev) {
-    console.log(ev);
+  chb_change(ev, item) {
+    if (ev.checked) {
+      console.log('checked', item);
+      this.checkboxed.push(item);
+    } else {
+      console.log('filter', item);
+      this.checkboxed = this.checkboxed.filter(it => it !== item);
+    }
     console.log(this.checkboxed);
   }
 

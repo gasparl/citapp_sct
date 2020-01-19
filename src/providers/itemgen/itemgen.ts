@@ -255,12 +255,9 @@ export class ItemgenProvider {
     return ([].concat.apply([], final_item_order));
   }
 
-  fulltest_items(targetrefs, nontargrefs) {
+  fulltest_items(targetrefs, nontargrefs, baseset) {
     console.log('fulltest_items()');
-    return (this.add_fillers(this.stim_base_p, targetrefs, nontargrefs));
+    return (this.add_fillers(baseset, targetrefs, nontargrefs));
   }
-  fulltest_standard_items() {
-    console.log('fulltest_standard_items()');
-    return ([].concat.apply([], this.main_sequences(this.stim_base_p)));
-  }
+  
 }

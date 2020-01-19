@@ -92,19 +92,19 @@ export class CitProvider {
   no_prac_fail: boolean = true;
   text_to_show: string;
   cit_data: string =
-    ["subject_id", "cit_version", "block_number", "trial_number", "stimulus_shown", "category", "stim_type", "response_key", "rt_start", "rt_end", "incorrect", "too_slow", "isi", "date_in_ms"].join('\t') + "\n";
+    ["subject_id", "block_number", "trial_number", "stimulus_shown", "category", "stim_type", "response_key", "rt_start", "rt_end", "incorrect", "too_slow", "isi", "date_in_ms"].join('\t') + "\n";
   correct_resp: string = "none";
   blocknum: number;
-  num_of_blocks: any = 1;
+  num_of_blocks: any = 4;
   rt_start: number = 99999;
   rt_end: number = 99999;
   start: any = 0;
   listen: boolean = false;
   listn_end: boolean = false;
   response_window: any;
-  stim_base: any[];
-  the_targets: string[];
-  the_nontargs: string[];
+  stim_bases: any[];
+  the_targets: any[];
+  the_nontargs: any[];
   the_probes: string[];
   stimulus_text: string = "";
   to_display: string = "";
@@ -147,7 +147,7 @@ export class CitProvider {
       text: "Test in progress!",
       silent: false
     })
-    this.itemgenP.stim_base_p = JSON.parse(JSON.stringify(this.stim_base));
+    this.itemgenP.stim_base_p = JSON.parse(JSON.stringify(this.stim_bases));
   }
 
 
@@ -169,8 +169,18 @@ export class CitProvider {
   set_block_texts() {
     let trefs = this.list_items(this.targetrefs);
     let nontrefs = this.list_items(this.nontargrefs);
-    let targs = this.list_items(this.the_targets);
-    let nontargs = this.list_items(this.the_nontargs);
+    let targs = [
+      this.list_items(this.the_targets[0]),
+      this.list_items(this.the_targets[1]),
+      this.list_items(this.the_targets[2]),
+      this.list_items(this.the_targets[3])
+    ];
+    let nontargs = [
+      this.list_items(this.the_nontargs[0]),
+      this.list_items(this.the_nontargs[1]),
+      this.list_items(this.the_nontargs[2]),
+      this.list_items(this.the_nontargs[3])
+    ];
     this.block_texts = this.trP.blck_texts[this.trP.lang](targs, nontargs, trefs, nontrefs, this.cit_type);
     this.block_text = this.block_texts[1];
   }
@@ -315,19 +325,9 @@ export class CitProvider {
     } else {
       if ((this.blocknum > 3) || (this.blocknum > 2 && this.cit_type !== 0) || this.practice_eval()) {
         this.blocknum++;
-        if (this.blocknum <= (this.num_of_blocks + 2) ||
-          (this.cit_type === 0 && this.blocknum <= (this.num_of_blocks + 3))) {
-          if (this.block_texts[this.blocknum] !== undefined) {
-            this.block_text = this.block_texts[this.blocknum];
-            this.nextblock();
-          } else {
-            this.block_trialnum = 0;
-            this.teststim = this.all_teststms.shift();
-            if (this.to_slice !== 0) {
-              this.teststim = this.teststim.slice(0, this.to_slice);
-            }
-            this.next_trial();
-          }
+        if (this.stim_bases.length > 0) {
+          this.block_text = this.block_texts[this.blocknum];
+          this.nextblock();
         } else {
           this.bg_color = "#fff";
           this.switch_divs('div_end')
@@ -387,7 +387,6 @@ export class CitProvider {
     }
     this.cit_data +=
       [this.subj_id,
-      this.cittypedict[this.cit_type],
       this.blocknum,
       this.block_trialnum,
       this.trial_stim.item,
@@ -405,46 +404,32 @@ export class CitProvider {
     this.next_trial();
   }
 
-
   nextblock() {
+    const stnm: object = { 5: 1, 7: 2, 9: 3 };
     this.crrnt_phase = 'practice';
     this.bg_color = "#fff";
     this.block_trialnum = 0;
     // 0: fillers & target, 1: standard CIT, 2: fillers (no target)
     if (this.blocknum == 1) {
-      if (this.cit_type === 1) {
-        this.response_timelimit = 10000;
-        this.crrnt_phase = 'practice_strict';
-        this.teststim = this.itemgenP.main_items(this.stim_base);
-      } else {
-        this.response_timelimit = this.response_timelimit_main;
-        this.teststim = this.itemgenP.filler_items(this.targetrefs, this.nontargrefs);
-      }
+      this.stim_bases.forEach((baseset) => {
+        this.all_teststms.push(this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs, baseset));
+      });
+      this.response_timelimit = this.response_timelimit_main;
+      this.teststim = this.itemgenP.filler_items(this.targetrefs, this.nontargrefs);
     } else if (this.blocknum == 2) {
-      if (this.cit_type === 1) {
-        this.response_timelimit = this.response_timelimit_main;
-        this.teststim = this.itemgenP.main_items(this.stim_base);
-      } else if (this.cit_type === 2) {
-        this.response_timelimit = this.response_timelimit_main;
-        this.teststim = this.itemgenP.practice_items(this.targetrefs, this.nontargrefs);
-      } else {
-        this.response_timelimit = 10000;
-        this.crrnt_phase = 'practice_strict';
-        this.teststim = this.itemgenP.main_items(this.stim_base);
-      }
-    } else if (this.blocknum == 3 && this.cit_type === 0) {
+      this.response_timelimit = 10000;
+      this.crrnt_phase = 'practice_strict';
+      this.teststim = this.itemgenP.main_items(this.stim_bases[0]);
+    } else if (this.blocknum == 3) {
       this.response_timelimit = this.response_timelimit_main;
       this.teststim = this.itemgenP.practice_items(this.targetrefs, this.nontargrefs);
+    } else if (this.blocknum % 2 !== 0) {
+      this.response_timelimit = 10000;
+      this.crrnt_phase = 'practice_strict';
+      this.teststim = this.itemgenP.main_items(this.stim_bases[stnm[this.blocknum]]);
     } else {
       this.crrnt_phase = 'main';
       this.response_timelimit = this.response_timelimit_main;
-      for (let i = 0; i < this.num_of_blocks; i++) {
-        if (this.cit_type === 1) {
-          this.all_teststms.push(this.itemgenP.fulltest_standard_items());
-        } else {
-          this.all_teststms.push(this.itemgenP.fulltest_items(this.targetrefs, this.nontargrefs));
-        }
-      }
       this.teststim = this.all_teststms.shift();
     }
     if (this.to_slice !== 0) {
@@ -518,11 +503,11 @@ export class CitProvider {
       "probe5": {}
     };
     let allmain = [];
-    Object.keys(this.cit_results).map((dkey) => {
+    Object.keys(this.cit_results).forEach((dkey) => {
       let probe = this.all_rts[dkey];
       allmain = allmain.concat(probe);
       let irrs = [];
-      Object.keys(this.all_rts).map((dkey2) => {
+      Object.keys(this.all_rts).forEach((dkey2) => {
         if (dkey !== dkey2) {
           irrs = irrs.concat(this.all_rts[dkey2])
         }
@@ -547,7 +532,7 @@ export class CitProvider {
         this.cit_results[dkey].rt_irr_sd = 'NA';
         this.cit_results[dkey].dcit = 'NA';
       }
-      Object.keys(this.cit_results[dkey]).map((subkey) => {
+      Object.keys(this.cit_results[dkey]).forEach((subkey) => {
         if (!isNaN(this.cit_results[dkey][subkey])) {
           if (subkey.slice(0, 3) == 'rt_') {
             this.cit_results[dkey][subkey] = (Math.ceil(this.cit_results[dkey][subkey] * 10) / 10).toFixed(1);

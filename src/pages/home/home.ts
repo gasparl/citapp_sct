@@ -45,7 +45,6 @@ export class HomePage {
   //*/
 
   initslide: any = 0;
-  cit_items: string[] = [];
   mailpost: string = "";
   pwpost: string = "";
   email_valid: boolean = false;
@@ -79,6 +78,12 @@ export class HomePage {
       if (cntent) {
         this.citP.cit_results = cntent;
         this.citP.switch_divs('div_results');
+      } else {
+        this.citP.subj_id = this.citP.neat_date() +
+          "_" +
+          this.rchoice("CDFGHJKLMNPQRSTVWXYZ") +
+          this.rchoice("AEIOU") +
+          this.rchoice("CDFGHJKLMNPQRSTVWXYZ");
       }
     });
   }
@@ -112,6 +117,10 @@ export class HomePage {
     });
   }
 
+  rchoice(array) {
+    return array[Math.floor(array.length * Math.random())];
+  }
+
   san_html(html) {
     return this._sanitizer.bypassSecurityTrustHtml(html);
   }
@@ -137,84 +146,6 @@ export class HomePage {
         }
       });
     }
-  }
-
-  settings_storage = function(datapost) {
-    console.log('settings_storage starts...');
-    if (datapost == 'yes') {
-      datapost = JSON.stringify({
-        'subject_id': this.citP.subj_id,
-        'cit_version': this.citP.cit_type,
-        'num_of_blocks': this.citP.num_of_blocks,
-        'timelimit': this.citP.response_timelimit_main,
-        'isi_min': this.citP.isi_delay_minmax[0],
-        'isi_max': this.citP.isi_delay_minmax[1],
-        'target': this.cit_items[0],
-        'probe1': this.cit_items[1],
-        'probe2': this.cit_items[2],
-        'probe3': this.cit_items[3],
-        'probe4': this.cit_items[4],
-        'probe5': this.cit_items[5],
-        'filler1': this.targetref_words[0],
-        'filler2': this.targetref_words[1],
-        'filler3': this.targetref_words[2],
-        'filler4': this.nontargref_words[0],
-        'filler5': this.nontargref_words[1],
-        'filler6': this.nontargref_words[2],
-        'filler7': this.nontargref_words[3],
-        'filler8': this.nontargref_words[4],
-        'filler9': this.nontargref_words[5]
-      });
-    }
-    let themail;
-    if (datapost == "sendpass") {
-      themail = this.email_for_pw;
-    } else {
-      themail = this.mailpost;
-      this.email_valid = false;
-    }
-    this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/x_citapp_storage.php', JSON.stringify({
-      email_post: themail,
-      pw_post: this.pwpost,
-      data_post: datapost
-    }), { responseType: "text" }).subscribe((response) => {
-      console.log(response);
-      let feed;
-      if (response.slice(0, 7) == 'victory') {
-        document.getElementById("storefeed_id").style.color = 'green';
-        response = response.slice(7)
-        if (response.slice(0, 6) == 'insert') {
-          response = response.slice(6)
-          feed = "Data saved in database.";
-        } else if (response.slice(0, 6) == 'update') {
-          response = response.slice(6)
-          feed = "Data updated in database.";
-        } else if (response.slice(0, 6) == 'loaded') {
-          response = response.slice(6)
-          feed = this.load_settings(response);
-        } else if (response.slice(0, 5) == 'Email') {
-          feed = response;
-          this.email_valid = false;
-        }
-      } else {
-        if (response.slice(0, 6) == 'pwfail') {
-          response = response.slice(6);
-          if (/\S+@\S+\.\S+/.test(this.mailpost)) {
-            this.email_valid = true;
-            this.email_for_pw = themail;
-          }
-        }
-        document.getElementById("storefeed_id").style.color = 'red';
-        feed = 'Error. ' + response;
-      }
-      document.getElementById("storefeed_id").innerHTML = feed + "<br><br>";
-    },
-      err => {
-        console.log('Request failed: ', err);
-        document.getElementById("storefeed_id").style.color = 'red';
-        let feed = 'Could not connect to server. ' + err.message;
-        document.getElementById("storefeed_id").innerHTML = feed + "<br><br>";
-      });
   }
 
   valid_chars(event: any) {
@@ -292,7 +223,6 @@ export class HomePage {
 
   add_img(img_key, filename) {
     this.img_dict[img_key] = filename;
-    this.image_names();
     this.img_dict[img_key + '_img'] = this.dataShare.stored_images[filename];
     this.display_thumbnail(img_key);
   }
@@ -310,96 +240,18 @@ export class HomePage {
     element.appendChild(img);
   }
 
-  remove_img_el(parent_id) {
-    if (this.img_dict[parent_id] !== undefined) {
-      this.img_dict[parent_id] = '';
-      this.image_names();
-      let img_elem: HTMLImageElement = document.querySelector('#' + parent_id + '_img');
-      img_elem.src = '';
-      img_elem.parentNode.removeChild(img_elem);
-      delete this.img_dict[parent_id];
-      delete this.img_dict[parent_id + '_img'];
-    }
-  }
-
-  image_names() {
-    this.cit_items[0] = (this.img_dict.target === undefined) ? this.cit_items[0] : this.img_dict.target;
-    this.cit_items[1] = (this.img_dict.probe1 === undefined) ? this.cit_items[1] : this.img_dict.probe1;
-    this.cit_items[2] = (this.img_dict.probe2 === undefined) ? this.cit_items[2] : this.img_dict.probe2;
-    this.cit_items[3] = (this.img_dict.probe3 === undefined) ? this.cit_items[3] : this.img_dict.probe3;
-    this.cit_items[4] = (this.img_dict.probe4 === undefined) ? this.cit_items[4] : this.img_dict.probe4;
-    this.cit_items[5] = (this.img_dict.probe5 === undefined) ? this.cit_items[5] : this.img_dict.probe5;
-    this.targetref_words[0] = (this.img_dict.filler1 === undefined) ? this.targetref_words[0] : this.img_dict.filler1;
-    this.targetref_words[1] = (this.img_dict.filler2 === undefined) ? this.targetref_words[1] : this.img_dict.filler2;
-    this.targetref_words[2] = (this.img_dict.filler3 === undefined) ? this.targetref_words[2] : this.img_dict.filler3;
-    this.nontargref_words[0] = (this.img_dict.filler4 === undefined) ? this.nontargref_words[0] : this.img_dict.filler4;
-    this.nontargref_words[1] = (this.img_dict.filler5 === undefined) ? this.nontargref_words[1] : this.img_dict.filler5;
-    this.nontargref_words[2] = (this.img_dict.filler6 === undefined) ? this.nontargref_words[2] : this.img_dict.filler6;
-    this.nontargref_words[3] = (this.img_dict.filler7 === undefined) ? this.nontargref_words[3] : this.img_dict.filler7;
-    this.nontargref_words[4] = (this.img_dict.filler8 === undefined) ? this.nontargref_words[4] : this.img_dict.filler8;
-    this.nontargref_words[5] = (this.img_dict.filler9 === undefined) ? this.nontargref_words[5] : this.img_dict.filler9;
-  }
-
-
-  load_settings(loaded_data) {
-    try {
-      let data_dict = JSON.parse(loaded_data);
-      this.citP.subj_id = data_dict.subject_id || this.citP.subj_id;
-      this.citP.cit_type = data_dict.cit_version || this.citP.cit_type;
-      this.citP.num_of_blocks = data_dict.num_of_blocks || this.citP.num_of_blocks;
-      this.citP.response_timelimit_main = data_dict.timelimit || this.citP.response_timelimit_main;
-      this.citP.isi_delay_minmax[0] = data_dict.isi_min || this.citP.isi_delay_minmax[0];
-      this.citP.isi_delay_minmax[1] = data_dict.isi_max || this.citP.isi_delay_minmax[1];
-      this.cit_items[0] = data_dict.target || this.cit_items[0];
-      this.cit_items[1] = data_dict.probe1 || this.cit_items[1];
-      this.cit_items[2] = data_dict.probe2 || this.cit_items[2];
-      this.cit_items[3] = data_dict.probe3 || this.cit_items[3];
-      this.cit_items[4] = data_dict.probe4 || this.cit_items[4];
-      this.cit_items[5] = data_dict.probe5 || this.cit_items[5];
-      this.targetref_words[0] = data_dict.filler1 || this.targetref_words[0];
-      this.targetref_words[1] = data_dict.filler2 || this.targetref_words[1];
-      this.targetref_words[2] = data_dict.filler3 || this.targetref_words[2];
-      this.nontargref_words[0] = data_dict.filler4 || this.nontargref_words[0];
-      this.nontargref_words[1] = data_dict.filler5 || this.nontargref_words[1];
-      this.nontargref_words[2] = data_dict.filler6 || this.nontargref_words[2];
-      this.nontargref_words[3] = data_dict.filler7 || this.nontargref_words[3];
-      this.nontargref_words[4] = data_dict.filler8 || this.nontargref_words[4];
-      this.nontargref_words[5] = data_dict.filler9 || this.nontargref_words[5];
-      return ("Data loaded from database");
-    } catch (e) {
-      document.getElementById("storefeed_id").style.color = 'red';
-      return ("Error: stored data is not in proper (JSON) format.");
-    }
-  };
 
   save_on_citstart: boolean = true;
   duplicates: string = '';
   initials() {
-    let allitems = JSON.parse(JSON.stringify(this.cit_items.concat(this.targetref_words, this.nontargref_words)));
-    allitems = allitems.filter(item => item !== null);
-    let dupls = allitems.reduce((acc, v, i, arr) => arr.indexOf(v) !== i && acc.indexOf(v) === -1 ? acc.concat(v) : acc, [])
-    dupls = dupls.filter(item => item !== '');
-    if (dupls.length > 0) {
-      this.duplicates = '"' + dupls.join('", "') + '"';
-    } else {
-      this.duplicates = '';
-      clearInterval(this.checknet);
-      if (this.texttrans === true) {
-        this.cit_items = this.cit_items.map(w => w.toUpperCase())
-        this.targetref_words = this.targetref_words.map(w => w.toUpperCase())
-        this.nontargref_words = this.nontargref_words.map(w => w.toUpperCase())
-      }
-      this.citP.cit_type = parseInt(this.citP.cit_type);
-      this.citP.num_of_blocks = parseInt(this.citP.num_of_blocks);
-
-      this.init_cit(99);
-      if (this.on_device) {
-        this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE_PRIMARY);
-      }
-
+    clearInterval(this.checknet);
+    this.targetref_words = this.targetref_words.map(w => w.toUpperCase())
+    this.nontargref_words = this.nontargref_words.map(w => w.toUpperCase())
+    this.init_cit(99);
+    if (this.on_device) {
+      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE_PRIMARY);
     }
   }
-
   start_test() {
     this.citP.switch_divs('div_settings')
     if (this.on_device) {
@@ -409,70 +261,10 @@ export class HomePage {
   init_cit(chosen) {
     this.citP.consented = chosen;
     this.create_stim_base();
-    this.to_img();
-  }
-
-  async to_img() {
-    await Promise.all(this.citP.stim_base.map(async (dict) => {
-      if (dict['imgurl'] !== null) {
-        this.citP.task_images[dict['item']] = await this.imgurl(dict['imgurl']);
-      }
-      delete dict['imgurl'];
-    }));
-    await Promise.all(this.citP.targetrefs.map(async (dict) => {
-      if (dict['imgurl'] !== null) {
-        this.citP.task_images[dict['item']] = await this.imgurl(dict['imgurl']);
-      }
-      delete dict['imgurl'];
-    }));
-    await Promise.all(this.citP.nontargrefs.map(async (dict) => {
-      if (dict['imgurl'] !== null) {
-        this.citP.task_images[dict['item']] = await this.imgurl(dict['imgurl']);
-      }
-      delete dict['imgurl'];
-    }));
     this.citP.set_block_texts();
     this.citP.task_start();
     this.citP.nextblock();
   }
-
-  imgurl(base64) {
-    return new Promise((resolve, reject) => {
-      let img = new Image();
-      img.onload = () => resolve(img);
-      img.src = base64;
-    })
-  }
-
-
-  default_fillers() {
-    Object.keys(this.img_dict).map((key) => {
-      if (key.slice(0, 6) === 'filler') {
-        this.remove_img_el(key);
-      }
-    });
-    this.targetref_words = JSON.parse(JSON.stringify(this.trP.targetref_words_orig[this.trP.lang]));
-    this.nontargref_words = JSON.parse(JSON.stringify(this.trP.nontargref_words_orig[this.trP.lang]));
-  }
-  default_core() {
-    Object.keys(this.img_dict).map((key) => {
-      if (key.slice(0, 6) === 'target' || key.slice(0, 5) === 'probe') {
-        this.remove_img_el(key);
-      }
-    });
-    this.cit_items.map((x, i) => this.cit_items[i] = '');
-    this.citP.subj_id = '';
-  }
-  default_settings() {
-    this.texttrans = true;
-    this.citP.cit_type = 0;
-    this.citP.num_of_blocks = 1;
-    this.citP.isi_delay_minmax = [300, 700];
-    this.citP.response_timelimit_main = 900;
-    this.trP.lang = 'en';
-    this.mails = '';
-  }
-
 
   auto_img() {
     let feed;
@@ -506,12 +298,87 @@ export class HomePage {
 
   // item generation
 
+  prep_items() {
+    this.dataShare.checkboxed.forEach(word => {
+      let ind = this.dataShare.the_items.meaningful.indexOf(word);
+      if (ind !== -1) {
+        this.dataShare.the_items.meaningful.push(this.dataShare.the_items.meaningful.splice(ind, 1)[0]);
+      }
+    })
+    this.citP.the_probes = this.dataShare.the_items.meaningful.splice(0, 4);
+    this.citP.the_targets = this.dataShare.the_items.meaningful;
+
+    this.dataShare.the_items.pseudo = this.dataShare.the_items.pseudo.filter((el) => {
+      return this.dataShare.checkboxed.indexOf(el) < 0;
+    });
+  }
+
+  prune() {
+    //given the probe and target (in each of the categories), selects the 4 irrelevants. None with same starting letter, and with length closest possible to the probe.
+    let items_base_temp = [];
+    this.citP.the_probes.forEach((probe, index) => {
+
+      let t_container = JSON.parse(JSON.stringify(this.citP.the_targets));
+      let icontainer = JSON.parse(JSON.stringify(this.dataShare.the_items.pseudo));
+      let finals = [probe];
+
+      // add closest target, then closest irrs
+
+      t_container = t_container.filter((n) => {
+        // filter if same starting character
+        return probe[0] != n[0];
+      });
+
+      let maxdif = 0, temps;
+      while (finals.length < 2 && maxdif < 99) {
+        temps = t_container.filter(function(n) {
+          return Math.abs(probe.length - n.length) <= maxdif;
+        });
+        if (temps.length > 0) {
+          finals.push(temps[0]); // nonrandom!
+          t_container = t_container.filter(function(n) {
+            return finals[finals.length - 1][0] !== n[0];
+          });
+        } else {
+          maxdif++;
+        }
+      }
+      maxdif = 0;
+      while (finals.length < 6 && maxdif < 99) {
+        temps = icontainer.filter(function(n) {
+          return Math.abs(probe.length - n.length) <= maxdif;
+        });
+        if (temps.length > 0) {
+          finals.push(temps[0]); // nonrandom!
+          icontainer = icontainer.filter(function(n) {
+            return finals[finals.length - 1][0] !== n[0];
+          });
+        } else {
+          maxdif++;
+        }
+      }
+
+      this.citP.the_targets = this.citP.the_targets.filter((el) => {
+        return finals.indexOf(el) < 0;
+      });
+      this.dataShare.the_items.pseudo = this.dataShare.the_items.pseudo.filter((el) => {
+        return finals.indexOf(el) < 0;
+      });
+
+      items_base_temp.push(finals);
+    });
+    console.log("! items_base_temp:");
+    console.log(items_base_temp);
+    return items_base_temp;
+  }
+
   create_stim_base() {
+    this.prep_items();
+    let item_bases = this.prune();
     this.citP.blocknum = 1;
-    this.citP.stim_base = [];
-    this.citP.the_targets = [];
-    this.citP.the_nontargs = [];
-    this.citP.the_probes = [];
+    this.citP.stim_bases = [[], [], [], []];
+    this.citP.the_targets = [[], [], [], []];
+    this.citP.the_nontargs = [[], [], [], []];
     this.citP.targetrefs = [];
     this.citP.nontargrefs = [];
     this.citP.task_images = {};
@@ -525,36 +392,31 @@ export class HomePage {
       "nontargflr": [],
       "target": []
     };
-    var items_array = JSON.parse(JSON.stringify(this.cit_items));
-    items_array.forEach((item, num) => {
-      let tempdict: any = {
-        'item': item,
-        'cat': 'main'
-      }
-      if (0 === num) {
-        tempdict.type = "target";
-        if (Object.keys(this.img_dict).indexOf('target') !== -1) {
-          tempdict.mode = 'image';
-          tempdict.imgurl = this.img_dict['target_img'];
-        } else {
+    item_bases.forEach((itemlist, num) => {
+      itemlist.forEach((item, indx) => {
+        let tempdict: any = {
+          'item': item,
+          'cat': 'main'
+        }
+        if (0 === indx) {
+          tempdict.type = "probe1";
           tempdict.mode = 'text';
           tempdict.imgurl = null;
-        }
-        this.citP.the_targets.push(tempdict);
-      } else {
-        tempdict.type = "probe" + num;
-        if (Object.keys(this.img_dict).indexOf('probe' + num) !== -1) {
-          tempdict.mode = 'image';
-          tempdict.imgurl = this.img_dict["probe" + num + '_img'];
-        } else {
+          this.citP.the_nontargs[num].push(tempdict);
+        } else if (1 === indx) {
+          tempdict.type = "target";
           tempdict.mode = 'text';
           tempdict.imgurl = null;
+          this.citP.the_targets[num].push(tempdict);
+        } else {
+          tempdict.type = "probe" + num;
+          this.citP.the_nontargs[num].push(tempdict);
         }
-        this.citP.the_nontargs.push(tempdict);
-      }
-      if (!(this.citP.cit_type === 2 && tempdict.type === "target")) {
-        this.citP.stim_base.push(tempdict);
-      }
+        tempdict.mode = 'text';
+        tempdict.imgurl = null;
+
+        this.citP.stim_bases[num].push(JSON.parse(JSON.stringify(tempdict)));
+      });
     });
 
     this.targetref_words.forEach((ref_item, num) => {

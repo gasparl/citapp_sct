@@ -22,7 +22,7 @@ export class CitProvider {
       } else if (this.crrnt_phase === 'main') {
         correct_chance = 0.5;
       } else {
-        correct_chance = 0.9;
+        correct_chance = 1; // 0.9;
       }
       if (this.correct_resp == "resp_a") {
         corr_code = "resp_a";
@@ -41,19 +41,26 @@ export class CitProvider {
       } else {
         chosen_response = "Response: resp_b (RIGHT)";
       }
-      info += "\n--len(stims): " + this.teststim.length + ", trialnum: " + this.block_trialnum + "\n";
+      info += "\n--len(stims): " + this.teststim.length +
+        ", blocknum: " + this.blocknum +
+        ", trialnum: " + this.block_trialnum + "\n";
       this.touchstart("", sim_key);
       info += chosen_response + " preset " + rt_sim + ", actual " + Math.round(performance.now() - this.start) + "\n";
       console.log(info);
     }.bind(this), rt_sim);
   }
   //*/
-  to_slice: number = 10;
+  to_slice: number = 3;
 
+  exp: "ger_in_hun";
   subj_id: string = '';
   age: string = '';
   gender: string = '';
-  current_div: string = "div_items"; // ddd default: "div_settings", div_items, div_dems, div_cit_main, div_end
+  education: string = '';
+  occupation: string = '';
+  speaker: string = '';
+  current_div: string = "div_pcheck"; // ddd default: "div_settings"
+  // div_items, div_dems, div_cit_main, div_end, div_lextale_intro
   current_segment: string = 'main';
   current_menu: string = '';
   false_delay: number = 400;
@@ -95,7 +102,6 @@ export class CitProvider {
     ["subject_id", "block_number", "trial_number", "stimulus_shown", "category", "stim_type", "response_key", "rt_start", "rt_end", "incorrect", "too_slow", "isi", "date_in_ms"].join('\t') + "\n";
   correct_resp: string = "none";
   blocknum: number;
-  num_of_blocks: any = 4;
   rt_start: number = 99999;
   rt_end: number = 99999;
   start: any = 0;
@@ -118,6 +124,7 @@ export class CitProvider {
   task_images: object;
   image_width: number;
   all_teststms: any[] = [];
+  pchosen: string[] = ['', '', '', ''];
 
   constructor(
     public file: File,
@@ -323,9 +330,9 @@ export class CitProvider {
       this.text_to_show = this.trial_stim.item;
       this.isi();
     } else {
-      if ((this.blocknum > 3) || (this.blocknum > 2 && this.cit_type !== 0) || this.practice_eval()) {
+      if ((this.blocknum > 3 && this.blocknum % 2 === 0) || this.practice_eval()) {
         this.blocknum++;
-        if (this.stim_bases.length > 0) {
+        if (this.blocknum > 10) {
           this.block_text = this.block_texts[this.blocknum];
           this.nextblock();
         } else {
@@ -339,6 +346,14 @@ export class CitProvider {
       } else {
         this.nextblock();
       }
+    }
+  }
+
+  lex_switch() {
+    if (this.speaker === 'yes') {
+      this.switch_divs("div_lextale_intro");
+    } else {
+      this.switch_divs("div_end");
     }
   }
 
@@ -477,7 +492,6 @@ export class CitProvider {
       this.cit_results.file_nam_disp = this.cit_results.file_name + ' There was an error saving this file. Data data can still be retrieved by copying it to the clipboard. Error: ' + reason;
     });
     let somecode = this.neat_date() + Math.random().toString(36).slice(2);
-    this.dataShare.storage.set('test-' + somecode, this.trP.lang + this.neat_date().slice(0, 8));
   }
 
   cit_results: any = {
@@ -583,14 +597,10 @@ export class CitProvider {
       2: 'noitemshare',
       0: 'noshare'
     };
-
-    this.cit_results.file_name = this.subj_id + '_' +
-      this.cittypedict[this.cit_type] + '_' +
-      this.num_of_blocks + 'block_' +
-      consentword[this.consented] + '_' + this.neat_date().slice(0, 12) + '.txt';
+    // TODO: add CONDITION based on CONDITION Variable
+    this.cit_results.file_name = this.subj_id + '_' + '_' + this.neat_date().slice(0, 12) + '.txt';
     this.cit_results.file_nam_disp = this.cit_results.file_name;
-    this.stored_results[this.neat_date() + this.subj_id] = this.cit_results;
-    this.dataShare.storage.set('reslts', this.stored_results);
+    this.dataShare.storage.set('reslts', this.cit_results);
   }
 
   // display
@@ -601,7 +611,7 @@ export class CitProvider {
     } else {
       this.correct_resp = "resp_a";
     }
-    // this.touchsim(); // for testing -- TODOREMOVE
+    this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       if (this.trial_stim.mode === 'image') {
         this.ctx.drawImage(this.task_images[this.trial_stim.item], 0, 0);

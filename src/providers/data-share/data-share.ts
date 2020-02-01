@@ -15,17 +15,14 @@ export class DataShareProvider {
 
   chb_change(ev, item) {
     if (ev.checked) {
-      console.log('checked', item);
       this.checkboxed.push(item);
     } else {
-      console.log('filter', item);
       this.checkboxed = this.checkboxed.filter(it => it !== item);
     }
-    console.log(this.checkboxed);
   }
 
   german_items = {
-    'meaningful': ["vertraut", "bedeutsam", "bekannt", "verstanden", "wahrhaft", "vorhanden", "sinnvoll", "richtig", "gewusst", "geläufig", "denkbar", "tatsächlich", "glaubhaft"],
+    'meaningful': ["vertraut", "bedeutsam", "bekannt", "verstanden", "wahrhaft", "vorhanden", "sinnvoll", "richtig", "gewusst", "geläufig"], //  "denkbar", "tatsächlich", "glaubhaft"
     'pseudo': ["rützte", "girter", "zonsig", "fensch", "schwapf", "schlink", "kraubig", "behlsam", "hokisch", "noberal", "kriesam", "besärzt", "fosisch", "brirsam", "lathaft", "breuzig", "greibig", "glätisch", "weugvoll", "redengig", "gachligt", "verkemst", "pauflich", "heiglich", "wieflich", "schlinst", "plaucklos", "staumisch", "stürsisch", "kreibisch", "tintzlich", "brunenlos", "bänelich", "schriemrig", "klotselig", "gelörnsam"]
   };
 

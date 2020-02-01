@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class TranslationProvider {
-  lang: string = 'en';
+  lang: string = 'hu';
   lg_keys: string[];
   constructor() {
     this.lg_keys = Object.keys(this.lgs);
@@ -230,7 +230,7 @@ export class TranslationProvider {
           'The main items will now be replaced with new ones. Touch the <i>right</i> button when you see the following target item:<br>' +
           targs[pnum] +
           'Touch the <i>left</i> button when you see any other item. These other items are:<br>' +
-          nontargs[pnum] + '<br><br>Before continuing, there will be a short practice round to get used to these items. Again, you will have a lot of time to choose each response, but <b>you must respond to each item correctly</b>, otherwise you will have to repeat the practice round.');
+          nontargs[pnum] + 'Before continuing, there will be a short practice round to get used to these items. Again, you will have a lot of time to choose each response, but <b>you must respond to each item correctly</b>, otherwise you will have to repeat the practice round.');
         thetexts.push(
           "Well done. The next block begins. The task is the same. Touch the <i>right</i> button when you see the following items:<br>" + targs[pnum].replace('<br>', '') + trefs + "Touch the <i>left</i> button for everything else.<br><br>Try to be both accurate and fast.");
       })

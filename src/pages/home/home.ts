@@ -74,8 +74,9 @@ export class HomePage {
     public alertCtrl: AlertController,
     private screenOrientation: ScreenOrientation
   ) {
-    this.dataShare.storage.get('result').then((cntent) => {
-      if (cntent) {
+    this.dataShare.storage.get('reslts').then((cntent) => {
+      if (cntent && 1 < 0) {
+        console.log(cntent);
         this.citP.cit_results = cntent;
         this.citP.switch_divs('div_results');
       } else {
@@ -305,12 +306,14 @@ export class HomePage {
         this.dataShare.the_items.meaningful.push(this.dataShare.the_items.meaningful.splice(ind, 1)[0]);
       }
     })
+    this.dataShare.the_items.meaningful = this.dataShare.the_items.meaningful.map(it => it.toUpperCase());
     this.citP.the_probes = this.dataShare.the_items.meaningful.splice(0, 4);
-    this.citP.the_targets = this.dataShare.the_items.meaningful;
+    this.citP.the_targets = JSON.parse(JSON.stringify(this.dataShare.the_items.meaningful));
 
     this.dataShare.the_items.pseudo = this.dataShare.the_items.pseudo.filter((el) => {
       return this.dataShare.checkboxed.indexOf(el) < 0;
     });
+    this.dataShare.the_items.pseudo = this.dataShare.the_items.pseudo.map(it => it.toUpperCase());
   }
 
   prune() {
@@ -372,6 +375,8 @@ export class HomePage {
     return items_base_temp;
   }
 
+  words_lists: any[] = [[], [], [], []];
+  words_listsTEMP = [['a1','b1', 'c1','d1','e1'], ['a2','b', 'c2','d2','e2'], ['a3','b3', 'c3'], ['a4','b4']];
   create_stim_base() {
     this.prep_items();
     let item_bases = this.prune();
@@ -403,20 +408,22 @@ export class HomePage {
           tempdict.mode = 'text';
           tempdict.imgurl = null;
           this.citP.the_nontargs[num].push(tempdict);
+          this.words_lists[num].push(item);
         } else if (1 === indx) {
           tempdict.type = "target";
           tempdict.mode = 'text';
           tempdict.imgurl = null;
           this.citP.the_targets[num].push(tempdict);
         } else {
-          tempdict.type = "probe" + num;
+          tempdict.type = "probe" + indx;
           this.citP.the_nontargs[num].push(tempdict);
+          this.words_lists[num].push(item);
         }
         tempdict.mode = 'text';
         tempdict.imgurl = null;
-
         this.citP.stim_bases[num].push(JSON.parse(JSON.stringify(tempdict)));
       });
+      this.words_lists[num].push('Nem tudom.');
     });
 
     this.targetref_words.forEach((ref_item, num) => {
@@ -462,7 +469,7 @@ export class HomePage {
   }
 
   sethome() {
-    this.citP.switch_divs('div_settings');
+    this.citP.switch_divs('div_results');
     this.citP.current_menu = 'm_testres';
     this.citP.current_segment = 'menus';
   }

@@ -9,7 +9,7 @@
 
     <br />
     <div style="font-size: 90%;line-height:150%;font-weight:bold">
-      Please fill in your gender and age below.
+      Please fill in the demographics below.
     </div>
     <br />
 
@@ -24,6 +24,27 @@
     <ion-item>
       <ion-label style="font-size: 160% !important;margin-bottom:0;color:black;" fixed>Age</ion-label>
       <ion-input [(ngModel)]="citP.age" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
+    </ion-item>
+    <br />
+    <ion-item>
+      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Current occupation</ion-label>
+      <ion-select [(ngModel)]="citP.occupation" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
+        <ion-option value='1'>Student</ion-option>
+        <ion-option value='2'>Employed (full time)</ion-option>
+        <ion-option value='3'>Other</ion-option>
+      </ion-select>
+    </ion-item>
+    <br />
+    <ion-item>
+      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Highest education</ion-label>
+      <ion-select [(ngModel)]="citP.education" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
+        <ion-option value='0'>Elementary school</ion-option>
+        <ion-option value='1'>High school</ion-option>
+        <ion-option value='2'>Professional training / vocational program</ion-option>
+        <ion-option value='3'>Some college/univerity</ion-option>
+        <ion-option value='4'>Bachelor's degree or equivalent</ion-option>
+        <ion-option value='5'>Master's degree (or above)</ion-option>
+      </ion-select>
     </ion-item>
     <div style="text-align:center">
       <br />
@@ -113,9 +134,81 @@
   </div>
 
 
+  <div *ngSwitchCase="'cit_end'">
+    A hazugságvizsgálat véget ért! Mivel a résztvevők fele nem beszél németül, a kutatás érdekében nagyon fontos pontosan rögzítenünk, hogy <b>valójában beszélsz-e németül vagy nem</b>. Ezért kérjük szimplán add meg ezt az adatot alább. (Ez nem
+    fogja befolyásolni a befejezett teszt eredményeit, amik már el lettek mentve.) A kifizetés előtt a kísérletvezető is ellenőrizni fogja helyesen adtad-e meg ezt az információt.
+
+    <ion-item>
+      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Beszélek németül</ion-label>
+      <ion-select [(ngModel)]="citP.speaker" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
+        <ion-option value='yes'>Igen</ion-option>
+        <ion-option value='no'>Nem</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <div *ngIf="citP.speaker !==''">
+      Azt adtad meg, hogy <b><span *ngIf="citP.speaker === 'yes'">valójában</span><span *ngIf="citP.speaker === 'no'">tényleg nem</span> beszélsz németül</b>. Ha ez stimmel, érintsd meg az alábbi gombot.
+    </div>
+
+    <button ion-button (tap)='switch_divs("div_pcheck");' color='light' block>RENDBEN</button>
+
+  </div>
+
+
+  <div *ngSwitchCase="'div_pcheck'">
+    Függetlenül attól, hogy beszélsz-e németül, tudni szeretnénk, felismerted-e vagy akár sejtetted-e melyik szó volt német a különböző tesztszakaszokban. Légy szíves, válaszd ki a 4 ismert vagy sejtett valódi német szót az alábbi 4 listából. Ha
+    nincs sejtésed se, válaszd
+    a "nem tudom" opciót.
+    <br />
+
+    <ion-item>
+      <ion-label style="font-size: 100% !important;margin-bottom:0;color:black">1.</ion-label>
+      <ion-select [(ngModel)]="citP.pchosen[0]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
+        <ion-option *ngFor="let mainword of words_listsTEMP[0]" value={{mainword}}>{{mainword}}</ion-option>
+      </ion-select>
+    </ion-item>
+    <br />
+
+    <ion-item>
+      <ion-label style="font-size: 100% !important;margin-bottom:0;color:black">2.</ion-label>
+      <ion-select [(ngModel)]="citP.pchosen[1]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
+        <ion-option *ngFor="let mainword of words_listsTEMP[1]" value={{mainword}}>{{mainword}}</ion-option>
+      </ion-select>
+    </ion-item>
+    <br />
+
+    <ion-item>
+      <ion-label style="font-size: 100% !important;margin-bottom:0;color:black">3.</ion-label>
+      <ion-select [(ngModel)]="citP.pchosen[2]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
+        <ion-option *ngFor="let mainword of words_listsTEMP[2]" value={{mainword}}>{{mainword}}</ion-option>
+      </ion-select>
+    </ion-item>
+    <br />
+
+    <ion-item>
+      <ion-label style="font-size: 100% !important;margin-bottom:0;color:black">4.</ion-label>
+      <ion-select [(ngModel)]="citP.pchosen[3]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
+        <ion-option *ngFor="let mainword of words_listsTEMP[3]" value={{mainword}}>{{mainword}}</ion-option>
+      </ion-select>
+    </ion-item>
+    <br />
+    <br />
+
+    <button *ngIf="!citP.pchosen.includes('')" ion-button (tap)='lex_switch();' color='light' block>OK</button>
+  </div>
+
+
+  <div *ngSwitchCase="'div_lextale_intro'">
+    Befejezésül egy nagyon rövid (max. 5 perces) és egyszerű német megértési teszt következik, a némettudásod hozzávetőleges felméréséhez.
+    <br />
+    A német instrukciók következnek.
+    <hr />
+
+  </div>
+
   <div *ngSwitchCase="'div_end'">
     <ion-title class='center' style="padding:8vw" (swiperight)="sethome();">
-      {{trP.cit_completed[trP.lang]}}
+      A teszt véget ért.
     </ion-title>
   </div>
 
@@ -123,9 +216,6 @@
   <div *ngSwitchCase="'div_results'">
 
     <div [hidden]="citP.current_menu != 'm_testres'">
-
-      <button ion-button small type='button' (tap)="goto_menu('m_prevs')" color="light" block>Back to list</button>
-      <hr>
 
       <div style="clear:both;font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
         Summary CIT results for <b>{{citP.cit_results.subj_id}}</b>
@@ -275,9 +365,6 @@
 
     <div [hidden]="citP.current_menu != 'm_sendin'">
 
-      <button ion-button small type='button' (tap)="goto_menu('m_prevs')" color="light" block>Back to list</button>
-      <hr>
-
       <div style="font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
         Forward data with subject ID <b>{{citP.cit_results.subj_id}}</b>
       </div>
@@ -334,11 +421,11 @@
     <br />
   </div>
 
-  <!-- app console for testing
+  <!-- app console for testing-->
   <b>{{mycl}}</b>
   <br />
   <input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;width:100%;">
   <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-    console end -->
+  <!--    console end -->
 
 </ion-content>

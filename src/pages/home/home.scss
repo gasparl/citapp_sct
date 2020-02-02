@@ -214,6 +214,46 @@ page-home {
     left: 50%;
     top: 68%;
   }
+
+  #lexstim {
+    font-size: 8vw;
+    color: #000000;
+    text-align: center;
+    font-weight: bolder;
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    margin: 0 -50% 0 0;
+    transform: translate(-50%, -50%);
+  }
+
+  .labels {
+    font-size: 5.5vw;
+    top: 50%;
+    color: #000000;
+    position: fixed;
+    transform: translate(-50%, -50%);
+  }
+
+  .lexresp_left {
+    left: 30%;
+  }
+
+  .lexresp_right {
+    left: 70%;
+  }
+  // this.citP.bg_color = "#AAAAAA";
+  .lexresp_buttons {
+    top: 70%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #000000;
+    color: #222222;
+    text-align: center;
+    position: fixed;
+    background-color: #EEEEEE;
+    height: 37%;
+    width: 37%;
+  }
 }
 @media screen and (orientation:landscape) {
   .alert-wrapper {
@@ -230,7 +270,6 @@ page-home {
   }
 }
 @media screen and (orientation:portrait) {
-
   ion-input {
     font-size: 160% !important;
   }

@@ -59,8 +59,9 @@ export class CitProvider {
   education: string = '';
   occupation: string = '';
   speaker: string = '';
-  current_div: string = "div_pcheck"; // ddd default: "div_settings"
+  current_div: string = "div_lex_main"; // ddd default: "div_settings"
   // div_items, div_dems, div_cit_main, div_end, div_lextale_intro
+  consent_now: number = 0;
   current_segment: string = 'main';
   current_menu: string = '';
   false_delay: number = 400;
@@ -134,7 +135,9 @@ export class CitProvider {
     public trP: TranslationProvider,
     public dataShare: DataShareProvider,
     public itemgenP: ItemgenProvider
-  ) { }
+  ) {
+    this.consent_now = Date.now();
+  }
 
   pointev: any = {};
   switch_divs(div_to_show, goto = false) {
@@ -352,6 +355,7 @@ export class CitProvider {
   lex_switch() {
     if (this.speaker === 'yes') {
       this.switch_divs("div_lextale_intro");
+      this.bg_color = "#AAAAAA";
     } else {
       this.switch_divs("div_end");
     }
@@ -579,9 +583,34 @@ export class CitProvider {
     })
     this.cit_results.ar_overall = ars.join(', ');
 
-    this.subj_id = this.subj_id + Math.random().toString().slice(3, 5); // TODO: remove
-
     this.cit_results.subj_id = this.subj_id;
+
+    let duration_full = Math.round((Date.now() - this.consent_now) / 600) / 100;
+    let pcorr = this.pchosen.filter(word => this.the_probes.indexOf(word) !== -1).length;
+    this.cit_data += 'dems\t' + [
+      'subject_id',
+      'exp',
+      'speaker',
+      'gender',
+      'age',
+      'occupation',
+      'edu',
+      'pselected',
+      'pcorrect',
+      'full_dur'
+    ].join('/') +
+      '\t' + [
+        this.subj_id,
+        this.exp,
+        this.speaker,
+        this.gender,
+        this.age,
+        this.occupation,
+        this.education,
+        this.pchosen.join('|'),
+        pcorr,
+        duration_full,
+      ].join('/');
     this.cit_results.cit_data = this.cit_data;
     let cdate = new Date();
     let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -597,8 +626,7 @@ export class CitProvider {
       2: 'noitemshare',
       0: 'noshare'
     };
-    // TODO: add CONDITION based on CONDITION Variable
-    this.cit_results.file_name = this.subj_id + '_' + '_' + this.neat_date().slice(0, 12) + '.txt';
+    this.cit_results.file_name = this.exp + '_' + this.subj_id + '_' + this.speaker + '_' + this.neat_date().slice(0, 12) + '.txt';
     this.cit_results.file_nam_disp = this.cit_results.file_name;
     this.dataShare.storage.set('reslts', this.cit_results);
   }

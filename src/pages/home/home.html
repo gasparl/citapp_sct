@@ -1,55 +1,62 @@
 <ion-content hide-nav-bar="true" padding [ngSwitch]="citP.current_div" [ngStyle]="{ 'background-color': citP.bg_color }" text-wrap>
 
-
   <div *ngSwitchCase="'div_settings'" style="font-size: 200% !important;">
-
-    <i>
-      <p *ngIf="internet_on" style="color: red;">Warning: it seems you are connected to the internet. Please turn it off to avoid interruptions!</p>
-    </i>
-
-    <br />
     <div style="font-size: 90%;line-height:150%;font-weight:bold">
-      Please fill in the demographics below.
+      Légy szíves kapcsold ki az internetet illetve állítsd a telefonod "repülő" módba, hogy semmi ne szakítsa meg a tesztet.
+      Ezt követően kérjük add meg az információkat alább.
     </div>
     <br />
 
     <ion-item>
-      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Gender</ion-label>
-      <ion-select [(ngModel)]="citP.gender" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-        <ion-option value='1'>Male</ion-option>
-        <ion-option value='2'>Female</ion-option>
-      </ion-select>
-    </ion-item>
-    <br />
-    <ion-item>
-      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black;" fixed>Age</ion-label>
+      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black;" fixed>Életkor</ion-label>
       <ion-input [(ngModel)]="citP.age" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
     </ion-item>
     <br />
     <ion-item>
-      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Current occupation</ion-label>
+      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Nem</ion-label>
+      <ion-select [(ngModel)]="citP.gender" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
+        <ion-option value='1'>Férfi</ion-option>
+        <ion-option value='2'>Nő</ion-option>
+      </ion-select>
+    </ion-item>
+    <br />
+    <ion-item>
+      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Foglalkozás</ion-label>
       <ion-select [(ngModel)]="citP.occupation" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-        <ion-option value='1'>Student</ion-option>
-        <ion-option value='2'>Employed (full time)</ion-option>
-        <ion-option value='3'>Other</ion-option>
+        <ion-option value='1'>Tanuló</ion-option>
+        <ion-option value='2'>Dolgozó (teljes munkaidő)</ion-option>
+        <ion-option value='3'>Egyéb</ion-option>
       </ion-select>
     </ion-item>
     <br />
     <ion-item>
       <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Highest education</ion-label>
       <ion-select [(ngModel)]="citP.education" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-        <ion-option value='0'>Elementary school</ion-option>
-        <ion-option value='1'>High school</ion-option>
-        <ion-option value='2'>Professional training / vocational program</ion-option>
-        <ion-option value='3'>Some college/univerity</ion-option>
-        <ion-option value='4'>Bachelor's degree or equivalent</ion-option>
-        <ion-option value='5'>Master's degree (or above)</ion-option>
+        <ion-option value='0'>Általános iskola</ion-option>
+        <ion-option value='1'>Középiskola</ion-option>
+        <ion-option value='2'>Szakmunkásképző / professzionális képzés</ion-option>
+        <ion-option value='3'>Megkezdett egyetem/főiskola</ion-option>
+        <ion-option value='4'>Alapképzés (BA, BSc, stb.) szintű végzettség</ion-option>
+        <ion-option value='5'>Mesterképzés (MA, MSc, stb.) szintű végzettség</ion-option>
       </ion-select>
     </ion-item>
-    <div style="text-align:center">
+
+    <div *ngIf='citP.age > 18 && citP.age < 60 && citP.gender != ""'>
       <br />
       <br />
-      <button large *ngIf='citP.age > 18 && citP.age < 60 && citP.gender != ""' ion-button type="button" (tap)="citP.switch_divs('div_items');" style="font-size: 120% !important;">OK</button>
+      <div style="font-size: 90%;line-height:150%;font-weight:bold;text-align:left">
+        <b>
+          Most következik a hazugságvizsgálat.
+          <br />
+          Ne felejtsd el, hogy tagadod, hogy megérted a német nyelvet.
+        </b>
+      </div>
+
+      <br />
+      <br />
+      <div style="text-align:center">
+        <button large ion-button type="button" (tap)="citP.switch_divs('div_items');" style="font-size: 120% !important;">OK</button>
+      </div>
     </div>
 
     <br />
@@ -60,12 +67,8 @@
 
   <div *ngSwitchCase="'div_items'" style="font-size: 200% !important;">
 
-    <i>
-      <p *ngIf="internet_on" style="color: red;">Warning: it seems you are connected to the internet. Please turn it off to avoid interruptions!</p>
-    </i>
-
     <div style="font-size: 90%;line-height:150%;font-weight:bold">
-      Please look through the list of words below and select any words, but maximum four, that seem to you meaningful, or that seem to you in any way notably different from the rest of the words in this list.
+      Kérjük olvasd végig a következő szólistát. Ha látsz olyan szavakat, amelyek értelmesnek tűnnek neked (vagy bármi módon jelentősen különbözőnek látszik a többi szóhoz képest), válaszd ki őket. Összesen maximum négy szót válaszhatsz ki.
     </div>
     <br />
 
@@ -164,7 +167,7 @@
     <ion-item>
       <ion-label style="font-size: 100% !important;margin-bottom:0;color:black">1.</ion-label>
       <ion-select [(ngModel)]="citP.pchosen[0]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-        <ion-option *ngFor="let mainword of words_listsTEMP[0]" value={{mainword}}>{{mainword}}</ion-option>
+        <ion-option *ngFor="let mainword of words_lists[0]" value={{mainword}}>{{mainword}}</ion-option>
       </ion-select>
     </ion-item>
     <br />
@@ -236,7 +239,7 @@
 
   <div *ngSwitchCase="'div_end'">
     <ion-title class='center' style="padding:8vw" (swiperight)="sethome();">
-      A teszt véget ért. Kérjük várj csendben amíg mindenki befejezi a tesztet. (A biztonság kedvéért lehetőleg ne zárd be ezt az appot, de ha szeretnéd használni a telefonod, háttérbe rakhatod, azaz átválthatsz másik appra.)
+      A teszt véget ért. Vissz Kérjük várj csendben amíg mindenki befejezi a tesztet. (A biztonság kedvéért lehetőleg ne zárd be ezt az appot, de ha szeretnéd használni a telefonod, háttérbe rakhatod, azaz átválthatsz másik appra.)
     </ion-title>
   </div>
 

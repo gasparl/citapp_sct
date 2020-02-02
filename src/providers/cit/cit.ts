@@ -59,7 +59,7 @@ export class CitProvider {
   education: string = '';
   occupation: string = '';
   speaker: string = '';
-  current_div: string = "div_lex_main"; // ddd default: "div_settings"
+  current_div: string = "div_settings"; // ddd default: "div_settings"
   // div_items, div_dems, div_cit_main, div_end, div_lextale_intro
   consent_now: number = 0;
   current_segment: string = 'main';
@@ -179,12 +179,14 @@ export class CitProvider {
   set_block_texts() {
     let trefs = this.list_items(this.targetrefs);
     let nontrefs = this.list_items(this.nontargrefs);
+    console.log(this.the_targets);
     let targs = [
       this.list_items(this.the_targets[0]),
       this.list_items(this.the_targets[1]),
       this.list_items(this.the_targets[2]),
       this.list_items(this.the_targets[3])
     ];
+    console.log(targs);
     let nontargs = [
       this.list_items(this.the_nontargs[0]),
       this.list_items(this.the_nontargs[1]),
@@ -367,15 +369,21 @@ export class CitProvider {
     this.lexstim_item = this.dataShare.lextale_items.shift();
   }
   lex_result: number | string = 'none';
-  lextouch(rexresped) {
+  corr_word: number = 0;
+  corr_nonword: number = 0;
+  lextouch(rexrespd) {
     if (this.dataShare.lextale_items.length > 0) {
       if (this.lexstim_item.dummy === 0) {
-        // TODO: add corr for w and nonw
+        if (this.lexstim_item.wstatus === 1 && rexrespd === 'yes') {
+          this.corr_word++;
+        } else if (this.lexstim_item.wstatus === 0 && rexrespd === 'no') {
+          this.corr_nonword++;
+        }
       }
       this.lexstim_item = this.dataShare.lextale_items.shift();
     } else {
-      this.lex_result = 0;
-      // TODO: calc here and add to end dems
+      this.lex_result = (this.corr_word / 40 * 100 +
+        this.corr_nonword / 20 * 100) / 2;
     }
   }
 
@@ -615,6 +623,7 @@ export class CitProvider {
       'edu',
       'pselected',
       'pcorrect',
+      'lextale',
       'full_dur'
     ].join('/') +
       '\t' + [
@@ -627,7 +636,8 @@ export class CitProvider {
         this.education,
         this.pchosen.join('|'),
         pcorr,
-        duration_full,
+        this.lex_result,
+        duration_full
       ].join('/');
     this.cit_results.cit_data = this.cit_data;
     let cdate = new Date();

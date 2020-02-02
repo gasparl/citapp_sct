@@ -376,7 +376,6 @@ export class HomePage {
   }
 
   words_lists: any[] = [[], [], [], []];
-  words_listsTEMP = [['a1','b1', 'c1','d1','e1'], ['a2','b', 'c2','d2','e2'], ['a3','b3', 'c3'], ['a4','b4']];
   create_stim_base() {
     this.prep_items();
     let item_bases = this.prune();

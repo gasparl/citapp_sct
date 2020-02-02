@@ -338,14 +338,14 @@ export class CitProvider {
       if ((this.blocknum > 3 && this.blocknum % 2 === 0) || this.practice_eval()) {
         this.blocknum++;
         if (this.blocknum > 10) {
-          this.block_text = this.block_texts[this.blocknum];
-          this.nextblock();
-        } else {
           this.bg_color = "#fff";
           this.switch_divs('cit_end')
           this.backgroundMode.setDefaults({
             silent: true
           })
+        } else {
+          this.block_text = this.block_texts[this.blocknum];
+          this.nextblock();
         }
       } else {
         this.nextblock();
@@ -382,7 +382,7 @@ export class CitProvider {
       this.lexstim_item = this.dataShare.lextale_items.shift();
     } else {
       this.lexstim_item = "";
-      this.switch_divs('cit_end');
+      this.switch_divs('div_end');
       this.lex_result = (this.corr_word / 40 * 100 +
         this.corr_nonword / 20 * 100) / 2;
       this.store_data();

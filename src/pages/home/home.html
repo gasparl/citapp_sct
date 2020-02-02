@@ -142,18 +142,18 @@
     fogja befolyásolni a befejezett teszt eredményeit, amik már el lettek mentve.) A kifizetés előtt a kísérletvezető is ellenőrizni fogja helyesen adtad-e meg ezt az információt.
 
     <ion-item>
-      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Beszélek németül</ion-label>
+      <ion-label style="font-size: 120% !important;margin-bottom:0;color:black">Beszélek németül</ion-label>
       <ion-select [(ngModel)]="citP.speaker" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
         <ion-option value='yes'>Igen</ion-option>
         <ion-option value='no'>Nem</ion-option>
       </ion-select>
     </ion-item>
 
-    <div *ngIf="citP.speaker !==''">
+    <div *ngIf="citP.speaker !==''"><br /><br />
       Azt adtad meg, hogy <b><span *ngIf="citP.speaker === 'yes'">valójában</span><span *ngIf="citP.speaker === 'no'">tényleg nem</span> beszélsz németül</b>. Ha ez stimmel, érintsd meg az alábbi gombot.
+      <button ion-button (tap)='citP.switch_divs("div_pcheck");' color='light' block>RENDBEN</button>
     </div>
 
-    <button ion-button (tap)='switch_divs("div_pcheck");' color='light' block>RENDBEN</button>
 
   </div>
 
@@ -175,7 +175,7 @@
     <ion-item>
       <ion-label style="font-size: 100% !important;margin-bottom:0;color:black">2.</ion-label>
       <ion-select [(ngModel)]="citP.pchosen[1]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-        <ion-option *ngFor="let mainword of words_listsTEMP[1]" value={{mainword}}>{{mainword}}</ion-option>
+        <ion-option *ngFor="let mainword of words_lists[1]" value={{mainword}}>{{mainword}}</ion-option>
       </ion-select>
     </ion-item>
     <br />
@@ -183,7 +183,7 @@
     <ion-item>
       <ion-label style="font-size: 100% !important;margin-bottom:0;color:black">3.</ion-label>
       <ion-select [(ngModel)]="citP.pchosen[2]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-        <ion-option *ngFor="let mainword of words_listsTEMP[2]" value={{mainword}}>{{mainword}}</ion-option>
+        <ion-option *ngFor="let mainword of words_lists[2]" value={{mainword}}>{{mainword}}</ion-option>
       </ion-select>
     </ion-item>
     <br />
@@ -191,7 +191,7 @@
     <ion-item>
       <ion-label style="font-size: 100% !important;margin-bottom:0;color:black">4.</ion-label>
       <ion-select [(ngModel)]="citP.pchosen[3]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-        <ion-option *ngFor="let mainword of words_listsTEMP[3]" value={{mainword}}>{{mainword}}</ion-option>
+        <ion-option *ngFor="let mainword of words_lists[3]" value={{mainword}}>{{mainword}}</ion-option>
       </ion-select>
     </ion-item>
     <br />

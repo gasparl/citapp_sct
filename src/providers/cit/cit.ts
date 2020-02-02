@@ -342,8 +342,7 @@ export class CitProvider {
           this.nextblock();
         } else {
           this.bg_color = "#fff";
-          this.switch_divs('div_end')
-          this.store_data();
+          this.switch_divs('cit_end')
           this.backgroundMode.setDefaults({
             silent: true
           })
@@ -359,7 +358,7 @@ export class CitProvider {
       this.switch_divs("div_lextale_intro");
       this.bg_color = "#AAAAAA";
     } else {
-      this.switch_divs("div_end");
+      this.store_data();
     }
   }
 
@@ -382,8 +381,11 @@ export class CitProvider {
       }
       this.lexstim_item = this.dataShare.lextale_items.shift();
     } else {
+      this.lexstim_item = "";
+      this.switch_divs('cit_end');
       this.lex_result = (this.corr_word / 40 * 100 +
         this.corr_nonword / 20 * 100) / 2;
+      this.store_data();
     }
   }
 
@@ -516,9 +518,9 @@ export class CitProvider {
   store_data() {
     this.get_results();
     this.file.writeFile(this.path, this.cit_results.file_name, this.cit_results.cit_data).then(value => {
-      this.switch_divs('div_end');
+      this.switch_divs('cit_end');
     }, reason => {
-      this.switch_divs('div_end');
+      this.switch_divs('cit_end');
       this.cit_results.file_nam_disp = this.cit_results.file_name + ' There was an error saving this file. Data data can still be retrieved by copying it to the clipboard. Error: ' + reason;
     });
     let somecode = this.neat_date() + Math.random().toString(36).slice(2);

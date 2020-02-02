@@ -238,9 +238,11 @@
   </div>
 
   <div *ngSwitchCase="'div_end'">
-    <ion-title class='center' style="padding:8vw" (swiperight)="sethome();">
-      A teszt véget ért. Vissz Kérjük várj csendben amíg mindenki befejezi a tesztet. (A biztonság kedvéért lehetőleg ne zárd be ezt az appot, de ha szeretnéd használni a telefonod, háttérbe rakhatod, azaz átválthatsz másik appra.)
-    </ion-title>
+    <div class='center' style="padding:2vw" (swiperight)="sethome();">
+      A teszt véget ért. Visszakapcsolhatod az internetet, ami szükséges lesz az adatok elküldéséhez.
+      <br /><br />
+      Kérjük várj csendben amíg mindenki befejezi a tesztet. (A biztonság kedvéért lehetőleg ne zárd be ezt az appot, de ha szeretnéd használni a telefonod, háttérbe rakhatod, azaz átválthatsz másik appra.)
+    </div>
   </div>
 
 

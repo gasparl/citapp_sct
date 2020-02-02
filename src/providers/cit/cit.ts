@@ -361,6 +361,24 @@ export class CitProvider {
     }
   }
 
+  lexstim_item: any = {};
+  lex_start() {
+    this.switch_divs("div_lextale_intro");
+    this.lexstim_item = this.dataShare.lextale_items.shift();
+  }
+  lex_result: number | string = 'none';
+  lextouch(rexresped) {
+    if (this.dataShare.lextale_items.length > 0) {
+      if (this.lexstim_item.dummy === 0) {
+        // TODO: add corr for w and nonw
+      }
+      this.lexstim_item = this.dataShare.lextale_items.shift();
+    } else {
+      this.lex_result = 0;
+      // TODO: calc here and add to end dems
+    }
+  }
+
   post_resp_hold() {
     this.ctx.clearRect(0, 0, this.image_width, this.image_width);
     this.stimulus_text = "";

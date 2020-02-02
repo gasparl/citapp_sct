@@ -199,14 +199,23 @@
 
 
   <div *ngSwitchCase="'div_lextale_intro'">
-    Befejezésül egy nagyon rövid (max. 5 perces) és egyszerű német megértési teszt következik, a némettudásod hozzávetőleges felméréséhez.
+    Befejezésül egy rövid és egyszerű német megértési teszt következik, a némettudásod hozzávetőleges felméréséhez.
     <br />
     Alább német instrukciók következnek.
     <br />
     <hr />
     <br />
-    NÉMET INSTR....
-    ("tap yes" not "click yes"!)
+
+    Dieser Test besteht aus ungefähr 60 Durchgängen, in denen Sie jeweils eine Buchstabenreihe sehen. Ihre Aufgabe ist es, zu entscheiden, ob diese Buchstabenreihe ein existierendes deutsches Wort ist oder nicht. Falls sie glauben, dass es ein
+    deutsches Wort ist, klicken Sie auf "ja", andernfalls auf "nein".
+    <br /><br />
+    Sollten Sie sich sicher sein, dass ein Wort existiert, aber seine Bedeutung nicht kennen, können Sie trotzdem mit "ja" antworten. Sind Sie sich aber unsicher, ob das
+    Wort überhaupt im Deutschen existiert, sollten Sie mit "nein" antworten.
+    <br /><br />
+    Sie haben so viel Zeit wie Sie möchten für jede Antwort. Der Test dauert etwa 5 Minuten.
+    <br /><br />
+    Wenn Sie bereit sind, können Sie selbst das Experiment
+    starten.
 
   </div>
 
@@ -217,11 +226,11 @@
 
     <span (tap)="citP.lextouch('yes');" class="lexresp_buttons lexresp_right"></span>
 
-    <p class="labels lexresp_left">No</p>
+    <p class="labels lexresp_left">Nein</p>
 
-    <p class="labels lexresp_right">Yes</p>
+    <p class="labels lexresp_right">Ja</p>
 
-    <p id="lexstim">{{citP.lexstim_text}}SOMEWORD</p>
+    <p id="lexstim">{{citP.lexstim_item.word}}</p>
 
   </div>
 

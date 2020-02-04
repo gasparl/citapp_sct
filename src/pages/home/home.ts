@@ -75,7 +75,7 @@ export class HomePage {
     private screenOrientation: ScreenOrientation
   ) {
     this.dataShare.storage.get('reslts').then((cntent) => {
-      if (cntent && 1 < 0) {
+      if (cntent) { // && 1 < 0) {
         console.log(cntent);
         this.citP.cit_results = cntent;
         this.citP.switch_divs('div_results');
@@ -92,8 +92,11 @@ export class HomePage {
           }, 500);
         }
         this.dataShare.storage.get('rsltsent').then((cont_sent) => {
+          // this.dataShare.storage.remove('rsltsent');
           if (cont_sent) {
-              this.notsent = false;
+            this.notsent = false;
+            document.getElementById("storefeed_id").style.color = 'green';
+            document.getElementById("storefeed_id").innerHTML = "Data successfully uploaded! All good.";
           }
         });
       } else {
@@ -230,7 +233,7 @@ export class HomePage {
       if (response.slice(0, 7) == 'written') {
         this.notsent = false;
         document.getElementById("storefeed_id").style.color = 'green';
-        document.getElementById("storefeed_id").innerHTML = "Data successfully uploaded! All good.";        
+        document.getElementById("storefeed_id").innerHTML = "Data successfully uploaded! All good.";
         this.dataShare.storage.set('rsltsent', 'done');
       } else {
         document.getElementById("storefeed_id").innerHTML = 'Error. ' + response;

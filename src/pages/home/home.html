@@ -416,14 +416,15 @@
         try again or send data using one of the other options below.
       </div>
       <i>
-        <p *ngIf="!internet_on" style="color: red;">It seems you are not connected to the internet. You should probably turn it on.</p>
+        <p *ngIf="!internet_on" style="color: red;">It seems you are not connected to the internet.<br /></p>
       </i>
       <span id="storefeed_id" style="color:red;">&nbsp;</span>
       <button *ngIf="notsent" ion-button type='button' (tap)="sendviaphp()" color="light" block>Send to server</button>
-
-
+      <br /><br />
+      <hr />
+      <br />
       <div style="text-align:left;padding-left: 16px;padding-top:1.5vw;">
-        The data can be sent (shared, stored) via any chosen local application (e.g. email, cloud storage, etc.).
+        The data can also be sent (shared, stored) via any chosen local application (e.g. email, cloud storage, etc.).
       </div>
       <span>&nbsp;</span>
       <button ion-button type='button' (tap)="sendviaapp()" color="light" block>Choose application</button>

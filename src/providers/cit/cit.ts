@@ -50,9 +50,9 @@ export class CitProvider {
     }.bind(this), rt_sim);
   }
   //*/
-  to_slice: number = 3;
+  to_slice: number = 0; // 0 to ignore
 
-  exp: string = "ger_in_hun";
+  exp: string = "GERinHUN";
   subj_id: string = '';
   age: string = '';
   gender: string = '';

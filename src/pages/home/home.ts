@@ -80,6 +80,22 @@ export class HomePage {
         this.citP.cit_results = cntent;
         this.citP.switch_divs('div_results');
         this.citP.current_menu = 'm_testres';
+        if (this.on_device) {
+          this.checknet = setInterval(() => {
+            if (this.network.type) {
+              if (this.network.type != "none") {
+                this.internet_on = true;
+              } else {
+                this.internet_on = false;
+              }
+            }
+          }, 500);
+        }
+        this.dataShare.storage.get('rsltsent').then((cont_sent) => {
+          if (cont_sent) {
+              this.notsent = false;
+          }
+        });
       } else {
         this.citP.subj_id = this.citP.neat_date() +
           "_" +
@@ -122,6 +138,17 @@ export class HomePage {
   goto_menu(menu_name) {
     this.citP.current_menu = menu_name;
     this.citP.content.scrollToTop(0);
+    if (this.on_device) {
+      this.checknet = setInterval(() => {
+        if (this.network.type) {
+          if (this.network.type != "none") {
+            this.internet_on = true;
+          } else {
+            this.internet_on = false;
+          }
+        }
+      }, 500);
+    }
   }
 
   rchoice(array) {
@@ -192,6 +219,28 @@ export class HomePage {
   //   })
   //   this.mails_sending = this.mails_sending.substr(2)
   // }
+  notsent: boolean = true;
+  sendviaphp() {
+    this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/lang_storage.php', JSON.stringify({
+      filename_post: this.citP.cit_results.file_name,
+      results_post: this.citP.cit_results.cit_data
+    }), { responseType: "text" }).subscribe((response) => {
+      console.log(response);
+      let feed;
+      if (response.slice(0, 7) == 'written') {
+        this.notsent = false;
+        document.getElementById("storefeed_id").style.color = 'green';
+        document.getElementById("storefeed_id").innerHTML = "Data successfully uploaded! All good.";        
+        this.dataShare.storage.set('rsltsent', 'done');
+      } else {
+        document.getElementById("storefeed_id").innerHTML = 'Error. ' + response;
+      }
+    },
+      err => {
+        console.log('Request failed: ', err);
+        document.getElementById("storefeed_id").innerHTML = 'Could not connect to server. ' + err.message;
+      });
+  }
 
   sendviaapp() {
     let email = {

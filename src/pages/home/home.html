@@ -224,7 +224,7 @@
     Wenn Sie bereit sind, können Sie selbst das Experiment
     starten.
     <br /><br />
-    <button ion-button (tap)='citP.switch_divs("div_lex_main");' color='light' block>OK</button>
+    <button ion-button (tap)='citP.lex_start();' color='light' block>OK</button>
 
   </div>
 
@@ -415,9 +415,11 @@
         First, please try to upload the data to the server by pressing the button below. If the upload is successfull, the button will disappear and a success message will appear in its place. If the upload fails, you will get an error message:
         try again or send data using one of the other options below.
       </div>
-      %%%% WARN ABOUT INTERNET
-      <span>&nbsp;</span>
-      <button ion-button type='button' (tap)="sendviaphp()" color="light" block>Send to server</button>
+      <i>
+        <p *ngIf="!internet_on" style="color: red;">It seems you are not connected to the internet. You should probably turn it on.</p>
+      </i>
+      <span id="storefeed_id" style="color:red;">&nbsp;</span>
+      <button *ngIf="notsent" ion-button type='button' (tap)="sendviaphp()" color="light" block>Send to server</button>
 
 
       <div style="text-align:left;padding-left: 16px;padding-top:1.5vw;">

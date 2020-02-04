@@ -111,9 +111,7 @@ export class ItemgenProvider {
   practice_items(targetrefs, nontargrefs) {
     console.log('practice_items()');
     var blck_itms_temp = JSON.parse(JSON.stringify(targetrefs.concat(nontargrefs))); // get fillers
-    JSON.parse(JSON.stringify(this.stim_base_p)).forEach(function(cat) {
-      blck_itms_temp = blck_itms_temp.concat(JSON.parse(JSON.stringify(cat))); // add all other items
-    });
+    blck_itms_temp = blck_itms_temp.concat(JSON.parse(JSON.stringify(this.stim_base_p[0])));
     blck_itms_temp = this.shuffle(blck_itms_temp); // this.shuffle it, why not
     // below the pseudorandomization to avoid close repetition of similar items (same item type)
     var safecount = 0; // just to not freeze the app if sth goes wrong
@@ -259,5 +257,5 @@ export class ItemgenProvider {
     console.log('fulltest_items()');
     return (this.add_fillers(baseset, targetrefs, nontargrefs));
   }
-  
+
 }

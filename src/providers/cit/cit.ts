@@ -52,7 +52,7 @@ export class CitProvider {
   //*/
   to_slice: number = 3;
 
-  exp: "ger_in_hun";
+  exp: string = "ger_in_hun";
   subj_id: string = '';
   age: string = '';
   gender: string = '';
@@ -100,7 +100,7 @@ export class CitProvider {
   no_prac_fail: boolean = true;
   text_to_show: string;
   cit_data: string =
-    ["subject_id", "block_number", "trial_number", "stimulus_shown", "category", "stim_type", "response_key", "rt_start", "rt_end", "incorrect", "too_slow", "isi", "date_in_ms"].join('\t') + "\n";
+    ["subject_id", "phase", "block_number", "trial_number", "stimulus_shown", "category", "stim_type", "response_key", "rt_start", "rt_end", "incorrect", "too_slow", "isi", "date_in_ms"].join('\t') + "\n";
   correct_resp: string = "none";
   blocknum: number;
   rt_start: number = 99999;
@@ -364,7 +364,7 @@ export class CitProvider {
 
   lexstim_item: any = {};
   lex_start() {
-    this.switch_divs("div_lextale_intro");
+    this.switch_divs("div_lex_main");
     this.lexstim_item = this.dataShare.lextale_items.shift();
   }
   lex_result: number | string = 'none';
@@ -434,6 +434,7 @@ export class CitProvider {
     }
     this.cit_data +=
       [this.subj_id,
+      this.crrnt_phase,
       this.blocknum,
       this.block_trialnum,
       this.trial_stim.item,
@@ -518,12 +519,11 @@ export class CitProvider {
   store_data() {
     this.get_results();
     this.file.writeFile(this.path, this.cit_results.file_name, this.cit_results.cit_data).then(value => {
-      this.switch_divs('cit_end');
+      this.switch_divs('div_end');
     }, reason => {
-      this.switch_divs('cit_end');
+      this.switch_divs('div_end');
       this.cit_results.file_nam_disp = this.cit_results.file_name + ' There was an error saving this file. Data data can still be retrieved by copying it to the clipboard. Error: ' + reason;
     });
-    let somecode = this.neat_date() + Math.random().toString(36).slice(2);
   }
 
   cit_results: any = {
@@ -650,13 +650,7 @@ export class CitProvider {
       ("0" + cdate.getHours()).slice(-2) + ":" +
       ("0" + cdate.getMinutes()).slice(-2);
 
-    let consentword: object = {
-      99: 'noconsent',
-      1: 'fullshare',
-      2: 'noitemshare',
-      0: 'noshare'
-    };
-    this.cit_results.file_name = this.exp + '_' + this.subj_id + '_' + this.speaker + '_' + this.neat_date().slice(0, 12) + '.txt';
+    this.cit_results.file_name = this.exp + '_' + this.speaker + '_L' + this.lex_result + '_' + this.subj_id + '.txt';
     this.cit_results.file_nam_disp = this.cit_results.file_name;
     this.dataShare.storage.set('reslts', this.cit_results);
   }

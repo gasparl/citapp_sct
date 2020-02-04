@@ -79,6 +79,7 @@ export class HomePage {
         console.log(cntent);
         this.citP.cit_results = cntent;
         this.citP.switch_divs('div_results');
+        this.citP.current_menu = 'm_testres';
       } else {
         this.citP.subj_id = this.citP.neat_date() +
           "_" +
@@ -116,6 +117,11 @@ export class HomePage {
         this.citP.path = this.citP.file.externalDataDirectory;
       }
     });
+  }
+
+  goto_menu(menu_name) {
+    this.citP.current_menu = menu_name;
+    this.citP.content.scrollToTop(0);
   }
 
   rchoice(array) {
@@ -329,7 +335,7 @@ export class HomePage {
 
       t_container = t_container.filter((n) => {
         // filter if same starting character
-        return probe[0] != n[0];
+        return probe[0] !== n[0] && probe.slice(-4) !== n.slice(-4);
       });
 
       let maxdif = 0, temps;
@@ -340,12 +346,18 @@ export class HomePage {
         if (temps.length > 0) {
           finals.push(temps[0]); // nonrandom!
           t_container = t_container.filter(function(n) {
-            return finals[finals.length - 1][0] !== n[0];
+            return finals[finals.length - 1][0] !== n[0] && finals[finals.length - 1].slice(-4) !== n.slice(-4);
           });
         } else {
           maxdif++;
         }
       }
+
+      icontainer = icontainer.filter((n) => {
+        // filter if same starting character
+        return probe[0] !== n[0] && probe.slice(-4) !== n.slice(-4) &&
+          finals[finals.length - 1][0] !== n[0] && finals[finals.length - 1].slice(-4) !== n.slice(-4);
+      });
       maxdif = 0;
       while (finals.length < 6 && maxdif < 99) {
         temps = icontainer.filter(function(n) {
@@ -354,7 +366,7 @@ export class HomePage {
         if (temps.length > 0) {
           finals.push(temps[0]); // nonrandom!
           icontainer = icontainer.filter(function(n) {
-            return finals[finals.length - 1][0] !== n[0];
+            return finals[finals.length - 1][0] !== n[0] && finals[finals.length - 1].slice(-4) !== n.slice(-4);
           });
         } else {
           maxdif++;
@@ -422,6 +434,7 @@ export class HomePage {
         tempdict.imgurl = null;
         this.citP.stim_bases[num].push(JSON.parse(JSON.stringify(tempdict)));
       });
+      this.words_lists[num] = this.words_lists[num].sort();
       this.words_lists[num].push('Nem tudom.');
     });
 

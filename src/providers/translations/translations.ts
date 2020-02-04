@@ -22,7 +22,7 @@ export class TranslationProvider {
     'en': ["FAMILIAR", "MINE", "RECOGNIZED"], // these words are not to be translated literally one by one. The translations should always try to find the simplest, clearest words that relate to relevance, familiarity, recognition, importance. (The English "MINE" is actually not the best, but it's good to also have a shorter word and this fits there.)
     'cn': '中文',
     'de': ["VERTRAUT", "MEIN", "RELEVANT"],
-    'hu': ["FELISMERT", "RELEVÁNS", "LÉNYEGES"],
+    'hu': ["ÉRTELMES", "FELISMERT", "IGAZI"],
     'jp': '日本語',
     'pl': ["ZNANE", "ISTOTNE", "ZNACZĄCE"]
   };
@@ -31,7 +31,7 @@ export class TranslationProvider {
     'en': ["FOREIGN", "IRRELEVANT", "OTHER", "RANDOM", "THEIRS", "UNFAMILIAR"], // these should have the meaning opposite of  relevance, familiarity, importance
     'cn': '中文',
     'de': ["IRRELEVANT", "FREMD", "UNBEKANNT", "ANDERE", "SONSTIGES", "UNVERTRAUT"],
-    'hu': ["MELLÉKES", "LÉNYEGTELEN", "EGYÉB", "RANDOM", "MÁS", "KÖZÖMBÖS"],
+    'hu': ["SEMMIS", "VALÓTLAN", "HALANDZSA", "ISMERETLEN", "HAMIS", "ZAGYVA"],
     'jp': '日本語',
     'pl': ["OBCE", "NIEISTOTNE", "INNE", "PRZYPADKOWE", "OBOJĘTNE", "NIEZNANE"]
   };

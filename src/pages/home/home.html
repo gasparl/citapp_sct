@@ -30,7 +30,7 @@
     </ion-item>
     <br />
     <ion-item>
-      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Highest education</ion-label>
+      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Képzettség</ion-label>
       <ion-select [(ngModel)]="citP.education" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
         <ion-option value='0'>Általános iskola</ion-option>
         <ion-option value='1'>Középiskola</ion-option>
@@ -151,6 +151,7 @@
 
     <div *ngIf="citP.speaker !==''"><br /><br />
       Azt adtad meg, hogy <b><span *ngIf="citP.speaker === 'yes'">valójában</span><span *ngIf="citP.speaker === 'no'">tényleg nem</span> beszélsz németül</b>. Ha ez stimmel, érintsd meg az alábbi gombot.
+      <br />
       <button ion-button (tap)='citP.switch_divs("div_pcheck");' color='light' block>RENDBEN</button>
     </div>
 
@@ -197,7 +198,7 @@
     <br />
     <br />
 
-    <button *ngIf="citP.pchosen.indexOf('') === -1" ion-button (tap)='lex_switch();' color='light' block>OK</button>
+    <button *ngIf="citP.pchosen.indexOf('') === -1" ion-button (tap)='citP.lex_switch();' color='light' block>OK</button>
   </div>
 
 
@@ -206,6 +207,9 @@
     <br />
     Alább német instrukciók következnek.
     <br />
+    <br />
+    <hr />
+    <hr />
     <hr />
     <br />
 
@@ -219,6 +223,8 @@
     <br /><br />
     Wenn Sie bereit sind, können Sie selbst das Experiment
     starten.
+    <br /><br />
+    <button ion-button (tap)='citP.switch_divs("div_lex_main");' color='light' block>OK</button>
 
   </div>
 
@@ -238,7 +244,7 @@
   </div>
 
   <div *ngSwitchCase="'div_end'">
-    <div class='center' style="padding:2vw" (swiperight)="sethome();">
+    <div style="padding:2vw" (swiperight)="sethome();">
       A teszt véget ért. Visszakapcsolhatod az internetet, ami szükséges lesz az adatok elküldéséhez.
       <br /><br />
       Kérjük várj csendben amíg mindenki befejezi a tesztet. (A biztonság kedvéért lehetőleg ne zárd be ezt az appot, de ha szeretnéd használni a telefonod, háttérbe rakhatod, azaz átválthatsz másik appra.)

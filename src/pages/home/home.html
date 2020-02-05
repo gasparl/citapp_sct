@@ -2,7 +2,15 @@
 
 
   <div *ngSwitchCase="'div_test'">
-    <span id="tsttxt_id" style="color:red;">{{citP.testtext}}</span>
+    <br />
+    <br />
+    <br />
+    <div style="text-align: center;padding: 3vw; line-height:250%;font-weight:bold">
+      <span id="tsttxt_id" style="color:red;font-size:10vw">{{citP.testtext}}</span>
+    </div>
+    <br />
+    <br />
+    <br />
   </div>
 
   <div *ngSwitchCase="'div_settings'" style="font-size: 200% !important;">
@@ -473,11 +481,11 @@
     <br />
   </div>
 
-  <!-- app console for testing-->
+  <!-- app console for testing
   <b>{{mycl}}</b>
   <br />
   <input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;width:100%;">
   <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <!--    console end -->
+     console end -->
 
 </ion-content>

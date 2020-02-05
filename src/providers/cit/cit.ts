@@ -526,9 +526,9 @@ export class CitProvider {
     });
   }
 
-  testtext: string = "Trying... (not success yet...)";
+  testtext: string = "Trying... (no success yet...)";
   testwryt() {
-    this.file.writeFile(this.path, "testfile.txt", "test date:" + this.neat_date()).then(value => {
+    this.file.writeFile(this.path, "testfile_" + this.neat_date() + this.itemgenP.randomdigit(10, 99) + ".txt", "test date:" + this.neat_date()).then(value => {
       document.getElementById("tsttxt_id").style.color = 'green';
       this.testtext = 'OK!';
     }, reason => {

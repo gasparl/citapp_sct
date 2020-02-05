@@ -4,8 +4,7 @@ import { NavController, NavParams } from "ionic-angular";
 import { Network } from '@ionic-native/network';
 import { EmailComposer } from "@ionic-native/email-composer";
 import { Platform } from "ionic-angular";
-import { Validators, FormBuilder, FormGroup } from "@angular/forms";
-import { PopoverController } from 'ionic-angular';
+import { FormBuilder } from "@angular/forms";
 import { HttpClient } from '@angular/common/http';
 import { DataShareProvider } from '../../providers/data-share/data-share';
 import { CitProvider } from '../../providers/cit/cit';
@@ -64,7 +63,6 @@ export class HomePage {
     public platform: Platform,
     public formBuilder: FormBuilder,
     private network: Network,
-    public popoverCtrl: PopoverController,
     public http: HttpClient,
     public dataShare: DataShareProvider,
     public citP: CitProvider,
@@ -115,6 +113,9 @@ export class HomePage {
     this.platform.ready().then(() => {
       this.on_device = this.platform.is("cordova");
       if (this.on_device) {
+        if (this.notsent) {
+          this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT_PRIMARY);
+        }
         this.checknet = setInterval(() => {
           if (this.network.type) {
             if (this.network.type != "none") {
@@ -229,7 +230,6 @@ export class HomePage {
       results_post: this.citP.cit_results.cit_data
     }), { responseType: "text" }).subscribe((response) => {
       console.log(response);
-      let feed;
       if (response.slice(0, 7) == 'written') {
         this.notsent = false;
         document.getElementById("storefeed_id").style.color = 'green';
@@ -303,20 +303,14 @@ export class HomePage {
   save_on_citstart: boolean = true;
   duplicates: string = '';
   initials() {
-    clearInterval(this.checknet);
     this.targetref_words = this.targetref_words.map(w => w.toUpperCase())
     this.nontargref_words = this.nontargref_words.map(w => w.toUpperCase())
-    this.init_cit(99);
     if (this.on_device) {
       this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE_PRIMARY);
     }
+    this.init_cit(99);
   }
-  start_test() {
-    this.citP.switch_divs('div_settings')
-    if (this.on_device) {
-      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
-    }
-  }
+
   init_cit(chosen) {
     this.citP.consented = chosen;
     this.create_stim_base();

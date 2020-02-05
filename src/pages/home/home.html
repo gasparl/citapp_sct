@@ -41,7 +41,7 @@
       </ion-select>
     </ion-item>
 
-    <div *ngIf='citP.age > 18 && citP.age < 60 && citP.gender != ""'>
+    <div *ngIf='citP.age > 18 && citP.age < 60 && citP.gender != "" && citP.occupation != "" && citP.education != ""'>
       <br />
       <br />
       <div style="font-size: 90%;line-height:150%;font-weight:bold;text-align:left">
@@ -65,7 +65,7 @@
     <br />
   </div>
 
-  <div *ngSwitchCase="'div_items'" style="font-size: 200% !important;">
+  <div *ngSwitchCase="'div_items'" style="font-size: 200% !important;"  [ngStyle]="{'pointer-events': citP.pointev.div_items || 'none' }">
 
     <div style="font-size: 90%;line-height:150%;font-weight:bold">
       Kérjük olvasd végig a következő szólistát. Ha látsz olyan szavakat, amelyek értelmesnek tűnnek neked (vagy bármi módon jelentősen különbözőnek látszik a többi szóhoz képest), válaszd ki őket. Összesen maximum négy szót válaszhatsz ki.
@@ -106,7 +106,7 @@
   </div>
 
 
-  <div *ngSwitchCase="'div_blockstart'">
+  <div *ngSwitchCase="'div_blockstart'"  [ngStyle]="{'pointer-events': citP.pointev.div_blockstart || 'none' }">
     <span [innerHTML]="san_html(citP.block_text)"></span>
     <div text-center>
       <br />
@@ -122,7 +122,7 @@
   </div>
 
 
-  <div *ngSwitchCase="'div_cit_main'">
+  <div *ngSwitchCase="'div_cit_main'" >
 
     <p (touchstart)="citP.touchstart($event, 'resp_a');" (touchend)="citP.touchend($event, 'resp_a');" id="resp_left" class="resp_buttons"></p>
 
@@ -152,6 +152,7 @@
     <div *ngIf="citP.speaker !==''"><br /><br />
       Azt adtad meg, hogy <b><span *ngIf="citP.speaker === 'yes'">valójában</span><span *ngIf="citP.speaker === 'no'">tényleg nem</span> beszélsz németül</b>. Ha ez stimmel, érintsd meg az alábbi gombot.
       <br />
+      <br />
       <button ion-button (tap)='citP.switch_divs("div_pcheck");' color='light' block>RENDBEN</button>
     </div>
 
@@ -159,7 +160,7 @@
   </div>
 
 
-  <div *ngSwitchCase="'div_pcheck'">
+  <div *ngSwitchCase="'div_pcheck'"  [ngStyle]="{'pointer-events': citP.pointev.div_pcheck || 'none' }">
     Függetlenül attól, hogy beszélsz-e németül, tudni szeretnénk, felismerted-e vagy akár sejtetted-e melyik szó volt német a különböző tesztszakaszokban. Légy szíves, válaszd ki a 4 ismert vagy sejtett valódi német szót az alábbi 4 listából. Ha
     nincs sejtésed se, válaszd
     a "nem tudom" opciót.
@@ -202,7 +203,7 @@
   </div>
 
 
-  <div *ngSwitchCase="'div_lextale_intro'">
+  <div *ngSwitchCase="'div_lextale_intro'" [ngStyle]="{'pointer-events': citP.pointev.div_lextale_intro || 'none' }">
     Befejezésül egy rövid és egyszerű német megértési teszt következik, a némettudásod hozzávetőleges felméréséhez.
     <br />
     Alább német instrukciók következnek.
@@ -229,7 +230,7 @@
   </div>
 
 
-  <div *ngSwitchCase="'div_lex_main'">
+  <div *ngSwitchCase="'div_lex_main'" [ngStyle]="{'pointer-events': citP.pointev.div_lex_main || 'none' }">
 
     <span (tap)="citP.lextouch('no');" class="lexresp_buttons lexresp_left"></span>
 
@@ -252,7 +253,7 @@
   </div>
 
 
-  <div *ngSwitchCase="'div_results'">
+  <div *ngSwitchCase="'div_results'" [ngStyle]="{'pointer-events': citP.pointev.div_results || 'none' }">
 
     <div [hidden]="citP.current_menu != 'm_testres'">
 

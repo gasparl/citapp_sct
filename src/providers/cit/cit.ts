@@ -663,7 +663,7 @@ export class CitProvider {
     } else {
       this.correct_resp = "resp_a";
     }
-    this.touchsim(); // for testing -- TODOREMOVE
+    // this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       if (this.trial_stim.mode === 'image') {
         this.ctx.drawImage(this.task_images[this.trial_stim.item], 0, 0);

@@ -59,7 +59,7 @@ export class CitProvider {
   education: string = '';
   occupation: string = '';
   speaker: string = '';
-  current_div: string = "div_settings"; // ddd default: "div_settings"
+  current_div: string = "div_test"; // ddd default: "div_settings"
   // div_items, div_dems, div_cit_main, div_end, div_lextale_intro
   consent_now: number = 0;
   current_segment: string = 'main';
@@ -523,6 +523,16 @@ export class CitProvider {
     }, reason => {
       this.switch_divs('div_end');
       this.cit_results.file_nam_disp = this.cit_results.file_name + ' There was an error saving this file. Data data can still be retrieved by copying it to the clipboard. Error: ' + reason;
+    });
+  }
+
+  testtext: string = "Trying... (not success yet...)";
+  testwryt() {
+    this.file.writeFile(this.path, "testfile.txt", "test date:" + this.neat_date()).then(value => {
+      document.getElementById("tsttxt_id").style.color = 'green';
+      this.testtext = 'OK!';
+    }, reason => {
+      this.testtext = 'File could not be written. Your phone may not be suitable for the experiment. Error: ' + reason;
     });
   }
 

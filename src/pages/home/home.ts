@@ -135,6 +135,7 @@ export class HomePage {
           silent: true
         });
         this.citP.path = this.citP.file.externalDataDirectory;
+        this.citP.testwryt();
       }
     });
   }

@@ -1,5 +1,10 @@
 <ion-content hide-nav-bar="true" padding [ngSwitch]="citP.current_div" [ngStyle]="{ 'background-color': citP.bg_color }" text-wrap>
 
+
+  <div *ngSwitchCase="'div_test'">
+    <span id="tsttxt_id" style="color:red;">{{citP.testtext}}</span>
+  </div>
+
   <div *ngSwitchCase="'div_settings'" style="font-size: 200% !important;">
     <div style="font-size: 90%;line-height:150%;font-weight:bold">
       Légy szíves kapcsold ki az internetet illetve állítsd a telefonod "repülő" módba, hogy semmi ne szakítsa meg a tesztet.
@@ -104,7 +109,6 @@
       <br />
     </div>
   </div>
-
 
   <div *ngSwitchCase="'div_blockstart'" [ngStyle]="{'pointer-events': citP.pointev.div_blockstart || 'none' }">
     <span [innerHTML]="san_html(citP.block_text)"></span>
@@ -378,7 +382,8 @@
       </div>
       <br />
       <br />
-      To evaluate the results in this experiment, <i>d</i><sub>CIT</sub> for <i>Probe 1</i> (the real words in each block) should be at least below 0.30 to consider a person "not detected" and hence eligible for bonus. In contrast, anyone with <i>d</i><sub>CIT</sub> equal to or greater than 0.30 should not receive bonus.
+      To evaluate the results in this experiment, <i>d</i><sub>CIT</sub> for <i>Probe 1</i> (the real words in each block) should be at least below 0.30 to consider a person "not detected" and hence eligible for bonus. In contrast, anyone with <i>d</i><sub>CIT</sub>
+      equal to or greater than 0.30 should not receive bonus.
       <br />
       <br />
       For more details, see the <a href="https://github.com/gasparl/citapp_phone" target="_blank">online

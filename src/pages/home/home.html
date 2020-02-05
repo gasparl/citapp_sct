@@ -65,7 +65,7 @@
     <br />
   </div>
 
-  <div *ngSwitchCase="'div_items'" style="font-size: 200% !important;"  [ngStyle]="{'pointer-events': citP.pointev.div_items || 'none' }">
+  <div *ngSwitchCase="'div_items'" style="font-size: 200% !important;" [ngStyle]="{'pointer-events': citP.pointev.div_items || 'none' }">
 
     <div style="font-size: 90%;line-height:150%;font-weight:bold">
       Kérjük olvasd végig a következő szólistát. Ha látsz olyan szavakat, amelyek értelmesnek tűnnek neked (vagy bármi módon jelentősen különbözőnek látszik a többi szóhoz képest), válaszd ki őket. Összesen maximum négy szót válaszhatsz ki.
@@ -106,7 +106,7 @@
   </div>
 
 
-  <div *ngSwitchCase="'div_blockstart'"  [ngStyle]="{'pointer-events': citP.pointev.div_blockstart || 'none' }">
+  <div *ngSwitchCase="'div_blockstart'" [ngStyle]="{'pointer-events': citP.pointev.div_blockstart || 'none' }">
     <span [innerHTML]="san_html(citP.block_text)"></span>
     <div text-center>
       <br />
@@ -122,7 +122,7 @@
   </div>
 
 
-  <div *ngSwitchCase="'div_cit_main'" >
+  <div *ngSwitchCase="'div_cit_main'">
 
     <p (touchstart)="citP.touchstart($event, 'resp_a');" (touchend)="citP.touchend($event, 'resp_a');" id="resp_left" class="resp_buttons"></p>
 
@@ -160,7 +160,7 @@
   </div>
 
 
-  <div *ngSwitchCase="'div_pcheck'"  [ngStyle]="{'pointer-events': citP.pointev.div_pcheck || 'none' }">
+  <div *ngSwitchCase="'div_pcheck'" [ngStyle]="{'pointer-events': citP.pointev.div_pcheck || 'none' }">
     Függetlenül attól, hogy beszélsz-e németül, tudni szeretnénk, felismerted-e vagy akár sejtetted-e melyik szó volt német a különböző tesztszakaszokban. Légy szíves, válaszd ki a 4 ismert vagy sejtett valódi német szót az alábbi 4 listából. Ha
     nincs sejtésed se, válaszd
     a "nem tudom" opciót.
@@ -293,13 +293,13 @@
               {{citP.cit_results['probe' + num]['dcit']}}
             </td>
             <td>
+              {{citP.cit_results['probe' + num]['acc_p_vs_i']}}
+            </td>
+            <td>
               {{citP.cit_results['probe' + num]['acc_probe']}}
             </td>
             <td>
               {{citP.cit_results['probe' + num]['acc_irr']}}
-            </td>
-            <td>
-              {{citP.cit_results['probe' + num]['acc_p_vs_i']}}
             </td>
           </tr>
         </table>
@@ -376,7 +376,10 @@
           (There is no strong indication of innocence: a very fast probe response is no more expected in case of innocence than in case of guilt.)
         </div>
       </div>
-
+      <br />
+      <br />
+      To evaluate the results in this experiment, <i>d</i><sub>CIT</sub> for <i>Probe 1</i> (the real words in each block) should be at least below 0.30 to consider a person "not detected" and hence eligible for bonus. In contrast, anyone with <i>d</i><sub>CIT</sub> equal to or greater than 0.30 should not receive bonus.
+      <br />
       <br />
       For more details, see the <a href="https://github.com/gasparl/citapp_phone" target="_blank">online
         documentation</a>.
@@ -419,6 +422,7 @@
       <i>
         <p *ngIf="!internet_on" style="color: red;">It seems you are not connected to the internet.<br /></p>
       </i>
+      <br />
       <span id="storefeed_id" style="color:red;">&nbsp;</span>
       <button *ngIf="notsent" ion-button type='button' (tap)="sendviaphp()" color="light" block>Send to server</button>
       <br /><br />

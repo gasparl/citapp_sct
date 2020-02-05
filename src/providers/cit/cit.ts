@@ -580,8 +580,10 @@ export class CitProvider {
       }
       Object.keys(this.cit_results[dkey]).forEach((subkey) => {
         if (!isNaN(this.cit_results[dkey][subkey])) {
-          if (subkey.slice(0, 3) == 'rt_') {
+          if (subkey.slice(0, 3) === 'rt_') {
             this.cit_results[dkey][subkey] = (Math.ceil(this.cit_results[dkey][subkey] * 10) / 10).toFixed(1);
+          } else if (subkey.slice(0, 4) === 'dcit') {
+            this.cit_results[dkey][subkey] = (Math.ceil(this.cit_results[dkey][subkey] * 100) / 100).toFixed(2);
           } else {
             this.cit_results[dkey][subkey] = (Math.ceil(this.cit_results[dkey][subkey] * 1000) / 10).toFixed(1);
           }

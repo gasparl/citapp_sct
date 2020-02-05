@@ -33,7 +33,7 @@ export class HomePage {
   }
 
   // /*
-  to_exec: any = 'this.';
+  to_exec: any = 'this.citP.';
   mycl: any;
   onChange(ee) {
     if (ee.keyCode === 13) {
@@ -73,7 +73,7 @@ export class HomePage {
     private screenOrientation: ScreenOrientation
   ) {
     this.dataShare.storage.get('reslts').then((cntent) => {
-      if (cntent && 1 < 0) { // && 1 < 0) {
+      if (cntent) { // && 1 < 0) {
         console.log(cntent);
         this.citP.cit_results = cntent;
         this.citP.switch_divs('div_results');
@@ -225,6 +225,7 @@ export class HomePage {
   // }
   notsent: boolean = true;
   sendviaphp() {
+    document.getElementById("storefeed_id").innerHTML = "Trying..."
     this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/lang_storage.php', JSON.stringify({
       filename_post: this.citP.cit_results.file_name,
       results_post: this.citP.cit_results.cit_data

@@ -236,9 +236,9 @@
 
     <span (tap)="citP.lextouch('yes');" class="lexresp_buttons lexresp_right"></span>
 
-    <p class="labels lexresp_left">Nein</p>
+    <p (tap)="citP.lextouch('no');" class="labels lexresp_left">Nein</p>
 
-    <p class="labels lexresp_right">Ja</p>
+    <p (tap)="citP.lextouch('yes');" class="labels lexresp_right">Ja</p>
 
     <p id="lexstim">{{citP.lexstim_item.word}}</p>
 
@@ -378,7 +378,8 @@
       </div>
       <br />
       <br />
-      To evaluate the results in this experiment, <i>d</i><sub>CIT</sub> for <i>Probe 1</i> (the real words in each block) should be at least below 0.30 to consider a person "not detected" and hence eligible for bonus. In contrast, anyone with <i>d</i><sub>CIT</sub> equal to or greater than 0.30 should not receive bonus.
+      To evaluate the results in this experiment, <i>d</i><sub>CIT</sub> for <i>Probe 1</i> (the real words in each block) should be at least below 0.30 to consider a person "not detected" and hence eligible for bonus. In contrast, anyone with <i>d</i><sub>CIT</sub>
+      equal to or greater than 0.30 should not receive bonus.
       <br />
       <br />
       For more details, see the <a href="https://github.com/gasparl/citapp_phone" target="_blank">online

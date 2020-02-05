@@ -52,7 +52,7 @@ export class CitProvider {
   //*/
   to_slice: number = 0; // 0 to ignore
 
-  exp: string = "GERinHUN";
+  exp: string = "exp3_DEinHU";
   subj_id: string = '';
   age: string = '';
   gender: string = '';

@@ -73,7 +73,7 @@ export class HomePage {
     private screenOrientation: ScreenOrientation
   ) {
     this.dataShare.storage.get('reslts').then((cntent) => {
-      if (cntent) { // && 1 < 0) {
+      if (cntent && 1 < 0) { // && 1 < 0) {
         console.log(cntent);
         this.citP.cit_results = cntent;
         this.citP.switch_divs('div_results');

@@ -50,7 +50,7 @@ export class CitProvider {
     }.bind(this), rt_sim);
   }
   //*/
-  to_slice: number = 0; // 0 to ignore
+  to_slice: number = 30; // 0 to ignore
 
   exp: string = "exp3_DEinHU";
   subj_id: string = '';
@@ -553,7 +553,7 @@ export class CitProvider {
       let probe = this.all_rts[dkey];
       allmain = allmain.concat(probe);
       let irrs = [];
-      Object.keys(this.all_rts).forEach((dkey2) => {
+      Object.keys(this.cit_results).forEach((dkey2) => {
         if (dkey !== dkey2) {
           irrs = irrs.concat(this.all_rts[dkey2])
         }
@@ -581,11 +581,11 @@ export class CitProvider {
       Object.keys(this.cit_results[dkey]).forEach((subkey) => {
         if (!isNaN(this.cit_results[dkey][subkey])) {
           if (subkey.slice(0, 3) === 'rt_') {
-            this.cit_results[dkey][subkey] = (Math.ceil(this.cit_results[dkey][subkey] * 10) / 10).toFixed(1);
+            this.cit_results[dkey][subkey] = (Math.round(this.cit_results[dkey][subkey] * 10) / 10).toFixed(1);
           } else if (subkey.slice(0, 4) === 'dcit') {
-            this.cit_results[dkey][subkey] = (Math.ceil(this.cit_results[dkey][subkey] * 100) / 100).toFixed(2);
+            this.cit_results[dkey][subkey] = (Math.round(this.cit_results[dkey][subkey] * 100) / 100).toFixed(2);
           } else {
-            this.cit_results[dkey][subkey] = (Math.ceil(this.cit_results[dkey][subkey] * 1000) / 10).toFixed(1);
+            this.cit_results[dkey][subkey] = (Math.round(this.cit_results[dkey][subkey] * 1000) / 10).toFixed(1);
           }
           this.cit_results[dkey][subkey] = this.cit_results[dkey][subkey].replace('-', '−');
         } else {

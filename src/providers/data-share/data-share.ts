@@ -26,8 +26,8 @@ export class DataShareProvider {
   }
 
   german_items = {
-    'meaningful': ["vertraut", "bedeutsam", "bekannt", "verstanden", "wahrhaft", "vorhanden", "sinnvoll", "richtig", "gewusst", "geläufig"], //  "denkbar", "tatsächlich", "glaubhaft"
-    'pseudo': ["rützte", "girter", "zonsig", "fensch", "schwapf", "schlink", "kraubig", "behlsam", "hokisch", "noberal", "kriesam", "besärzt", "fosisch", "brirsam", "lathaft", "breuzig", "greibig", "glätisch", "weugvoll", "redengig", "gachligt", "verkemst", "pauflich", "heiglich", "wieflich", "schlinst", "plaucklos", "staumisch", "stürsisch", "kreibisch", "tintzlich", "brunenlos", "bänelich", "schriemrig", "klotselig", "gelörnsam"]
+    'meaningful': ["bekannt", "gewusst", "verstanden", "denkbar", "vertraut", "bedeutsam", "sinnvoll", "vorhanden", "wahrhaft", "richtig"],
+    'pseudo': ["rützte", "girter", "zonsig", "fensch", "schwapf", "schlink", "kraubig", "behlsam", "hokisch", "noberal", "kriesam", "besärzt", "fosisch", "brirsam", "lathaft", "breuzig", "greibig", "glätisch", "weugvoll", "redengig", "gachligt", "verkemst", "pauflich", "heiglich", "wieflich", "schlinst", "plaucklos", "staumisch", "stürsisch", "kreibisch", "tintzlich", "brinenlos", "bänelich", "schriemrig", "klotselig", "gelörsam"]
   };
 
   lextale_instructions_en =

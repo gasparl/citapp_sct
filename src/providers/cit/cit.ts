@@ -50,7 +50,7 @@ export class CitProvider {
     }.bind(this), rt_sim);
   }
   //*/
-  to_slice: number = 30; // 0 to ignore
+  to_slice: number = 0; // 0 to ignore
 
   exp: string = "exp3_DEinHU";
   subj_id: string = '';

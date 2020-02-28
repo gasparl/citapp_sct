@@ -66,9 +66,9 @@ export class CitProvider {
   current_menu: string = '';
   false_delay: number = 400;
   tooslow_delay: number = 400;
-  isi_delay_minmax: number[] = [300, 700];
+  isi_delay_minmax: number[] = [500, 800];
   response_timelimit: number;
-  response_timelimit_main: number = 900;
+  response_timelimit_main: number = 1000;
   isi_delay: number = 99999;
   cit_type: any = 0;
   cittypedict: any = {

@@ -32,7 +32,7 @@ export class HomePage {
     }
   }
 
-  // /*
+  /*
   to_exec: any = 'this.citP.';
   mycl: any;
   onChange(ee) {

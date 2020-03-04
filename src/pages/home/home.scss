@@ -254,6 +254,10 @@ page-home {
     height: 37%;
     width: 37%;
   }
+
+  .rightitems_list {
+    direction: rtl;
+  }
 }
 @media screen and (orientation:landscape) {
   .alert-wrapper {

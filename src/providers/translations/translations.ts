@@ -244,16 +244,15 @@ export class TranslationProvider {
       } else {
         numprac = 'két';
       }
-      console.log(targs);
-      let intro = 'A teszt során különféle elemek (szavak) jelennek meg egyesével a képernyő közepén. Két érintőgomb lesz látható az érintőképernyőn: egy baloldalt, és egy jobboldalt. Az bal oldali vagy a jobb oldali gomb megérintésével kell kategorizálni minden elemet. ';
+      let intro = 'A teszt során különféle elemek (szavak) jelennek meg egyesével a képernyő közepén. Két gomb lesz látható az érintőképernyőn: egy baloldalt, és egy jobboldalt. Az bal oldali vagy a jobb oldali gomb megérintésével kell kategorizálni minden elemet. ';
       let intro_end = 'Először ' + numprac + ' rövid gyakorló feladat jön. ';
       let inducers_instructions =
-        '</br></br>Válaszd a <i>jobb oldali</i> gombot ha a következő elemek bármelyike jelenik meg:<br>' + trefs + 'Válaszd a <i>bal oldali</i> gombot ha bármely más elem jelenik meg. Ezek az elemek:<br>' + nontrefs;
+        '</br></br>Válaszd a <i>jobb oldali</i> (→■) gombot ha a következő elemek bármelyike jelenik meg:<br>' + trefs + 'Válaszd a <i>bal oldali</i> (■←) gombot ha bármely más elem jelenik meg. Ezek az elemek:<br>' + nontrefs;
       let main_instruction = 'Válaszd a <i>jobb oldali</i> gombot ha az alábbi "cél" elem jelenik meg:<br>' +
         targs[0] +
         'Válaszd a <i>bal oldali</i> gombot ha bármely más elem jelenik meg. Ezek az elemek:<br>' +
         nontargs[0];
-      let main_end = 'A következő gyakorló feladatban sok időd van kiválasztani a helyes érintőgombot, de <b>minden elemre helyes választ kell adnod</b>. Ha hibás választ adsz (vagy nem adsz választ több mint 10 másodpercig), meg kell ismételned ezt a gyakorló feladatot. ';
+      let main_end = 'A következő gyakorló feladatban sok időd van kiválasztani a helyes gombot, de <b>minden elemre helyes választ kell adnod</b>. Ha hibás választ adsz (vagy nem adsz választ több mint 10 másodpercig), meg kell ismételned ezt a gyakorló feladatot. ';
       // 0: fillers & target, 1: standard CIT, 2: fillers (no target)
       thetexts.push(
         '<span id="feedback_id1">' + intro + intro_end + '</br></br>Az első gyakorló feladat során két fajta elemet kell kategorizálnod. ' + inducers_instructions +
@@ -266,16 +265,16 @@ export class TranslationProvider {
         this.it_type_feed_dict['hu'].targetflr
       ].join(', ');
       thetexts.push(
-        "<span id='feedback_id3'>A harmadik és utolsó gyakorlófeladat az összes elemet tartalmazza (" + ittypes + "). Ismét gyorsan kell választ adnod, de egy bizonyos számú hiba megengedett. A feladat ugyanaz. Válaszd a <i>jobb oldali</i> gombot ha a következő elemek bármelyike jelenik meg:<br>" + targs[0].replace('<br>', '') + trefs + "Válaszd a <i>bal oldali</i> gombot ha bármely más elem jelenik meg.</span>");
+        "<span id='feedback_id3'>A harmadik és utolsó gyakorlófeladat az összes elemet tartalmazza (" + ittypes + ").<br><br>Ismét gyorsan kell választ adnod, de egy bizonyos számú hiba megengedett. A feladat ugyanaz. Válaszd a <i>jobb oldali</i> gombot ha a következő elemek bármelyike jelenik meg:<br>" + targs[0].replace('<br>', '') + trefs + "Válaszd a <i>bal oldali</i> gombot ha bármely más elem jelenik meg.</span>");
       thetexts.push(
-        "Most következik az éles teszt. A feladat ugyanaz. Válaszd a <i>jobb oldali</i> gombot ha az alábbi elemek bármelyike jelenik meg:<br>" + targs[0].replace('<br>', '') + trefs + "Válaszd a <i>bal oldali</i> gombot ha bármely más elem jelenik meg.<br><br>Probálj pontos és gyors lenni.");
+        "Most következik a teszt. A feladat ugyanaz. Válaszd a <i>jobb oldali</i> gombot ha az alábbi elemek bármelyike jelenik meg:<br>" + targs[0].replace('<br>', '') + trefs + "Válaszd a <i>bal oldali</i> gombot ha bármely más elem jelenik meg.<br><br>Probálj pontos és gyors lenni.");
 
       [1, 2, 3].forEach(pnum => {
         thetexts.push(
           'Most más fő elemek következnek. Válaszd a <i>jobb oldali</i> gombot ha az alábbi "cél" elem jelenik meg:<br>' +
           targs[pnum] +
           'Válaszd a <i>bal oldali</i> gombot ha bármely más elem jelenik meg. Ezek az elemek:<br>' +
-          nontargs[pnum] + 'Egy rövid gyakorlófeladat következik, hogy hozzászokj az új szavakhoz. Megint sok időd van kiválasztani a helyes érintőgombot, de <b>minden elemre helyes választ kell adnod</b>, különben meg kell ismételned ezt a gyakorlófeladatot.');
+          nontargs[pnum] + 'Egy rövid gyakorlófeladat következik, hogy hozzászokj az új szavakhoz. Megint sok időd van kiválasztani a helyes gombot, de <b>minden elemre helyes választ kell adnod</b>, különben meg kell ismételned ezt a gyakorlófeladatot.');
         thetexts.push(
           "Rendben. A következő szakasz kezdődik. A feladat ugyanaz. Válaszd a <i>jobb oldali</i> gombot ha a következő elemek bármelyike jelenik meg:<br>" + targs[pnum].replace('<br>', '') + trefs + "Válaszd a <i>bal oldali</i> gombot ha bármely más elem jelenik meg.</span>");
       })

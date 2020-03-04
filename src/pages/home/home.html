@@ -107,16 +107,17 @@
 
 
   <div *ngSwitchCase="'div_blockstart'" [ngStyle]="{'pointer-events': citP.pointev.div_blockstart || 'none' }">
+
+    <div *ngIf='citP.block_text.slice(0, 13) === "<span></span>"'>
+      <button ion-button style='text-transform: none;' (tap)='citP.block_text = citP.block_texts[citP.blocknum]' color='light' block>{{trP.show_inst[trP.lang]}}</button>
+      <br />
+    </div>
+
     <span [innerHTML]="san_html(citP.block_text)"></span>
     <div text-center>
       <br />
       <br />
       <button ion-button (tap)="citP.runblock();">{{trP.start[trP.lang]}}</button>
-      <div *ngIf='citP.block_text.slice(0, 13) === "<span></span>"'>
-        <br />
-        <br />
-        <button ion-button style='text-transform: none;' (tap)='citP.block_text = citP.block_texts[citP.blocknum]' color='light' block>{{trP.show_inst[trP.lang]}}</button>
-      </div>
       <br />
     </div>
   </div>

@@ -370,15 +370,16 @@ export class CitProvider {
   lex_result: number | string = 'none';
   corr_word: number = 0;
   corr_nonword: number = 0;
+  // this.citP.corr_word + '+' + this.citP.corr_nonword
   lextouch(rexrespd) {
-    if (this.dataShare.lextale_items.length > 0) {
-      if (this.lexstim_item.dummy === 0) {
-        if (this.lexstim_item.wstatus === 1 && rexrespd === 'yes') {
-          this.corr_word++;
-        } else if (this.lexstim_item.wstatus === 0 && rexrespd === 'no') {
-          this.corr_nonword++;
-        }
+    if (this.lexstim_item.dummy === 0) {
+      if (this.lexstim_item.wstatus === 1 && rexrespd === 'yes') {
+        this.corr_word++;
+      } else if (this.lexstim_item.wstatus === 0 && rexrespd === 'no') {
+        this.corr_nonword++;
       }
+    }
+    if (this.dataShare.lextale_items.length > 0) {
       this.lexstim_item = this.dataShare.lextale_items.shift();
     } else {
       this.lexstim_item = "";

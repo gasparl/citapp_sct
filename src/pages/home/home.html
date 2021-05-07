@@ -2,60 +2,39 @@
 
   <div *ngSwitchCase="'div_settings'" style="font-size: 200% !important;">
     <div style="font-size: 90%;line-height:150%;font-weight:bold">
-      Légy szíves kapcsold ki az internetet illetve állítsd a telefonod "repülő" módba, hogy semmi ne szakítsa meg a tesztet.
-      Ezt követően kérjük add meg az információkat alább.
+      Please turn off the internet or set your phone to "flight mode" so that nothing would interrupt the test. Then please provide your age and sex below. (If you do not wish to provide age, please set it to "1".)
     </div>
     <br />
 
     <ion-item>
-      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black;" fixed>Életkor</ion-label>
+      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black;" fixed>Age</ion-label>
       <ion-input [(ngModel)]="citP.age" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
     </ion-item>
     <br />
     <ion-item>
-      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Nem</ion-label>
+      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Sex</ion-label>
       <ion-select [(ngModel)]="citP.gender" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-        <ion-option value='1'>Férfi</ion-option>
-        <ion-option value='2'>Nő</ion-option>
-      </ion-select>
-    </ion-item>
-    <br />
-    <ion-item>
-      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Foglalkozás</ion-label>
-      <ion-select [(ngModel)]="citP.occupation" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-        <ion-option value='1'>Tanuló</ion-option>
-        <ion-option value='2'>Dolgozó (teljes munkaidő)</ion-option>
-        <ion-option value='3'>Egyéb</ion-option>
-      </ion-select>
-    </ion-item>
-    <br />
-    <ion-item>
-      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black">Képzettség</ion-label>
-      <ion-select [(ngModel)]="citP.education" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-        <ion-option value='0'>Általános iskola</ion-option>
-        <ion-option value='1'>Középiskola</ion-option>
-        <ion-option value='2'>Szakmunkásképző / professzionális képzés</ion-option>
-        <ion-option value='3'>Megkezdett egyetem/főiskola</ion-option>
-        <ion-option value='4'>Alapképzés (BA, BSc, stb.) szintű végzettség</ion-option>
-        <ion-option value='5'>Mesterképzés (MA, MSc, stb.) szintű végzettség</ion-option>
+        <ion-option value='1'>Male</ion-option>
+        <ion-option value='2'>Female</ion-option>
+        <ion-option value='2'>Other</ion-option>
       </ion-select>
     </ion-item>
 
-    <div *ngIf='citP.age > 16 && citP.age < 60 && citP.gender != "" && citP.occupation != "" && citP.education != ""'>
+    <div *ngIf='(citP.age > 16 || citP.age = 1 && citP.age < 90) && citP.gender != ""'>
       <br />
       <br />
       <div style="font-size: 90%;line-height:150%;font-weight:bold;text-align:left">
         <b>
-          Most következik a hazugságvizsgálat.
+          Next comes the lie detection test.
           <br />
-          Ne felejtsd el, hogy tagadod, hogy megérted a német nyelvet.
+          Keep in mind that you are denying that you know any of the famous personalities.
         </b>
       </div>
 
       <br />
       <br />
       <div style="text-align:center">
-        <button large ion-button type="button" (tap)="citP.switch_divs('div_items');" style="font-size: 120% !important;">OK</button>
+        <button large ion-button type="button" (tap)="initials();" style="font-size: 120% !important;">OK</button>
       </div>
     </div>
 
@@ -65,6 +44,7 @@
     <br />
   </div>
 
+  <!--
   <div *ngSwitchCase="'div_items'" style="font-size: 200% !important;" [ngStyle]="{'pointer-events': citP.pointev.div_items || 'none' }">
 
     <div style="font-size: 90%;line-height:150%;font-weight:bold">
@@ -85,7 +65,7 @@
       <button ion-button type="button" (tap)="initials();" style="font-size: 120% !important;" large>OK</button>
     </div>
   </div>
-
+  -->
 
   <div *ngSwitchCase="'div_consent'">
     <span style="line-height: 150%;">
@@ -203,7 +183,7 @@
     <button *ngIf="citP.pchosen.indexOf('') === -1" ion-button (tap)='citP.lex_switch();' color='light' block>OK</button>
   </div>
 
-
+  <!--
   <div *ngSwitchCase="'div_lextale_intro'" [ngStyle]="{'pointer-events': citP.pointev.div_lextale_intro || 'none' }">
     Befejezésül egy rövid és egyszerű német megértési teszt következik, a némettudásod hozzávetőleges felméréséhez.
     <br />
@@ -244,6 +224,7 @@
     <p id="lexstim">{{citP.lexstim_item.word}}</p>
 
   </div>
+    -->
 
   <div *ngSwitchCase="'div_end'">
     <div style="padding:2vw" (swiperight)="sethome();">
@@ -263,6 +244,8 @@
       </div>
       <div style="text-align:center;padding-bottom:4.5vw">
         (Date: <b>{{citP.cit_results.date}}</b>)
+        <br />
+        Below, "Probe 1" represents the suspected probe.
       </div>
 
       <div style="overflow-x:auto;background:#f1f1f1">
@@ -347,27 +330,32 @@
               </tr>
               <tr>
                 <td><i>d</i><sub>CIT</sub> > 0.3 and <i>d</i><sub>CIT</sub>
-                  <= 0.4</td> <td>fair indication of recognition
+                  <= 0.4</td>
+                <td>fair indication of recognition
                 </td>
               </tr>
               <tr>
                 <td><i>d</i><sub>CIT</sub> > 0.1 and <i>d</i><sub>CIT</sub>
-                  <= 0.3</td> <td>weak indication of recognition
+                  <= 0.3</td>
+                <td>weak indication of recognition
                 </td>
               </tr>
               <tr>
                 <td><i>d</i><sub>CIT</sub> > 0 and <i>d</i><sub>CIT</sub>
-                  <= 0.1</td> <td>indeterminate
+                  <= 0.1</td>
+                <td>indeterminate
                 </td>
               </tr>
               <tr>
                 <td><i>d</i><sub>CIT</sub> > −0.1 and <i>d</i><sub>CIT</sub>
-                  <= 0</td> <td>weak indication of non-recognition
+                  <= 0</td>
+                <td>weak indication of non-recognition
                 </td>
               </tr>
               <tr>
                 <td><i>d</i><sub>CIT</sub>
-                  <= −0.1</td> <td>fair indication of non-recognition
+                  <= −0.1</td>
+                <td>fair indication of non-recognition
                 </td>
               </tr>
             </table>
@@ -379,7 +367,8 @@
       </div>
       <br />
       <br />
-      To evaluate the results in this experiment, <i>d</i><sub>CIT</sub> for <i>Probe 1</i> (the real words in each block) should be at least below 0.30 to consider a person "not detected" and hence eligible for bonus. In contrast, anyone with <i>d</i><sub>CIT</sub>
+      To evaluate the results in this experiment, <i>d</i><sub>CIT</sub> for <i>Probe 1</i> (the real words in each block) should be at least below 0.30 to consider a person "not detected" and hence eligible for bonus. In contrast, anyone with
+      <i>d</i><sub>CIT</sub>
       equal to or greater than 0.30 should not receive bonus.
       <br />
       <br />
@@ -411,10 +400,7 @@
     <div [hidden]="citP.current_menu != 'm_sendin'">
 
       <div style="font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
-        Forward data with subject ID <b>{{citP.cit_results.subj_id}}</b>
-      </div>
-      <div style="text-align:center;padding-bottom:4.5vw">
-        (Date: <b>{{citP.cit_results.date}}</b>)
+        The test is completed, the only step left is to send your data to be stored
       </div>
 
       <div style="text-align:left;padding-left: 16px;padding-top:1.5vw;">
@@ -459,6 +445,10 @@
         <div style="overflow-x:auto" class='selectable'>
           <b>{{citP.cit_results.file_nam_disp}}</b>
         </div>
+      </div>
+      <hr />
+      <div style="text-align:center;padding-bottom:4.5vw">
+        (Subject ID <b>{{citP.cit_results.subj_id}}</b>; Date: <b>{{citP.cit_results.date}}</b>)
       </div>
       <hr />
       <button ion-button small type='button' (tap)="goto_menu('m_testres')" color="light" block>Show main results</button>

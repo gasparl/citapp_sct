@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class TranslationProvider {
-  lang: string = 'hu';
+  lang: string = 'en';
   lg_keys: string[];
   constructor() {
     this.lg_keys = Object.keys(this.lgs);

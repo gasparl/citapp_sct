@@ -56,8 +56,6 @@ export class CitProvider {
   subj_id: string = '';
   age: string = '';
   gender: string = '';
-  education: string = '';
-  occupation: string = '';
   speaker: string = '';
   current_div: string = "div_settings"; // ddd default: "div_settings"
   // div_items, div_dems, div_cit_main, div_end, div_lextale_intro
@@ -624,8 +622,6 @@ export class CitProvider {
       'speaker',
       'gender',
       'age',
-      'occupation',
-      'edu',
       'pselected',
       'pcorrect',
       'lextale',
@@ -637,8 +633,6 @@ export class CitProvider {
         this.speaker,
         this.gender,
         this.age,
-        this.occupation,
-        this.education,
         this.pchosen.join('|'),
         pcorr,
         this.lex_result,

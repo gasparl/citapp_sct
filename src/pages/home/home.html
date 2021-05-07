@@ -44,28 +44,6 @@
     <br />
   </div>
 
-  <!--
-  <div *ngSwitchCase="'div_items'" style="font-size: 200% !important;" [ngStyle]="{'pointer-events': citP.pointev.div_items || 'none' }">
-
-    <div style="font-size: 90%;line-height:150%;font-weight:bold">
-      Kérjük olvasd végig a következő szólistát. Ha látsz olyan szavakat, amelyek értelmesnek tűnnek neked (vagy bármi módon jelentősen különbözőnek látszik a többi szóhoz képest), válaszd ki őket. Összesen maximum négy szót válaszhatsz ki.
-    </div>
-    <br />
-
-    <ion-list>
-      <ion-item *ngFor="let the_item of dataShare.allpossiblewords">
-        <ion-label style="font-size: 150% !important;">{{the_item}}</ion-label>
-        <ion-checkbox [disabled]="dataShare.checkboxed.length >= 4 && dataShare.checkboxed.indexOf(the_item) === -1" (ionChange)="dataShare.chb_change($event, the_item)" item-right></ion-checkbox>
-      </ion-item>
-    </ion-list>
-
-    <div style="text-align:center">
-      <hr />
-      <br />
-      <button ion-button type="button" (tap)="initials();" style="font-size: 120% !important;" large>OK</button>
-    </div>
-  </div>
-  -->
 
   <div *ngSwitchCase="'div_consent'">
     <span style="line-height: 150%;">
@@ -118,33 +96,8 @@
   </div>
 
 
-  <div *ngSwitchCase="'cit_end'">
-    A hazugságvizsgálat véget ért! Mivel a résztvevők fele nem beszél németül, a kutatás érdekében nagyon fontos pontosan rögzítenünk, hogy <b>valójában beszélsz-e németül vagy nem</b>. Ezért kérjük szimplán add meg ezt az adatot alább. (Ez nem
-    fogja befolyásolni a befejezett teszt eredményeit, amik már el lettek mentve.) A kifizetés előtt a kísérletvezető is ellenőrizni fogja helyesen adtad-e meg ezt az információt.
-
-    <ion-item>
-      <ion-label style="font-size: 120% !important;margin-bottom:0;color:black">Beszélek németül</ion-label>
-      <ion-select [(ngModel)]="citP.speaker" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-        <ion-option value='yes'>Igen</ion-option>
-        <ion-option value='no'>Nem</ion-option>
-      </ion-select>
-    </ion-item>
-
-    <div *ngIf="citP.speaker !==''"><br /><br />
-      Azt adtad meg, hogy <b><span *ngIf="citP.speaker === 'yes'">valójában</span><span *ngIf="citP.speaker === 'no'">tényleg nem</span> beszélsz németül</b>. Ha ez stimmel, érintsd meg az alábbi gombot.
-      <br />
-      <br />
-      <button ion-button (tap)='citP.switch_divs("div_pcheck");' color='light' block>RENDBEN</button>
-    </div>
-
-
-  </div>
-
-
   <div *ngSwitchCase="'div_pcheck'" [ngStyle]="{'pointer-events': citP.pointev.div_pcheck || 'none' }">
-    Függetlenül attól, hogy beszélsz-e németül, tudni szeretnénk, felismerted-e vagy akár sejtetted-e melyik szó volt német a különböző tesztszakaszokban. Légy szíves, válaszd ki a 4 ismert vagy sejtett valódi német szót az alábbi 4 listából. Ha
-    nincs sejtésed se, válaszd
-    a "nem tudom" opciót.
+    <b>The lie detection test is now completed.</b> To make sure that you were actually familiar with the famous persons, please select their names below, from among the other items.
     <br />
 
     <ion-item>
@@ -180,7 +133,7 @@
     <br />
     <br />
 
-    <button *ngIf="citP.pchosen.indexOf('') === -1" ion-button (tap)='citP.lex_switch();' color='light' block>OK</button>
+    <button *ngIf="citP.pchosen.indexOf('') === -1" ion-button (tap)='citP.store_data();' color='light' block>OK</button>
   </div>
 
   <!--

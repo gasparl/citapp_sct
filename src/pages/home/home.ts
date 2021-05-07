@@ -281,12 +281,6 @@ export class HomePage {
 
   seg_values: string[] = ['main', 'fillers', 'settings', 'autofill', 'start'];
 
-  add_img(img_key, filename) {
-    this.img_dict[img_key] = filename;
-    this.img_dict[img_key + '_img'] = this.dataShare.stored_images[filename];
-    this.display_thumbnail(img_key);
-  }
-
   display_thumbnail(img_key) {
     let img = new Image;
     img.style.height = "9vw";
@@ -315,118 +309,23 @@ export class HomePage {
   init_cit(chosen) {
     this.citP.consented = chosen;
     this.create_stim_base();
+    this.to_img();
     this.citP.set_block_texts();
     this.citP.task_start();
     this.citP.nextblock();
   }
 
-  auto_img() {
-    let feed;
-    let added = [];
-    if (Object.keys(this.dataShare.stored_images).length === 0) {
-      feed = 'No images are loaded.'
-    } else {
-      let all_ids = ['target', 'probe1', 'probe2', 'probe3', 'probe4', 'probe5', 'filler1', 'filler2', 'filler3', 'filler4', 'filler5', 'filler6', 'filler7', 'filler8', 'filler9'];
-      Object.keys(this.dataShare.stored_images).map((filename) => {
-        all_ids.map((img_id) => {
-          if (filename.includes(img_id)) {
-            this.add_img(img_id, filename)
-            added.push(filename);
-          }
-        });
-      });
-      if (added.length === 0) {
-        feed = 'No image names match the item names.'
-      } else {
-        document.getElementById("imgfeed_id").style.color = 'green';
-        feed = 'Images added. (' + added.length + ' images: ' + added.join(', ') + '.)';
-      }
-    }
-    try {
-      document.getElementById("imgfeed_id").innerHTML = feed;
-      setTimeout(() => {
-        document.getElementById("imgfeed_id").innerHTML = '';
-      }, 3000);
-    } catch { }
-  }
-
   // item generation
 
-  prep_items() {
-    this.dataShare.checkboxed.forEach(word => {
-      let ind = this.dataShare.the_items.meaningful.indexOf(word);
-      if (ind !== -1) {
-        this.dataShare.the_items.meaningful.push(this.dataShare.the_items.meaningful.splice(ind, 1)[0]);
-      }
-    })
-    this.dataShare.the_items.meaningful = this.dataShare.the_items.meaningful.map(it => it.toUpperCase());
-    this.citP.the_probes = this.dataShare.the_items.meaningful.splice(0, 4);
-    this.citP.the_targets = JSON.parse(JSON.stringify(this.dataShare.the_items.meaningful));
-
-    this.dataShare.the_items.pseudo = this.dataShare.the_items.pseudo.filter((el) => {
-      return this.dataShare.checkboxed.indexOf(el) < 0;
-    });
-    this.dataShare.the_items.pseudo = this.dataShare.the_items.pseudo.map(it => it.toUpperCase());
-  }
 
   prune() {
-    //given the probe and target (in each of the categories), selects the 4 irrelevants. None with same starting letter, and with length closest possible to the probe.
+    this.citP.the_probes = ['probe1.jpg'];
+    this.citP.the_targets = ['control1.jpg'];
+    this.citP.the_controls = ['control2.jpg', 'control3.jpg', 'control4.jpg', 'control5.jpg', 'control6.jpg'];
+
     let items_base_temp = [];
     this.citP.the_probes.forEach((probe, index) => {
-
-      let t_container = JSON.parse(JSON.stringify(this.citP.the_targets));
-      let icontainer = JSON.parse(JSON.stringify(this.dataShare.the_items.pseudo));
-      let finals = [probe];
-
-      // add closest target, then closest irrs
-
-      t_container = t_container.filter((n) => {
-        // filter if same starting character
-        return probe[0] !== n[0] && probe.slice(-4) !== n.slice(-4);
-      });
-
-      let maxdif = 0, temps;
-      while (finals.length < 2 && maxdif < 99) {
-        temps = t_container.filter(function(n) {
-          return Math.abs(probe.length - n.length) <= maxdif;
-        });
-        if (temps.length > 0) {
-          finals.push(temps[0]); // nonrandom!
-          t_container = t_container.filter(function(n) {
-            return finals[finals.length - 1][0] !== n[0] && finals[finals.length - 1].slice(-4) !== n.slice(-4);
-          });
-        } else {
-          maxdif++;
-        }
-      }
-
-      icontainer = icontainer.filter((n) => {
-        // filter if same starting character
-        return probe[0] !== n[0] && probe.slice(-4) !== n.slice(-4) &&
-          finals[finals.length - 1][0] !== n[0] && finals[finals.length - 1].slice(-4) !== n.slice(-4);
-      });
-      maxdif = 0;
-      while (finals.length < 6 && maxdif < 99) {
-        temps = icontainer.filter(function(n) {
-          return Math.abs(probe.length - n.length) <= maxdif;
-        });
-        if (temps.length > 0) {
-          finals.push(temps[0]); // nonrandom!
-          icontainer = icontainer.filter(function(n) {
-            return finals[finals.length - 1][0] !== n[0] && finals[finals.length - 1].slice(-4) !== n.slice(-4);
-          });
-        } else {
-          maxdif++;
-        }
-      }
-
-      this.citP.the_targets = this.citP.the_targets.filter((el) => {
-        return finals.indexOf(el) < 0;
-      });
-      this.dataShare.the_items.pseudo = this.dataShare.the_items.pseudo.filter((el) => {
-        return finals.indexOf(el) < 0;
-      });
-
+      let finals = [probe, this.citP.the_targets.shift()].concat(this.citP.the_controls.splice(0, 4));
       items_base_temp.push(finals);
     });
     console.log("! items_base_temp:");
@@ -436,7 +335,6 @@ export class HomePage {
 
   words_lists: any[] = [[], [], [], []];
   create_stim_base() {
-    this.prep_items();
     let item_bases = this.prune();
     this.citP.blocknum = 1;
     this.citP.stim_bases = [[], [], [], []];
@@ -463,26 +361,21 @@ export class HomePage {
         }
         if (0 === indx) {
           tempdict.type = "probe1";
-          tempdict.mode = 'text';
-          tempdict.imgurl = null;
           this.citP.the_nontargs[num].push(tempdict);
           this.words_lists[num].push(item);
         } else if (1 === indx) {
           tempdict.type = "target";
-          tempdict.mode = 'text';
-          tempdict.imgurl = null;
           this.citP.the_targets[num].push(tempdict);
         } else {
           tempdict.type = "probe" + indx;
           this.citP.the_nontargs[num].push(tempdict);
           this.words_lists[num].push(item);
         }
-        tempdict.mode = 'text';
-        tempdict.imgurl = null;
+        tempdict.mode = 'image';
+        tempdict.imgurl = '../../assets/' + item;
         this.citP.stim_bases[num].push(JSON.parse(JSON.stringify(tempdict)));
       });
       this.words_lists[num] = this.words_lists[num].sort();
-      this.words_lists[num].push('Nem tudom.');
     });
 
     this.targetref_words.forEach((ref_item, num) => {
@@ -491,13 +384,8 @@ export class HomePage {
         'type': 'targetflr' + num,
         'cat': 'filler'
       }
-      if (Object.keys(this.img_dict).indexOf('filler' + (num + 1)) !== -1) {
-        tempdict.mode = 'image';
-        tempdict.imgurl = this.img_dict["filler" + (num + 1) + '_img'];
-      } else {
-        tempdict.mode = 'text';
-        tempdict.imgurl = null;
-      }
+      tempdict.mode = 'text';
+      tempdict.imgurl = null;
       this.citP.targetrefs.push(tempdict);
     });
     this.nontargref_words.forEach((ref_item, num) => {
@@ -506,13 +394,8 @@ export class HomePage {
         'type': 'nontargflr' + num,
         'cat': 'filler'
       }
-      if (Object.keys(this.img_dict).indexOf('filler' + (num + 4)) !== -1) {
-        tempdict.mode = 'image';
-        tempdict.imgurl = this.img_dict["filler" + (num + 4) + '_img'];
-      } else {
-        tempdict.mode = 'text';
-        tempdict.imgurl = null;
-      }
+      tempdict.mode = 'text';
+      tempdict.imgurl = null;
       this.citP.nontargrefs.push(tempdict);
     });
   }
@@ -531,5 +414,59 @@ export class HomePage {
     this.citP.switch_divs('div_results');
     this.citP.current_menu = 'm_testres';
     this.citP.current_segment = 'menus';
+  }
+
+  // loading selected images
+  async load_img(filename) {
+    const result = await this.resizedataURL('../../assets/' + filename);
+    this.dataShare.stored_images[filename] = result;
+  };
+
+  // resize loaded image to the device's canvas size
+  resizedataURL(datas) {
+    return new Promise(async function(resolve, reject) {
+      var img = document.createElement('img');
+      img.onload = () => {
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        let wi = Math.floor(window.innerHeight * 0.62);
+        canvas.width = wi;
+        canvas.height = wi;
+        ctx.drawImage(img, 0, 0, wi, wi);
+        var dataURI = canvas.toDataURL();
+        resolve(dataURI);
+      };
+      img.src = datas;
+    })
+  }
+
+  async to_img() {
+    await Promise.all(this.citP.stim_base.map(async (dict) => {
+      if (dict['imgurl'] !== null) {
+        this.citP.task_images[dict['item']] = await this.imgurl(dict['imgurl']);
+      }
+      delete dict['imgurl'];
+    }));
+    await Promise.all(this.citP.targetrefs.map(async (dict) => {
+      if (dict['imgurl'] !== null) {
+        this.citP.task_images[dict['item']] = await this.imgurl(dict['imgurl']);
+      }
+      delete dict['imgurl'];
+    }));
+    await Promise.all(this.citP.nontargrefs.map(async (dict) => {
+      if (dict['imgurl'] !== null) {
+        this.citP.task_images[dict['item']] = await this.imgurl(dict['imgurl']);
+      }
+      delete dict['imgurl'];
+    }));
+  }
+
+  // load image from source URL
+  imgurl(base64) {
+    return new Promise((resolve, reject) => {
+      let img = new Image();
+      img.onload = () => resolve(img);
+      img.src = base64;
+    })
   }
 }

@@ -337,7 +337,7 @@ export class CitProvider {
         this.blocknum++;
         if (this.blocknum > 10) {
           this.bg_color = "#fff";
-          this.switch_divs('cit_end')
+          this.switch_divs('div_pcheck')
           this.backgroundMode.setDefaults({
             silent: true
           })
@@ -348,15 +348,6 @@ export class CitProvider {
       } else {
         this.nextblock();
       }
-    }
-  }
-
-  lex_switch() {
-    if (this.speaker === 'yes') {
-      this.switch_divs("div_lextale_intro");
-      this.bg_color = "#AAAAAA";
-    } else {
-      this.store_data();
     }
   }
 
@@ -381,9 +372,9 @@ export class CitProvider {
       this.lexstim_item = this.dataShare.lextale_items.shift();
     } else {
       this.lexstim_item = "";
-      this.switch_divs('div_end');
-      this.lex_result = (this.corr_word / 40 * 100 +
-        this.corr_nonword / 20 * 100) / 2;
+      this.switch_divs('div_results');
+      this.current_menu = 'm_sendin';
+      this.current_segment = 'menus';
       this.store_data();
     }
   }
@@ -452,7 +443,6 @@ export class CitProvider {
   }
 
   nextblock() {
-    const stnm: object = { 5: 1, 7: 2, 9: 3 };
     this.crrnt_phase = 'practice';
     this.bg_color = "#fff";
     this.block_trialnum = 0;
@@ -473,7 +463,7 @@ export class CitProvider {
     } else if (this.blocknum % 2 !== 0) {
       this.response_timelimit = 10000;
       this.crrnt_phase = 'practice_strict';
-      this.teststim = this.itemgenP.main_items(this.stim_bases[stnm[this.blocknum]]);
+      this.teststim = this.itemgenP.main_items(this.stim_bases[(this.blocknum - 3)/2]);
     } else {
       this.crrnt_phase = 'main';
       this.response_timelimit = this.response_timelimit_main;
@@ -518,9 +508,8 @@ export class CitProvider {
   store_data() {
     this.get_results();
     this.file.writeFile(this.path, this.cit_results.file_name, this.cit_results.cit_data).then(value => {
-      this.switch_divs('div_end');
+      // ok
     }, reason => {
-      this.switch_divs('div_end');
       this.cit_results.file_nam_disp = this.cit_results.file_name + ' There was an error saving this file. Data data can still be retrieved by copying it to the clipboard. Error: ' + reason;
     });
   }

@@ -16,11 +16,11 @@
       <ion-select [(ngModel)]="citP.gender" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
         <ion-option value='1'>Male</ion-option>
         <ion-option value='2'>Female</ion-option>
-        <ion-option value='2'>Other</ion-option>
+        <ion-option value='3'>Other</ion-option>
       </ion-select>
     </ion-item>
 
-    <div *ngIf='(citP.age > 16 || citP.age = 1 && citP.age < 90) && citP.gender != ""'>
+    <div *ngIf='((citP.age > 16 && citP.age < 90) || citP.age == 1 ) && citP.gender != ""'>
       <br />
       <br />
       <div style="font-size: 90%;line-height:150%;font-weight:bold;text-align:left">
@@ -34,7 +34,9 @@
       <br />
       <br />
       <div style="text-align:center">
-        <button large ion-button type="button" (tap)="initials();" style="font-size: 120% !important;">OK</button>
+        <button large ion-button type="button" (tap)="citP.nextblock();" style="font-size: 120% !important;">
+          OK
+        </button>
       </div>
     </div>
 
@@ -134,57 +136,6 @@
     <br />
 
     <button *ngIf="citP.pchosen.indexOf('') === -1" ion-button (tap)='citP.store_data();' color='light' block>OK</button>
-  </div>
-
-  <!--
-  <div *ngSwitchCase="'div_lextale_intro'" [ngStyle]="{'pointer-events': citP.pointev.div_lextale_intro || 'none' }">
-    Befejezésül egy rövid és egyszerű német megértési teszt következik, a némettudásod hozzávetőleges felméréséhez.
-    <br />
-    Alább német instrukciók következnek.
-    <br />
-    <br />
-    <hr />
-    <hr />
-    <hr />
-    <br />
-
-    Dieser Test besteht aus ungefähr 60 Durchgängen, in denen Sie jeweils eine Buchstabenreihe sehen. Ihre Aufgabe ist es, zu entscheiden, ob diese Buchstabenreihe ein existierendes deutsches Wort ist oder nicht. Falls sie glauben, dass es ein
-    deutsches Wort ist, klicken Sie auf "ja", andernfalls auf "nein".
-    <br /><br />
-    Sollten Sie sich sicher sein, dass ein Wort existiert, aber seine Bedeutung nicht kennen, können Sie trotzdem mit "ja" antworten. Sind Sie sich aber unsicher, ob das
-    Wort überhaupt im Deutschen existiert, sollten Sie mit "nein" antworten.
-    <br /><br />
-    Sie haben so viel Zeit wie Sie möchten für jede Antwort. Der Test dauert etwa 5 Minuten.
-    <br /><br />
-    Wenn Sie bereit sind, können Sie selbst das Experiment
-    starten.
-    <br /><br />
-    <button ion-button (tap)='citP.lex_start();' color='light' block>OK</button>
-
-  </div>
-
-
-  <div *ngSwitchCase="'div_lex_main'" [ngStyle]="{'pointer-events': citP.pointev.div_lex_main || 'none' }">
-
-    <span (tap)="citP.lextouch('no');" class="lexresp_buttons lexresp_left"></span>
-
-    <span (tap)="citP.lextouch('yes');" class="lexresp_buttons lexresp_right"></span>
-
-    <p (tap)="citP.lextouch('no');" class="labels lexresp_left">Nein</p>
-
-    <p (tap)="citP.lextouch('yes');" class="labels lexresp_right">Ja</p>
-
-    <p id="lexstim">{{citP.lexstim_item.word}}</p>
-
-  </div>
-    -->
-
-  <div *ngSwitchCase="'div_end'">
-    <div style="padding:2vw" (swiperight)="sethome();">
-      A teszt véget ért. Visszakapcsolhatod az internetet, ami szükséges lesz az adatok elküldéséhez.
-      <br /><br />
-      Kérjük várj csendben amíg mindenki befejezi a tesztet. (A biztonság kedvéért lehetőleg ne zárd be ezt az appot, de ha szeretnéd használni a telefonod, háttérbe rakhatod, azaz átválthatsz másik appra.)
-    </div>
   </div>
 
 

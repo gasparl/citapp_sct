@@ -137,6 +137,7 @@ export class HomePage {
         this.citP.path = this.citP.file.externalDataDirectory;
       }
     });
+    this.initials();
   }
 
   goto_menu(menu_name) {
@@ -309,40 +310,40 @@ export class HomePage {
   init_cit(chosen) {
     this.citP.consented = chosen;
     this.create_stim_base();
-    this.to_img();
-    this.citP.set_block_texts();
-    this.citP.task_start();
-    this.citP.nextblock();
   }
 
   // item generation
 
-
-  prune() {
-    this.citP.the_probes = ['probe1.jpg'];
-    this.citP.the_targets = ['control1.jpg'];
-    this.citP.the_controls = ['control2.jpg', 'control3.jpg', 'control4.jpg', 'control5.jpg', 'control6.jpg'];
-
-    let items_base_temp = [];
-    this.citP.the_probes.forEach((probe, index) => {
-      let finals = [probe, this.citP.the_targets.shift()].concat(this.citP.the_controls.splice(0, 4));
-      items_base_temp.push(finals);
-    });
-    console.log("! items_base_temp:");
-    console.log(items_base_temp);
-    return items_base_temp;
-  }
-
   words_lists: any[] = [[], [], [], []];
-  create_stim_base() {
-    let item_bases = this.prune();
+  async create_stim_base() {
+    this.citP.the_probes = ['probe1.jpg', 'probe1.jpg', 'probe1.jpg', 'probe1.jpg'];
+    let targs = ['control1.jpg', 'control1.jpg', 'control1.jpg', 'control1.jpg'];
+    let conts = ['control2.jpg', 'control3.jpg', 'control4.jpg', 'control5.jpg',
+      'control6.jpg', 'control2.jpg', 'control3.jpg', 'control4.jpg',
+      'control5.jpg', 'control6.jpg', 'control2.jpg', 'control3.jpg',
+      'control4.jpg', 'control5.jpg', 'control6.jpg', 'control2.jpg'];
+    const allimgs = JSON.parse(JSON.stringify(this.citP.the_probes.concat(conts).concat(targs)));
+
+    let item_bases = [];
+    this.citP.the_probes.forEach((probe, index) => {
+      let finals = [probe, targs.shift()].concat(conts.splice(0, 4));
+      item_bases.push(finals);
+    });
+
+    console.log("! item_bases:");
+    console.log(item_bases);
+
+    this.citP.task_images = {};
+    await Promise.all(allimgs.map(async (imgname) => {
+      this.citP.task_images[imgname] = await this.imgurl('../../assets/' + imgname);
+    }));
+
     this.citP.blocknum = 1;
     this.citP.stim_bases = [[], [], [], []];
     this.citP.the_targets = [[], [], [], []];
     this.citP.the_nontargs = [[], [], [], []];
     this.citP.targetrefs = [];
     this.citP.nontargrefs = [];
-    this.citP.task_images = {};
     this.citP.all_rts = {
       "probe1": [],
       "probe2": [],
@@ -359,6 +360,8 @@ export class HomePage {
           'item': item,
           'cat': 'main'
         }
+        tempdict.mode = 'image';
+        tempdict.imgurl = null;
         if (0 === indx) {
           tempdict.type = "probe1";
           this.citP.the_nontargs[num].push(tempdict);
@@ -371,12 +374,12 @@ export class HomePage {
           this.citP.the_nontargs[num].push(tempdict);
           this.words_lists[num].push(item);
         }
-        tempdict.mode = 'image';
-        tempdict.imgurl = '../../assets/' + item;
         this.citP.stim_bases[num].push(JSON.parse(JSON.stringify(tempdict)));
       });
       this.words_lists[num] = this.words_lists[num].sort();
     });
+    console.log('stim_bases');
+    console.log(JSON.parse(JSON.stringify(this.citP.stim_bases)));
 
     this.targetref_words.forEach((ref_item, num) => {
       let tempdict: any = {
@@ -398,6 +401,8 @@ export class HomePage {
       tempdict.imgurl = null;
       this.citP.nontargrefs.push(tempdict);
     });
+
+    this.to_img();
   }
 
   goto_slide(snum) {
@@ -422,31 +427,8 @@ export class HomePage {
     this.dataShare.stored_images[filename] = result;
   };
 
-  // resize loaded image to the device's canvas size
-  resizedataURL(datas) {
-    return new Promise(async function(resolve, reject) {
-      var img = document.createElement('img');
-      img.onload = () => {
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        let wi = Math.floor(window.innerHeight * 0.62);
-        canvas.width = wi;
-        canvas.height = wi;
-        ctx.drawImage(img, 0, 0, wi, wi);
-        var dataURI = canvas.toDataURL();
-        resolve(dataURI);
-      };
-      img.src = datas;
-    })
-  }
 
   async to_img() {
-    await Promise.all(this.citP.stim_base.map(async (dict) => {
-      if (dict['imgurl'] !== null) {
-        this.citP.task_images[dict['item']] = await this.imgurl(dict['imgurl']);
-      }
-      delete dict['imgurl'];
-    }));
     await Promise.all(this.citP.targetrefs.map(async (dict) => {
       if (dict['imgurl'] !== null) {
         this.citP.task_images[dict['item']] = await this.imgurl(dict['imgurl']);
@@ -459,6 +441,8 @@ export class HomePage {
       }
       delete dict['imgurl'];
     }));
+    this.citP.set_block_texts();
+    this.citP.task_start();
   }
 
   // load image from source URL

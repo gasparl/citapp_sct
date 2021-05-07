@@ -58,7 +58,7 @@ export class CitProvider {
   gender: string = '';
   speaker: string = '';
   current_div: string = "div_settings"; // ddd default: "div_settings"
-  // div_items, div_dems, div_cit_main, div_end, div_lextale_intro
+  // div_items, div_dems, div_cit_main
   consent_now: number = 0;
   current_segment: string = 'main';
   current_menu: string = '';
@@ -163,10 +163,12 @@ export class CitProvider {
     let textitems = dicts.filter(dct => dct.mode === 'text').map(dct => {
       return '<li>' + dct.item + '</li>';
     }).sort().join('<br>');
+
     let imgitems = dicts.filter(dct => dct.mode === 'image').map(dct => {
       let props = 'style="max-height:50%;max-width:50%;vertical-align: middle;"';
       return '<li><img ' + props + ' src="' + this.task_images[dct.item].src + '"></li>';
     }).sort().join('<br>');
+
     if (textitems.length > 0 && imgitems.length > 0) {
       return '<b><ul>' + textitems + '<br>' + imgitems + '</ul></b><br>';
     } else {
@@ -177,14 +179,12 @@ export class CitProvider {
   set_block_texts() {
     let trefs = this.list_items(this.targetrefs);
     let nontrefs = this.list_items(this.nontargrefs);
-    console.log(this.the_targets);
     let targs = [
       this.list_items(this.the_targets[0]),
       this.list_items(this.the_targets[1]),
       this.list_items(this.the_targets[2]),
       this.list_items(this.the_targets[3])
     ];
-    console.log(targs);
     let nontargs = [
       this.list_items(this.the_nontargs[0]),
       this.list_items(this.the_nontargs[1]),
@@ -351,33 +351,6 @@ export class CitProvider {
     }
   }
 
-  lexstim_item: any = {};
-  lex_start() {
-    this.switch_divs("div_lex_main");
-    this.lexstim_item = this.dataShare.lextale_items.shift();
-  }
-  lex_result: number | string = 'none';
-  corr_word: number = 0;
-  corr_nonword: number = 0;
-  // this.citP.corr_word + '+' + this.citP.corr_nonword
-  lextouch(rexrespd) {
-    if (this.lexstim_item.dummy === 0) {
-      if (this.lexstim_item.wstatus === 1 && rexrespd === 'yes') {
-        this.corr_word++;
-      } else if (this.lexstim_item.wstatus === 0 && rexrespd === 'no') {
-        this.corr_nonword++;
-      }
-    }
-    if (this.dataShare.lextale_items.length > 0) {
-      this.lexstim_item = this.dataShare.lextale_items.shift();
-    } else {
-      this.lexstim_item = "";
-      this.switch_divs('div_results');
-      this.current_menu = 'm_sendin';
-      this.current_segment = 'menus';
-      this.store_data();
-    }
-  }
 
   post_resp_hold() {
     this.ctx.clearRect(0, 0, this.image_width, this.image_width);
@@ -463,7 +436,7 @@ export class CitProvider {
     } else if (this.blocknum % 2 !== 0) {
       this.response_timelimit = 10000;
       this.crrnt_phase = 'practice_strict';
-      this.teststim = this.itemgenP.main_items(this.stim_bases[(this.blocknum - 3)/2]);
+      this.teststim = this.itemgenP.main_items(this.stim_bases[(this.blocknum - 3) / 2]);
     } else {
       this.crrnt_phase = 'main';
       this.response_timelimit = this.response_timelimit_main;
@@ -471,6 +444,9 @@ export class CitProvider {
     }
     if (this.to_slice !== 0) {
       this.teststim = this.teststim.slice(0, this.to_slice);
+    }
+    if (this.blocknum == 1) {
+      this.teststim = [];
     }
     this.rt_data_dict = {};
     this.switch_divs('div_blockstart');
@@ -613,7 +589,6 @@ export class CitProvider {
       'age',
       'pselected',
       'pcorrect',
-      'lextale',
       'full_dur'
     ].join('/') +
       '\t' + [
@@ -624,7 +599,6 @@ export class CitProvider {
         this.age,
         this.pchosen.join('|'),
         pcorr,
-        this.lex_result,
         duration_full
       ].join('/');
     this.cit_results.cit_data = this.cit_data;
@@ -636,7 +610,7 @@ export class CitProvider {
       ("0" + cdate.getHours()).slice(-2) + ":" +
       ("0" + cdate.getMinutes()).slice(-2);
 
-    this.cit_results.file_name = this.exp + '_' + this.speaker + '_L' + this.lex_result + '_' + this.subj_id + '.txt';
+    this.cit_results.file_name = this.exp + '_' + this.speaker + '_' + this.subj_id + '.txt';
     this.cit_results.file_nam_disp = this.cit_results.file_name;
     this.dataShare.storage.set('reslts', this.cit_results);
   }
@@ -651,18 +625,20 @@ export class CitProvider {
     }
     // this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
-      if (this.trial_stim.mode === 'image') {
-        this.ctx.drawImage(this.task_images[this.trial_stim.item], 0, 0);
-      } else {
-        this.stimulus_text = this.text_to_show;
-      }
-      this.start = performance.now();
-      this.listen = true;
-      this.response_window = setTimeout(function() {
-        this.rt_start = performance.now() - this.start;
-        this.listen = false;
-        this.flash_too_slow();
-      }.bind(this), this.response_timelimit);
+      requestAnimationFrame(() => {
+        if (this.trial_stim.mode === 'image') {
+          this.ctx.drawImage(this.task_images[this.trial_stim.item], 0, 0, this.image_width, this.image_width);
+        } else {
+          this.stimulus_text = this.text_to_show;
+        }
+        this.start = performance.now();
+        this.listen = true;
+        this.response_window = setTimeout(function() {
+          this.rt_start = performance.now() - this.start;
+          this.listen = false;
+          this.flash_too_slow();
+        }.bind(this), this.response_timelimit);
+      });
     });
   }
 

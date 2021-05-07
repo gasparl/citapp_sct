@@ -1,3 +1,3 @@
 **Concealed Information Test application**
 
-For language detection, Experiment 3.
+For text vs. face recognition experiment.

@@ -98,7 +98,7 @@ export class HomePage {
           }
         });
       } else {
-        this.citP.subj_id = this.citP.neat_date() +
+        this.citP.subj_id = this.citP.subj_id + this.citP.neat_date() +
           "_" +
           this.rchoice("CDFGHJKLMNPQRSTVWXYZ") +
           this.rchoice("AEIOU") +

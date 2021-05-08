@@ -60,10 +60,15 @@
 
   <div *ngSwitchCase="'div_settings'" style="font-size: 200% !important;">
     <div style="font-size: 90%;line-height:150%;font-weight:bold">
-      Please turn off the internet or set your phone to "flight mode" so that nothing would interrupt the test. Then please provide your age and sex below. (If you do not wish to provide age, please set it to "1".)
+      Please turn off the internet or set your phone to "flight mode" so that nothing would interrupt the test. Then please provide your Subject ID (from the Sona LABS System), age, and sex below. (If you do not wish to provide age, please set it to "1".)
     </div>
     <br />
 
+        <ion-item>
+          <ion-label style="font-size: 160% !important;margin-bottom:0;color:black;" fixed>Subject ID</ion-label>
+          <ion-input [(ngModel)]="citP.subj_id" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
+        </ion-item>
+        <br />
     <ion-item>
       <ion-label style="font-size: 160% !important;margin-bottom:0;color:black;" fixed>Age</ion-label>
       <ion-input [(ngModel)]="citP.age" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
@@ -78,7 +83,7 @@
       </ion-select>
     </ion-item>
 
-    <div *ngIf='((citP.age > 16 && citP.age < 90) || citP.age == 1 ) && citP.gender != ""'>
+    <div *ngIf='citP.subj_id.length > 2 && ((citP.age > 16 && citP.age < 90) || citP.age == 1 ) && citP.gender != ""'>
       <br />
       <br />
       <div style="font-size: 90%;line-height:150%;font-weight:bold;text-align:left">
@@ -188,7 +193,7 @@
       <div style="text-align:center;padding-bottom:4.5vw">
         (Date: <b>{{citP.cit_results.date}}</b>)
         <br />
-        Below, "Probe 1" represents the suspected probe.
+        The information on this page is just for you personally, in case you are interested (i.e., we do not need this data). Below, "Probe 1" represents the suspected probe.
       </div>
 
       <div style="overflow-x:auto;background:#f1f1f1">
@@ -347,8 +352,8 @@
       </div>
 
       <div style="text-align:left;padding-left: 16px;padding-top:1.5vw;">
-        First, please try to upload the data to the server by pressing the button below. If the upload is successful, the button will disappear and a success message will appear in its place. If the upload fails, you will get an error message:
-        in that case either try again or send data using one of the other options below.
+        First, please try to upload the data to the server by pressing the button below. If the upload is successful, the button will disappear and a success message will appear in its place that also contains your completion link. If the upload fails, you will get an error message:
+        in that case either try again or send data using one of the other options below (in which case we will approve your submission manually).
       </div>
       <i>
         <p *ngIf="!internet_on" style="color: red;">It seems you are not connected to the internet.<br /></p>

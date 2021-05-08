@@ -1,5 +1,63 @@
 <ion-content hide-nav-bar="true" padding [ngSwitch]="citP.current_div" [ngStyle]="{ 'background-color': citP.bg_color }" text-wrap>
 
+
+
+  <div *ngSwitchCase="'div_consent'">
+    <span style="line-height: 150%;">
+      <i>Here you should add whatever consent form you wish to have. A basic template follows...</i>
+      <br>
+
+      <h1>Information and Consent</h1>
+
+      <p>
+        <b>Aim of the Study:</b>
+        <br>
+        In this experiment, ....
+      </p>
+
+      <p>
+        <b>Payment:</b>
+        <br>
+        The entire task takes around 25-30 minutes on average. (compensation?)
+      </p>
+
+      <p>
+        <b>Your Rights:</b>
+        <br>You are free to stop participating in the study at any time and without giving reasons.
+      </p>
+
+      <p>
+        <b>Data Sharing and Anonymity:</b>
+        <br>The data from the following test will be used and published to be freely available for research purposes. The data will not reveal who you are, you will not be named and your identity will remain strictly confidential.
+      </p>
+
+      <p>
+        <b>Technical Issues:</b>
+        <br>This application has been thoroughly tested and proven stable many times, but we do not take responsibility for potential unexpected technical issues. Nonetheless, if you experience any problems, you can contact
+        gaspar.lukacs@univie.ac.at (Gaspar Lukacs).
+      </p>
+
+      <p>
+        <b>Contact:</b>
+        <br>.....
+      </p>
+
+      <p>
+        <b>Consent:</b>
+        <br>
+        By clicking the "I consent" button below, you confirm that you have read and understood the participation information. You also confirm that you will be concentrating on the tasks and complete them to the best of your abilities.
+      </p>
+
+      <br>
+
+    </span>
+    <br /><br />
+    <div text-center>
+      <button ion-button (tap)="citP.switch_divs('div_settings');" color='light' block>I consent</button>
+      <br />
+    </div>
+  </div>
+
   <div *ngSwitchCase="'div_settings'" style="font-size: 200% !important;">
     <div style="font-size: 90%;line-height:150%;font-weight:bold">
       Please turn off the internet or set your phone to "flight mode" so that nothing would interrupt the test. Then please provide your age and sex below. (If you do not wish to provide age, please set it to "1".)
@@ -34,7 +92,7 @@
       <br />
       <br />
       <div style="text-align:center">
-        <button large ion-button type="button" (tap)="citP.nextblock();" style="font-size: 120% !important;">
+        <button large ion-button type="button" (tap)="cit_start();" style="font-size: 120% !important;">
           OK
         </button>
       </div>
@@ -44,25 +102,6 @@
     <br />
     <br />
     <br />
-  </div>
-
-
-  <div *ngSwitchCase="'div_consent'">
-    <span style="line-height: 150%;">
-      {{trP.consent[trP.lang]}} {{consentitems}}
-    </span>
-    <br /><br />
-    <div text-center>
-      {{trP.consent_q[trP.lang]}}
-      <br /><br />
-      <button ion-button *ngIf="consentset.indexOf('1') !== -1" (tap)="init_cit(1);" color='light' block>{{trP.consent_a[trP.lang][0]}}</button>
-      <br />
-      <button ion-button *ngIf="consentset.indexOf('2') !== -1 && consentset.indexOf('1') !== -1" (tap)="init_cit(2);" color='light' block>{{trP.consent_a[trP.lang][1]}}</button>
-      <button ion-button *ngIf="consentset.indexOf('2') !== -1 && consentset.indexOf('1') === -1" (tap)="init_cit(2);" color='light' block>{{trP.consent_a[trP.lang][0]}}</button>
-      <br />
-      <button ion-button *ngIf="consentset.indexOf('0') !== -1" (tap)="init_cit(0);" color='light' block>{{trP.consent_a[trP.lang][2]}}</button>
-      <br />
-    </div>
   </div>
 
 

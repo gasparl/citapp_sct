@@ -301,15 +301,17 @@ export class HomePage {
   initials() {
     this.targetref_words = this.targetref_words.map(w => w.toUpperCase())
     this.nontargref_words = this.nontargref_words.map(w => w.toUpperCase())
+    this.citP.consented = 99;
+    this.create_stim_base();
+  }
+
+
+  cit_start() {
+
     if (this.on_device) {
       this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE_PRIMARY);
     }
-    this.init_cit(99);
-  }
-
-  init_cit(chosen) {
-    this.citP.consented = chosen;
-    this.create_stim_base();
+    this.citP.task_start();
   }
 
   // item generation
@@ -421,12 +423,6 @@ export class HomePage {
     this.citP.current_segment = 'menus';
   }
 
-  // loading selected images
-  async load_img(filename) {
-    const result = await this.resizedataURL('../../assets/' + filename);
-    this.dataShare.stored_images[filename] = result;
-  };
-
 
   async to_img() {
     await Promise.all(this.citP.targetrefs.map(async (dict) => {
@@ -442,7 +438,6 @@ export class HomePage {
       delete dict['imgurl'];
     }));
     this.citP.set_block_texts();
-    this.citP.task_start();
   }
 
   // load image from source URL

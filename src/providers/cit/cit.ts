@@ -52,13 +52,13 @@ export class CitProvider {
   //*/
   to_slice: number = 0; // 0 to ignore
 
-  exp: string = "exp3_DEinHU";
+  exp: string = "name_vs_face";
   subj_id: string = '';
   age: string = '';
   gender: string = '';
   speaker: string = '';
-  current_div: string = "div_settings"; // ddd default: "div_settings"
-  // div_items, div_dems, div_cit_main
+  current_div: string = "div_consent"; // ddd default: "div_consent"
+  // div_consent, div_dems, div_cit_main
   consent_now: number = 0;
   current_segment: string = 'main';
   current_menu: string = '';
@@ -156,6 +156,7 @@ export class CitProvider {
       silent: false
     })
     this.itemgenP.stim_base_p = JSON.parse(JSON.stringify(this.stim_bases));
+    this.nextblock();
   }
 
 

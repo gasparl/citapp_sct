@@ -306,6 +306,24 @@ export class HomePage {
   }
 
 
+  shuff(arr) {
+    let array = JSON.parse(JSON.stringify((arr)));
+    var newarr = [];
+    var currentIndex = array.length,
+      temporaryValue,
+      randomIndex;
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      newarr[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+    return newarr;
+  }
+
+
   cit_start() {
 
     if (this.on_device) {
@@ -321,12 +339,26 @@ export class HomePage {
     [], [], [], []
   ];
   async create_stim_base() {
-    this.citP.the_probes = ['probe1.jpg', 'probe1.jpg', 'probe1.jpg', 'probe1.jpg'];
-    let targs = ['control1.jpg', 'control1.jpg', 'control1.jpg', 'control1.jpg'];
-    let conts = ['control2.jpg', 'control3.jpg', 'control4.jpg', 'control5.jpg',
-      'control6.jpg', 'control2.jpg', 'control3.jpg', 'control4.jpg',
-      'control5.jpg', 'control6.jpg', 'control2.jpg', 'control3.jpg',
-      'control4.jpg', 'control5.jpg', 'control6.jpg', 'control2.jpg'];
+    this.citP.the_probes = [];
+    let targs = [];
+    let conts = [];
+    let setnumlist = this.shuff([1, 2, 3, 4, 5, 6, 7, 8]);
+    let setmodal = '';
+    let twomods = this.shuff(['img', 'txt']);
+    setnumlist.forEach(function(setno, indx) {
+      if (indx > 3) {
+        setmodal = twomods[0];
+      } else {
+        setmodal = twomods[1];
+      }
+      this.citP.the_probes.push('s' + setno + '_probe_' + setmodal);
+      let irrnumlist = this.shuff([1, 2, 3, 4, 5]);
+      targs.push('s' + setno + '_irr_' + setmodal + irrnumlist.shift());
+      irrnumlist.forEach(function(irrno) {
+        conts.push('s' + setno + '_irr_' + setmodal + irrno);
+      });
+    });
+
     const allimgs = JSON.parse(JSON.stringify(this.citP.the_probes.concat(conts).concat(targs)));
 
     let item_bases = [];

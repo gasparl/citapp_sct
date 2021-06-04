@@ -316,7 +316,10 @@ export class HomePage {
 
   // item generation
 
-  words_lists: any[] = [[], [], [], []];
+  words_lists: any[] = [
+    [], [], [], [],
+    [], [], [], []
+  ];
   async create_stim_base() {
     this.citP.the_probes = ['probe1.jpg', 'probe1.jpg', 'probe1.jpg', 'probe1.jpg'];
     let targs = ['control1.jpg', 'control1.jpg', 'control1.jpg', 'control1.jpg'];
@@ -341,9 +344,18 @@ export class HomePage {
     }));
 
     this.citP.blocknum = 1;
-    this.citP.stim_bases = [[], [], [], []];
-    this.citP.the_targets = [[], [], [], []];
-    this.citP.the_nontargs = [[], [], [], []];
+    this.citP.stim_bases = [
+      [], [], [], [],
+      [], [], [], []
+    ];
+    this.citP.the_targets = [
+      [], [], [], [],
+      [], [], [], []
+    ];
+    this.citP.the_nontargs = [
+      [], [], [], [],
+      [], [], [], []
+    ];
     this.citP.targetrefs = [];
     this.citP.nontargrefs = [];
     this.citP.all_rts = {

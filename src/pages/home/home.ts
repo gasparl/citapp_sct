@@ -32,7 +32,7 @@ export class HomePage {
     }
   }
 
-  /*
+  ///*
   to_exec: any = 'this.citP.';
   mycl: any;
   onChange(ee) {
@@ -227,7 +227,7 @@ export class HomePage {
   notsent: boolean = true;
   sendviaphp() {
     document.getElementById("storefeed_id").innerHTML = "Trying..."
-    this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/lang_storage.php', JSON.stringify({
+    this.http.post('https://homepage.univie.ac.at/gaspar.lukacs/x_citapp/exp_storage.php', JSON.stringify({
       filename_post: this.citP.cit_results.file_name,
       results_post: this.citP.cit_results.cit_data
     }), { responseType: "text" }).subscribe((response) => {
@@ -237,6 +237,9 @@ export class HomePage {
         document.getElementById("storefeed_id").style.color = 'green';
         document.getElementById("storefeed_id").innerHTML = "Data successfully uploaded! All good.";
         this.dataShare.storage.set('rsltsent', 'done');
+        this.backgroundMode.setDefaults({
+          silent: true
+        })
       } else {
         document.getElementById("storefeed_id").innerHTML = 'Error. ' + response;
       }
@@ -325,7 +328,6 @@ export class HomePage {
 
 
   cit_start() {
-
     if (this.on_device) {
       this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE_PRIMARY);
     }
@@ -338,8 +340,14 @@ export class HomePage {
     [], [], [], [],
     [], [], [], []
   ];
+
+  scale_agree: string[] = ['Strongly Agree', 'Agree', 'Neutral', 'Disagree', 'Strongly Disagree'];
+  scale_famil: string[] = ['Not at all familiar', 'Vaguely familiar', 'Rather familiar', 'Familiar', 'Very familiar'];
+  scale_acc: string[] = ['Extremely inaccurate/useless', 'Rather inaccurate', 'So-so', 'Rather accurate', 'Very Accurate', 'Perfectly accurate/infallible'];
+  scale_caught: string[] = ['Certainly NOT caught', 'More likely NOT caught', 'Uncertain', 'More likely caught', 'Certainly caught'];
+
   async create_stim_base() {
-    this.citP.the_probes = [];
+    let probs = [];
     let targs = [];
     let conts = [];
     let setnumlist = this.shuff([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -351,22 +359,23 @@ export class HomePage {
       } else {
         setmodal = twomods[1];
       }
-      this.citP.the_probes.push('s' + setno + '_probe_' + setmodal);
+      probs.push('s' + setno + '_probe_' + setmodal + '.jpg');
       let irrnumlist = this.shuff([1, 2, 3, 4, 5]);
-      targs.push('s' + setno + '_irr_' + setmodal + irrnumlist.shift());
+      targs.push('s' + setno + '_irr_' + setmodal + irrnumlist.shift() + '.jpg');
       irrnumlist.forEach(function(irrno) {
-        conts.push('s' + setno + '_irr_' + setmodal + irrno);
+        conts.push('s' + setno + '_irr_' + setmodal + irrno + '.jpg');
       });
-    });
+    }.bind(this));
 
-    const allimgs = JSON.parse(JSON.stringify(this.citP.the_probes.concat(conts).concat(targs)));
+    const allimgs = JSON.parse(JSON.stringify(probs.concat(conts).concat(targs)));
 
     let item_bases = [];
-    this.citP.the_probes.forEach((probe, index) => {
+    probs.forEach((probe, index) => {
       let finals = [probe, targs.shift()].concat(conts.splice(0, 4));
       item_bases.push(finals);
     });
 
+    this.citP.the_probes = probs;
     console.log("! item_bases:");
     console.log(item_bases);
 

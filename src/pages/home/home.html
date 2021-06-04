@@ -60,15 +60,16 @@
 
   <div *ngSwitchCase="'div_settings'" style="font-size: 200% !important;">
     <div style="font-size: 90%;line-height:150%;font-weight:bold">
-      Please turn off the internet or set your phone to "flight mode" so that nothing would interrupt the test. Then please provide your Subject ID (from the Sona LABS System), age, and sex below. (If you do not wish to provide age, please set it to "1".)
+      Please turn off the internet or set your phone to "flight mode" so that nothing would interrupt the test. Then please provide your Subject ID (from the Sona LABS System), age, and sex below. (If you do not wish to provide age, please set it to
+      "1".)
     </div>
     <br />
 
-        <ion-item>
-          <ion-label style="font-size: 160% !important;margin-bottom:0;color:black;" fixed>Subject ID</ion-label>
-          <ion-input [(ngModel)]="citP.subj_id" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
-        </ion-item>
-        <br />
+    <ion-item>
+      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black;" fixed>Subject ID</ion-label>
+      <ion-input [(ngModel)]="citP.subj_id" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
+    </ion-item>
+    <br />
     <ion-item>
       <ion-label style="font-size: 160% !important;margin-bottom:0;color:black;" fixed>Age</ion-label>
       <ion-input [(ngModel)]="citP.age" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
@@ -129,14 +130,15 @@
 
   <div *ngSwitchCase="'div_cit_main'">
 
-    <p (touchstart)="citP.touchstart($event, 'resp_a');" (touchend)="citP.touchend($event, 'resp_a');" id="resp_left" class="resp_buttons"></p>
-
-    <p (touchstart)="citP.touchstart($event, 'resp_b');" (touchend)="citP.touchend($event, 'resp_b');" id="resp_right" class="resp_buttons"></p>
 
     <canvas width="10" height="10" #thecanvas></canvas>
     <p id="feed_id"><b>{{citP.feed_text}}</b></p>
 
     <p id="stimulus">{{citP.stimulus_text}}</p>
+
+    <p (touchstart)="citP.touchstart($event, 'resp_a');" (touchend)="citP.touchend($event, 'resp_a');" id="resp_left" class="resp_buttons"></p>
+
+    <p (touchstart)="citP.touchstart($event, 'resp_b');" (touchend)="citP.touchend($event, 'resp_b');" id="resp_right" class="resp_buttons"></p>
 
     <p id="start_text" (tap)="citP.visib.start_text = false; citP.start_trials();" *ngIf="citP.visib.start_text">{{trP.taptostart[trP.lang]}}</p>
   </div>
@@ -146,13 +148,18 @@
     <b>The lie detection test is now completed.</b> To make sure that you were actually familiar with the famous persons, please select their names below, from among the other items.
     <br />
 
-    <ion-item>
-      <ion-label style="font-size: 100% !important;margin-bottom:0;color:black">1.</ion-label>
-      <ion-select [(ngModel)]="citP.pchosen[0]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-        <ion-option *ngFor="let mainword of words_lists[0]" value={{mainword}}>{{mainword}}</ion-option>
-      </ion-select>
-    </ion-item>
+
+    <hr />
+    <img style="max-height:50%;max-width:50%;vertical-align: middle;" src="this.task_images[this.citP.the_probes[0]].src">
+
+    <ion-select [(ngModel)]="citP.pchosen[0]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
+      <ion-option *ngFor="let mainword of words_lists[0]" value={{mainword}}>{{mainword}}</ion-option>
+    </ion-select>
+
     <br />
+    <hr />
+
+    <img style="max-height:50%;max-width:50%;vertical-align: middle;" src="this.task_images[this.citP.the_probes[1]].src">
 
     <ion-item>
       <ion-label style="font-size: 100% !important;margin-bottom:0;color:black">2.</ion-label>
@@ -352,7 +359,8 @@
       </div>
 
       <div style="text-align:left;padding-left: 16px;padding-top:1.5vw;">
-        First, please try to upload the data to the server by pressing the button below. If the upload is successful, the button will disappear and a success message will appear in its place that also contains your completion link. If the upload fails, you will get an error message:
+        First, please try to upload the data to the server by pressing the button below. If the upload is successful, the button will disappear and a success message will appear in its place that also contains your completion link. If the upload
+        fails, you will get an error message:
         in that case either try again or send data using one of the other options below (in which case we will approve your submission manually).
       </div>
       <i>
@@ -409,10 +417,10 @@
   </div>
 
   <!-- app console for testing
+  console end -->
   <b>{{mycl}}</b>
   <br />
   <input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;width:100%;">
   <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  console end -->
 
 </ion-content>

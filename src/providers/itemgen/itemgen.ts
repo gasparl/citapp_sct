@@ -161,6 +161,7 @@ export class ItemgenProvider {
     return (items_ordered);
   }
 
+
   main_items(block_stim_base) {
     return this.shuffle(block_stim_base);
   }
@@ -253,9 +254,41 @@ export class ItemgenProvider {
     return ([].concat.apply([], final_item_order));
   }
 
+  seconds: any = 0;
   fulltest_items(targetrefs, nontargrefs, baseset) {
     console.log('fulltest_items()');
-    return (this.add_fillers(baseset, targetrefs, nontargrefs));
+    let to_ret;
+    if (seconds == 0) {
+      let fullblock = this.add_fillers(baseset, targetrefs, nontargrefs);
+      // prep two separate blocks
+      let halfat = Math.ceil(fullblock.length / 2);
+      if (fullblock[halfat - 1].cat == "filler") {
+        if (Math.random() < 0.5) {
+          halfat++;
+        } else {
+          halfat--;
+        }
+      }
+      to_ret = JSON.parse(JSON.stringify(fullblock.slice(0, halfat)));
+      seconds = JSON.parse(JSON.stringify(fullblock.slice(halfat, fullblock.length)));
+    } else {
+      to_ret = replac_stims(seconds, baseset);
+      seconds = 0;
+    }
+    return (to_ret);
+  }
+
+  replac_stims(blckitems, stm_base) {
+    let stm_dict = {};
+    stm_base.forEach(dct => {
+      stm_dict[dct.type] = dct;
+    });
+    blckitems.forEach((dct, ind) => {
+      if (dct.cat != "filler") {
+        blckitems[ind] = stm_dict[dct.type];
+      }
+    });
+    return (blckitems);
   }
 
 }

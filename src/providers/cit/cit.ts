@@ -50,7 +50,7 @@ export class CitProvider {
     }.bind(this), rt_sim);
   }
   //*/
-  to_slice: number = 0; // 0 to ignore
+  to_slice: number = 5; // 0 to ignore // for testing -- TODOREMOVE
 
   exp: string = "name_vs_face";
   subj_id: string = '';
@@ -339,9 +339,6 @@ export class CitProvider {
         if (this.blocknum > 10) {
           this.bg_color = "#fff";
           this.switch_divs('div_pcheck')
-          this.backgroundMode.setDefaults({
-            silent: true
-          })
         } else {
           this.block_text = this.block_texts[this.blocknum];
           this.nextblock();
@@ -351,7 +348,6 @@ export class CitProvider {
       }
     }
   }
-
 
   post_resp_hold() {
     this.ctx.clearRect(0, 0, this.image_width, this.image_width);
@@ -395,6 +391,11 @@ export class CitProvider {
       } else {
         this.all_rts[curr_type].push(this.rt_start);
       }
+    }
+    if (this.trial_stim.item.includes('_img')) {
+        thismod = 'photo';
+    } else {
+        thismod = 'name';
     }
     this.cit_data +=
       [this.subj_id,
@@ -445,9 +446,6 @@ export class CitProvider {
     }
     if (this.to_slice !== 0) {
       this.teststim = this.teststim.slice(0, this.to_slice);
-    }
-    if (this.blocknum == 1) {
-      this.teststim = [];
     }
     this.rt_data_dict = {};
     this.switch_divs('div_blockstart');
@@ -581,25 +579,23 @@ export class CitProvider {
     this.cit_results.subj_id = this.subj_id;
 
     let duration_full = Math.round((Date.now() - this.consent_now) / 600) / 100;
-    let pcorr = this.pchosen.filter(word => this.the_probes.indexOf(word) !== -1).length;
+
     this.cit_data += 'dems\t' + [
       'subject_id',
       'exp',
-      'speaker',
       'gender',
       'age',
-      'pselected',
-      'pcorrect',
+      'probes',
+      'probe_familiarity',
       'full_dur'
     ].join('/') +
       '\t' + [
         this.subj_id,
         this.exp,
-        this.speaker,
         this.gender,
         this.age,
-        this.pchosen.join('|'),
-        pcorr,
+        this.the_probes.join('|'),
+        fam_ratings, // // TODO:
         duration_full
       ].join('/');
     this.cit_results.cit_data = this.cit_data;
@@ -624,7 +620,7 @@ export class CitProvider {
     } else {
       this.correct_resp = "resp_a";
     }
-    // this.touchsim(); // for testing -- TODOREMOVE
+    this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         if (this.trial_stim.mode === 'image') {

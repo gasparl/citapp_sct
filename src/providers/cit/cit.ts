@@ -6,6 +6,7 @@ import { TranslationProvider } from '../../providers/translations/translations';
 import { ItemgenProvider } from '../../providers/itemgen/itemgen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { DataShareProvider } from '../../providers/data-share/data-share';
+import { ScreenOrientation } from '@ionic-native/screen-orientation';
 
 @Injectable()
 export class CitProvider {
@@ -47,10 +48,21 @@ export class CitProvider {
       this.touchstart("", sim_key);
       info += chosen_response + " preset " + rt_sim + ", actual " + Math.round(performance.now() - this.start) + "\n";
       console.log(info);
+
+      if (this.teststim.length == 1 && this.blocknum < 18) {
+        setTimeout(() => {
+          this.runblock();
+          setTimeout(() => {
+            this.visib.start_text = false;
+            this.start_trials();
+          }, 1000);
+        }, 3000);
+      }
+
     }.bind(this), rt_sim);
   }
   //*/
-  to_slice: number = 5; // 0 to ignore // for testing -- TODOREMOVE
+  to_slice: number = 0; // 0 to ignore // for testing -- TODOREMOVE
 
   exp: string = "name_vs_face";
   subj_id: string = '';
@@ -98,7 +110,7 @@ export class CitProvider {
   no_prac_fail: boolean = true;
   text_to_show: string;
   cit_data: string =
-    ["subject_id", "phase", "block_number", "trial_number", "stimulus_shown", "category", "stim_type", "response_key", "rt_start", "rt_end", "incorrect", "too_slow", "isi", "date_in_ms"].join('\t') + "\n";
+    ["subject_id", "phase", "block_number", "trial_number", "stimulus_shown", "category", "stim_type", "modality", "response_key", "rt_start", "rt_end", "incorrect", "too_slow", "isi", "date_in_ms"].join('\t') + "\n";
   correct_resp: string = "none";
   blocknum: number;
   rt_start: number = 99999;
@@ -124,7 +136,7 @@ export class CitProvider {
   image_width: number;
   all_teststms: any[] = [];
   fam_ratings: string[] = Array(8).fill('NA');
-  misc_ratings: string[] = Array(12).fill('NA');
+  misc_ratings: string[] = Array(14).fill('NA');
 
   constructor(
     public file: File,
@@ -133,7 +145,8 @@ export class CitProvider {
     public backgroundMode: BackgroundMode,
     public trP: TranslationProvider,
     public dataShare: DataShareProvider,
-    public itemgenP: ItemgenProvider
+    public itemgenP: ItemgenProvider,
+    public screenOrientation: ScreenOrientation
   ) {
     this.consent_now = Date.now();
   }
@@ -167,7 +180,7 @@ export class CitProvider {
     }).sort().join('<br>');
 
     let imgitems = dicts.filter(dct => dct.mode === 'image').map(dct => {
-      let props = 'style="max-height:50%;max-width:50%;vertical-align: middle;"';
+      let props = 'style="max-height:30%;max-width:30%;vertical-align: middle;"';
       return '<li><img ' + props + ' src="' + this.task_images[dct.item].src + '"></li>';
     }).sort().join('<br>');
 
@@ -185,13 +198,21 @@ export class CitProvider {
       this.list_items(this.the_targets[0]),
       this.list_items(this.the_targets[1]),
       this.list_items(this.the_targets[2]),
-      this.list_items(this.the_targets[3])
+      this.list_items(this.the_targets[3]),
+      this.list_items(this.the_targets[4]),
+      this.list_items(this.the_targets[5]),
+      this.list_items(this.the_targets[6]),
+      this.list_items(this.the_targets[7])
     ];
     let nontargs = [
       this.list_items(this.the_nontargs[0]),
       this.list_items(this.the_nontargs[1]),
       this.list_items(this.the_nontargs[2]),
-      this.list_items(this.the_nontargs[3])
+      this.list_items(this.the_nontargs[3]),
+      this.list_items(this.the_nontargs[4]),
+      this.list_items(this.the_nontargs[5]),
+      this.list_items(this.the_nontargs[6]),
+      this.list_items(this.the_nontargs[7])
     ];
     this.block_texts = this.trP.blck_texts[this.trP.lang](targs, nontargs, trefs, nontrefs, this.cit_type);
     this.block_text = this.block_texts[1];
@@ -337,9 +358,10 @@ export class CitProvider {
     } else {
       if ((this.blocknum > 3 && this.blocknum % 2 === 0) || this.practice_eval()) {
         this.blocknum++;
-        if (this.blocknum > 10) {
+        if (this.blocknum > 18) {
           this.bg_color = "#fff";
-          this.switch_divs('div_pcheck')
+          //this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT_PRIMARY);
+          this.switch_divs('div_quests')
         } else {
           this.block_text = this.block_texts[this.blocknum];
           this.nextblock();
@@ -397,7 +419,7 @@ export class CitProvider {
     if (this.trial_stim.item.includes('_img')) {
       thismod = 'photo';
     } else {
-      thismod = 'name';
+      thismod = 'text';
     }
     this.cit_data +=
       [this.subj_id,
@@ -407,6 +429,7 @@ export class CitProvider {
       this.trial_stim.item,
       this.trial_stim.cat,
       this.trial_stim.type,
+        thismod,
       this.rspns,
       this.rt_start,
       this.rt_end,
@@ -484,11 +507,16 @@ export class CitProvider {
 
   store_data() {
     this.get_results();
+    //this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE_PRIMARY);
     this.file.writeFile(this.path, this.cit_results.file_name, this.cit_results.cit_data).then(value => {
-      this.switch_divs('div_end');
+      this.switch_divs('div_results');
+      this.current_menu = 'm_sendin';
+      this.current_segment = 'menus';
     }, reason => {
-      this.switch_divs('div_end');
       this.cit_results.file_nam_disp = this.cit_results.file_name + ' There was an error saving this file. Data data can still be retrieved by copying it to the clipboard. Error: ' + reason;
+      this.switch_divs('div_results');
+      this.current_menu = 'm_sendin';
+      this.current_segment = 'menus';
     });
   }
 
@@ -590,6 +618,7 @@ export class CitProvider {
       'age',
       'probes',
       'probe_familiarity',
+      'ratings',
       'full_dur'
     ].join('/') +
       '\t' + [
@@ -598,7 +627,8 @@ export class CitProvider {
         this.gender,
         this.age,
         this.the_probes.join('|'),
-        this.fam_ratings.join('|'), // // TODO:
+        this.fam_ratings.join('|'),
+        this.misc_ratings.join('|'),
         duration_full
       ].join('/');
     this.cit_results.cit_data = this.cit_data;
@@ -610,7 +640,7 @@ export class CitProvider {
       ("0" + cdate.getHours()).slice(-2) + ":" +
       ("0" + cdate.getMinutes()).slice(-2);
 
-    this.cit_results.file_name = this.exp + '_' + this.speaker + '_' + this.subj_id + '.txt';
+    this.cit_results.file_name = this.exp + '_' + this.subj_id + '.txt';
     this.cit_results.file_nam_disp = this.cit_results.file_name;
     this.dataShare.storage.set('reslts', this.cit_results);
   }

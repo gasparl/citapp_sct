@@ -225,7 +225,7 @@ export class TranslationProvider {
 
       // repetitions (3 next probes)
 
-      [1, 2, 3].forEach(pnum => {
+      [1, 2, 3, 4, 5, 6, 7].forEach(pnum => {
         thetexts.push(
           'The main items will now be replaced with new ones. Touch the <i>right</i> button when you see the following target item:<br>' +
           targs[pnum] +

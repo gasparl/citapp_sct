@@ -20,6 +20,10 @@ hr {
   padding: 0;
 }
 
+.popover-wrapper .popover-content {
+  width: 350px !important;
+}
+
 .selectable {
   -webkit-user-select: text;
   -moz-user-select: text;
@@ -49,9 +53,9 @@ page-home {
 
   canvas {
     position: fixed;
-    top: 35%;
+    top: 2px;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
   }
 
   table {

@@ -11,7 +11,6 @@ import { CitProvider } from '../../providers/cit/cit';
 import { TranslationProvider } from '../../providers/translations/translations';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Clipboard } from '@ionic-native/clipboard/';
-import { ScreenOrientation } from '@ionic-native/screen-orientation';
 
 
 @Component({
@@ -25,7 +24,7 @@ export class HomePage {
   @ViewChild('thecanvas') set content(content: ElementRef) {
     if (content !== undefined) {
       this.citP.canvas = content;
-      this.citP.image_width = Math.floor(window.innerHeight * 0.62);
+      this.citP.image_width = Math.floor(window.innerHeight * 0.68);
       this.citP.canvas.nativeElement.width = this.citP.image_width;
       this.citP.canvas.nativeElement.height = this.citP.image_width;
       this.citP.ctx = this.citP.canvas.nativeElement.getContext('2d');
@@ -69,8 +68,7 @@ export class HomePage {
     public trP: TranslationProvider,
     protected _sanitizer: DomSanitizer,
     public navParams: NavParams,
-    public alertCtrl: AlertController,
-    private screenOrientation: ScreenOrientation
+    public alertCtrl: AlertController
   ) {
     this.dataShare.storage.get('reslts').then((cntent) => {
       if (cntent) { // && 1 < 0) {
@@ -97,12 +95,6 @@ export class HomePage {
             document.getElementById("storefeed_id").innerHTML = "Data successfully uploaded! All good.";
           }
         });
-      } else {
-        this.citP.subj_id = this.citP.subj_id + this.citP.neat_date() +
-          "_" +
-          this.rchoice("CDFGHJKLMNPQRSTVWXYZ") +
-          this.rchoice("AEIOU") +
-          this.rchoice("CDFGHJKLMNPQRSTVWXYZ");
       }
     });
   }
@@ -114,7 +106,7 @@ export class HomePage {
       this.on_device = this.platform.is("cordova");
       if (this.on_device) {
         if (this.notsent) {
-          this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT_PRIMARY);
+          this.citP.screenOrientation.lock(this.citP.screenOrientation.ORIENTATIONS.PORTRAIT_PRIMARY);
         }
         this.checknet = setInterval(() => {
           if (this.network.type) {
@@ -328,8 +320,9 @@ export class HomePage {
 
 
   cit_start() {
+    this.citP.subj_id = this.citP.subj_id + '_' + this.citP.neat_date();
     if (this.on_device) {
-      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE_PRIMARY);
+      this.citP.screenOrientation.lock(this.citP.screenOrientation.ORIENTATIONS.LANDSCAPE_PRIMARY);
     }
     this.citP.task_start();
   }
@@ -342,14 +335,23 @@ export class HomePage {
   ];
 
   scale_famil: string[] = ['1 - Not at all familiar', '2 - Vaguely familiar', '3 - Rather familiar', '4 - Familiar', '5 - Very familiar'];
-  scale_agree: string[] = ['Strongly Agree', 'Agree', 'Neutral', 'Disagree', 'Strongly Disagree'];
-  scale_acc: string[] = ['Extremely inaccurate/useless', 'Rather inaccurate', 'So-so', 'Rather accurate', 'Very Accurate', 'Perfectly accurate/infallible'];
-  scale_caught: string[] = ['Certainly NOT caught', 'More likely NOT caught', 'Uncertain', 'More likely caught', 'Certainly caught'];
 
-  scales_list: any[] = [
-    scale_agree, scale_agree, scale_acc, scale_caught
+  qs_list: any[] = [
+    ['At the moment I feel alert.'],
+    ['I was very focused on the task.'],
+    ['I felt very alert before the experiment.'],
+    ['It was easy for me to stay focused during the experiment.'],
+    ['I found this task difficult.'],
+    ['I am confident I achieved the task successfully.'],
+    ['I put a lot of effort into this task.'],
+    ['I was motivated to complete this task successfully.'],
+    ['It was easy for me to stay focused during the experiment.'],
+    ['There were no distractions around me during the experiment.'],
+    ['My surrounding was noisy during the experiment.'],
+    ['I am certain that I got "caught" having recognized some of the famous identities.'],
+    ['I am generally more honest than other people.'],
+    ['In everyday life, I lie easily if I have to.']
   ];
-  qs_list: any[] = ['Question 1?', 'Q2', 'Q3'];
 
   async create_stim_base() {
     let probs = [];

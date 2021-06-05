@@ -258,7 +258,7 @@ export class ItemgenProvider {
   fulltest_items(targetrefs, nontargrefs, baseset) {
     console.log('fulltest_items()');
     let to_ret;
-    if (seconds == 0) {
+    if (this.seconds == 0) {
       let fullblock = this.add_fillers(baseset, targetrefs, nontargrefs);
       // prep two separate blocks
       let halfat = Math.ceil(fullblock.length / 2);
@@ -270,10 +270,10 @@ export class ItemgenProvider {
         }
       }
       to_ret = JSON.parse(JSON.stringify(fullblock.slice(0, halfat)));
-      seconds = JSON.parse(JSON.stringify(fullblock.slice(halfat, fullblock.length)));
+      this.seconds = JSON.parse(JSON.stringify(fullblock.slice(halfat, fullblock.length)));
     } else {
-      to_ret = replac_stims(seconds, baseset);
-      seconds = 0;
+      to_ret = this.replac_stims(this.seconds, baseset);
+      this.seconds = 0;
     }
     return (to_ret);
   }

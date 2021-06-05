@@ -123,7 +123,8 @@ export class CitProvider {
   task_images: object;
   image_width: number;
   all_teststms: any[] = [];
-  pchosen: string[] = ['', '', '', ''];
+  fam_ratings: string[] = Array(8).fill('NA');
+  misc_ratings: string[] = Array(12).fill('NA');
 
   constructor(
     public file: File,
@@ -392,10 +393,11 @@ export class CitProvider {
         this.all_rts[curr_type].push(this.rt_start);
       }
     }
+    let thismod;
     if (this.trial_stim.item.includes('_img')) {
-        thismod = 'photo';
+      thismod = 'photo';
     } else {
-        thismod = 'name';
+      thismod = 'name';
     }
     this.cit_data +=
       [this.subj_id,
@@ -483,8 +485,9 @@ export class CitProvider {
   store_data() {
     this.get_results();
     this.file.writeFile(this.path, this.cit_results.file_name, this.cit_results.cit_data).then(value => {
-      // ok
+      this.switch_divs('div_end');
     }, reason => {
+      this.switch_divs('div_end');
       this.cit_results.file_nam_disp = this.cit_results.file_name + ' There was an error saving this file. Data data can still be retrieved by copying it to the clipboard. Error: ' + reason;
     });
   }
@@ -595,7 +598,7 @@ export class CitProvider {
         this.gender,
         this.age,
         this.the_probes.join('|'),
-        fam_ratings, // // TODO:
+        this.fam_ratings.join('|'), // // TODO:
         duration_full
       ].join('/');
     this.cit_results.cit_data = this.cit_data;

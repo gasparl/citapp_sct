@@ -145,48 +145,36 @@
 
 
   <div *ngSwitchCase="'div_pcheck'" [ngStyle]="{'pointer-events': citP.pointev.div_pcheck || 'none' }">
-    <b>The lie detection test is now completed.</b> To make sure that you were actually familiar with the famous persons, please select their names below, from among the other items.
+    <b>The lie detection test is now completed.</b>
+    <br />
+    For each identity, please rate how familiar you are with them (1 not at all familiar, 7 = very familiar).
     <br />
 
-
     <hr />
-    <img style="max-height:50%;max-width:50%;vertical-align: middle;" src="this.task_images[this.citP.the_probes[0]].src">
-
-    <ion-select [(ngModel)]="citP.pchosen[0]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-      <ion-option *ngFor="let mainword of words_lists[0]" value={{mainword}}>{{mainword}}</ion-option>
-    </ion-select>
-
-    <br />
     <hr />
 
-    <img style="max-height:50%;max-width:50%;vertical-align: middle;" src="this.task_images[this.citP.the_probes[1]].src">
+    <div *ngFor="let probnum of [0,1,2,3,4,5,6,7]">
+      <img style="max-height:50%;max-width:50%;vertical-align: middle;" src="{{this.citP.task_images[this.citP.the_probes[probnum]].src}}">
+      <ion-select [(ngModel)]="citP.fam_ratings[probnum]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;" placeholder='(please choose)'>
+        <ion-option *ngFor="let mainword of scale_famil; index as i" value={{i+1}}>{{mainword}}</ion-option>
+      </ion-select>
+      <br />
+      <hr />
+      <hr />
+    </div>
 
     <ion-item>
       <ion-label style="font-size: 100% !important;margin-bottom:0;color:black">2.</ion-label>
-      <ion-select [(ngModel)]="citP.pchosen[1]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-        <ion-option *ngFor="let mainword of words_lists[1]" value={{mainword}}>{{mainword}}</ion-option>
+      <ion-select [(ngModel)]="citP.misc_ratings[1]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
+        <ion-option *ngFor="let mainword of scale_agree" value={{mainword}}>{{mainword}}</ion-option>
       </ion-select>
     </ion-item>
     <br />
 
-    <ion-item>
-      <ion-label style="font-size: 100% !important;margin-bottom:0;color:black">3.</ion-label>
-      <ion-select [(ngModel)]="citP.pchosen[2]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-        <ion-option *ngFor="let mainword of words_lists[2]" value={{mainword}}>{{mainword}}</ion-option>
-      </ion-select>
-    </ion-item>
-    <br />
-
-    <ion-item>
-      <ion-label style="font-size: 100% !important;margin-bottom:0;color:black">4.</ion-label>
-      <ion-select [(ngModel)]="citP.pchosen[3]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
-        <ion-option *ngFor="let mainword of words_lists[3]" value={{mainword}}>{{mainword}}</ion-option>
-      </ion-select>
-    </ion-item>
     <br />
     <br />
 
-    <button *ngIf="citP.pchosen.indexOf('') === -1" ion-button (tap)='citP.store_data();' color='light' block>OK</button>
+    <button ion-button (tap)='citP.store_data();' color='light' block>OK</button>
   </div>
 
 

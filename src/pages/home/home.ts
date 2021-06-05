@@ -237,7 +237,7 @@ export class HomePage {
         document.getElementById("storefeed_id").style.color = 'green';
         document.getElementById("storefeed_id").innerHTML = "Data successfully uploaded! All good.";
         this.dataShare.storage.set('rsltsent', 'done');
-        this.backgroundMode.setDefaults({
+        this.citP.backgroundMode.setDefaults({
           silent: true
         })
       } else {
@@ -341,10 +341,15 @@ export class HomePage {
     [], [], [], []
   ];
 
+  scale_famil: string[] = ['1 - Not at all familiar', '2 - Vaguely familiar', '3 - Rather familiar', '4 - Familiar', '5 - Very familiar'];
   scale_agree: string[] = ['Strongly Agree', 'Agree', 'Neutral', 'Disagree', 'Strongly Disagree'];
-  scale_famil: string[] = ['Not at all familiar', 'Vaguely familiar', 'Rather familiar', 'Familiar', 'Very familiar'];
   scale_acc: string[] = ['Extremely inaccurate/useless', 'Rather inaccurate', 'So-so', 'Rather accurate', 'Very Accurate', 'Perfectly accurate/infallible'];
   scale_caught: string[] = ['Certainly NOT caught', 'More likely NOT caught', 'Uncertain', 'More likely caught', 'Certainly caught'];
+
+  scales_list: any[] = [
+    scale_agree, scale_agree, scale_acc, scale_caught
+  ];
+  qs_list: any[] = ['Question 1?', 'Q2', 'Q3'];
 
   async create_stim_base() {
     let probs = [];

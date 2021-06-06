@@ -173,16 +173,32 @@ export class CitProvider {
     this.nextblock();
   }
 
+  shuff(arr) {
+    let array = JSON.parse(JSON.stringify((arr)));
+    var newarr = [];
+    var currentIndex = array.length,
+      temporaryValue,
+      randomIndex;
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      newarr[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+    return newarr;
+  }
 
   list_items(dicts) {
     let textitems = dicts.filter(dct => dct.mode === 'text').map(dct => {
       return '<li>' + dct.item + '</li>';
     }).sort().join('<br>');
 
-    let imgitems = dicts.filter(dct => dct.mode === 'image').map(dct => {
+    let imgitems = this.shuff(dicts.filter(dct => dct.mode === 'image').map(dct => {
       let props = 'style="max-height:30%;max-width:30%;vertical-align: middle;"';
       return '<li><img ' + props + ' src="' + this.task_images[dct.item].src + '"></li>';
-    }).sort().join('<br>');
+    })).join('<br>');
 
     if (textitems.length > 0 && imgitems.length > 0) {
       return '<b><ul>' + textitems + '<br>' + imgitems + '</ul></b><br>';
@@ -653,7 +669,7 @@ export class CitProvider {
     } else {
       this.correct_resp = "resp_a";
     }
-    this.touchsim(); // for testing -- TODOREMOVE
+    // this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         if (this.trial_stim.mode === 'image') {

@@ -31,16 +31,16 @@ export class HomePage {
     }
   }
 
-  ///*
-  to_exec: any = 'this.citP.';
-  mycl: any;
-  onChange(ee) {
-    if (ee.keyCode === 13) {
-      console.log(eval(this.to_exec));
-      this.mycl = JSON.stringify(eval(this.to_exec));
-    }
-  }
-  //*/
+  /*
+   to_exec: any = 'this.citP.';
+   mycl: any;
+   onChange(ee) {
+     if (ee.keyCode === 13) {
+       console.log(eval(this.to_exec));
+       this.mycl = JSON.stringify(eval(this.to_exec));
+     }
+   }
+   //*/
 
   initslide: any = 0;
   mailpost: string = "";
@@ -227,7 +227,7 @@ export class HomePage {
       if (response.slice(0, 7) == 'written') {
         this.notsent = false;
         document.getElementById("storefeed_id").style.color = 'green';
-        document.getElementById("storefeed_id").innerHTML = "Data successfully uploaded! All good.";
+        document.getElementById("storefeed_id").innerHTML = "Data successfully uploaded! You completed the experiment and may close this app.";
         this.dataShare.storage.set('rsltsent', 'done');
         this.citP.backgroundMode.setDefaults({
           silent: true
@@ -301,23 +301,6 @@ export class HomePage {
   }
 
 
-  shuff(arr) {
-    let array = JSON.parse(JSON.stringify((arr)));
-    var newarr = [];
-    var currentIndex = array.length,
-      temporaryValue,
-      randomIndex;
-    while (0 !== currentIndex) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      newarr[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-    return newarr;
-  }
-
 
   cit_start() {
     this.citP.subj_id = this.citP.subj_id + '_' + this.citP.neat_date();
@@ -357,9 +340,9 @@ export class HomePage {
     let probs = [];
     let targs = [];
     let conts = [];
-    let setnumlist = this.shuff([1, 2, 3, 4, 5, 6, 7, 8]);
+    let setnumlist = this.citP.shuff([1, 2, 3, 4, 5, 6, 7, 8]);
     let setmodal = '';
-    let twomods = this.shuff(['img', 'txt']);
+    let twomods = this.citP.shuff(['img', 'txt']);
     setnumlist.forEach(function(setno, indx) {
       if (indx > 3) {
         setmodal = twomods[0];
@@ -367,7 +350,7 @@ export class HomePage {
         setmodal = twomods[1];
       }
       probs.push('s' + setno + '_probe_' + setmodal + '.jpg');
-      let irrnumlist = this.shuff([1, 2, 3, 4, 5]);
+      let irrnumlist = this.citP.shuff([1, 2, 3, 4, 5]);
       targs.push('s' + setno + '_irr_' + setmodal + irrnumlist.shift() + '.jpg');
       irrnumlist.forEach(function(irrno) {
         conts.push('s' + setno + '_irr_' + setmodal + irrno + '.jpg');

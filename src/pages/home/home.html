@@ -152,11 +152,11 @@
     <br />
     <br />
     <br />
-    <b>On this last page, we have a short questionnaire for you. Please be honest!</b>
+    <b>On this last page, we have a short questionnaire for you. Please answer as honestly as possible!</b>
     <br />
     <br />
     <br />
-    First, please indicate your agreement or disagreement with the following statements.
+    First, please indicate your agreement or disagreement with the following statements (from 1 - Strongly agree, to 5 - Strongly disagree).
     <br />
     <br />
 
@@ -166,11 +166,11 @@
       <br />
       <ion-label style="font-size: 100% !important;margin-bottom:0;color:black;font-style:italic;">{{quest}}</ion-label>
       <ion-select [(ngModel)]="citP.misc_ratings[qnum]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 100%;" placeholder='(please choose)'>
-        <ion-option value='1'>Strongly agree</ion-option>
-        <ion-option value='2'>Agree</ion-option>
-        <ion-option value='3'>Neutral</ion-option>
-        <ion-option value='4'>Disagree</ion-option>
-        <ion-option value='5'>Strongly disagree</ion-option>
+        <ion-option value='1'>1 - Strongly agree</ion-option>
+        <ion-option value='2'>2 - Agree</ion-option>
+        <ion-option value='3'>3 - Neutral</ion-option>
+        <ion-option value='4'>4 - Disagree</ion-option>
+        <ion-option value='5'>5 - Strongly disagree</ion-option>
       </ion-select>
       <br />
 
@@ -183,11 +183,11 @@
         To demonstrate that you are paying attention, swipe right on this question.
       </ion-label>
       <ion-select [(ngModel)]="citP.misc_ratings[14]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 100%;" placeholder='(please choose)'>
-        <ion-option value='1'>Strongly agree</ion-option>
-        <ion-option value='2'>Agree</ion-option>
-        <ion-option value='3'>Neutral</ion-option>
-        <ion-option value='4'>Disagree</ion-option>
-        <ion-option value='5'>Strongly disagree</ion-option>
+        <ion-option value='1'>1 - Strongly agree</ion-option>
+        <ion-option value='2'>2 - Agree</ion-option>
+        <ion-option value='3'>3 - Neutral</ion-option>
+        <ion-option value='4'>4 - Disagree</ion-option>
+        <ion-option value='5'>5 - Strongly disagree</ion-option>
       </ion-select>
       <br />
     </div>
@@ -360,9 +360,7 @@
       </div>
       <br />
       <br />
-      To evaluate the results in this experiment, <i>d</i><sub>CIT</sub> for <i>Probe 1</i> (the real words in each block) should be at least below 0.30 to consider a person "not detected" and hence eligible for bonus. In contrast, anyone with
-      <i>d</i><sub>CIT</sub>
-      equal to or greater than 0.30 should not receive bonus.
+      In this experiment, <i>d</i><sub>CIT</sub> for <i>Probe 1</i> (the famous identities in each block, either photo or name) should be above ca. 0.20 to consider yourself "caught", i.e., detected as recognizing some of these famous identities.
       <br />
       <br />
       For more details, see the <a href="https://github.com/gasparl/citapp_phone" target="_blank">online
@@ -455,10 +453,10 @@
   </div>
 
   <!-- app console for testing
-  console end -->
   <b>{{mycl}}</b>
   <br />
   <input (keypress)="onChange($event)" [(ngModel)]="to_exec" type="text" style="color:red; position:absolute;width:100%;">
   <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+  console end -->
 
 </ion-content>

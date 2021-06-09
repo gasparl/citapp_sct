@@ -328,11 +328,11 @@ export class HomePage {
     ['I am confident I achieved the task successfully.'],
     ['I put a lot of effort into this task.'],
     ['I was motivated to complete this task successfully.'],
-    ['It was easy for me to stay focused during the experiment.'],
     ['There were no distractions around me during the experiment.'],
     ['My surrounding was noisy during the experiment.'],
     ['I am certain that I got "caught" having recognized some of the famous identities.'],
     ['I am generally more honest than other people.'],
+    ['I would guess that this lie detection method is generally highly accurate.'],
     ['In everyday life, I lie easily if I have to.']
   ];
 

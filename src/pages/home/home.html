@@ -12,8 +12,8 @@
       <p>
         <b>Aim of the Study:</b>
         <br>
-        In this experiment, we use a response time based "lie detection" test to try to detect whether or not a participant recognizes certain names and faces, in a simulated lie detection scenario. Here, famous identities will serve as items whose
-        knowledge you need to be concealing. Please try to imagine yourself in a scenario where you would want to conceal recognizing any of the people presented in the test.
+        In this experiment, we use a response time based "lie detection" test to try to detect whether or not a participant recognises certain names and faces, in a simulated lie detection scenario. Here, famous identities will serve as items whose
+        knowledge you need to be concealing. Please try to imagine yourself in a scenario where you would want to conceal recognising any of the people presented in the test.
       </p>
 
       <p>
@@ -81,7 +81,7 @@
       <ion-select [(ngModel)]="citP.gender" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 140%;">
         <ion-option value='1'>Male</ion-option>
         <ion-option value='2'>Female</ion-option>
-        <ion-option value='3'>Other</ion-option>
+        <ion-option value='3'>Other / prefer not to say</ion-option>
       </ion-select>
     </ion-item>
 
@@ -160,7 +160,7 @@
     <br />
     <br />
 
-    <div *ngFor="let quest of qs_list; index as qnum">
+    <div *ngFor="let quest of qs_list; let index as qnum">
       <hr />
       <hr />
       <br />
@@ -212,7 +212,7 @@
     <div *ngFor="let probnum of [0,1,2,3,4,5,6,7]">
       <img style="max-height:30%;max-width:30%;vertical-align: middle;" src="{{this.citP.task_images[this.citP.the_probes[probnum]].src}}">
       <ion-select [(ngModel)]="citP.fam_ratings[probnum]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 100%;" placeholder='(please choose)'>
-        <ion-option *ngFor="let spoint of scale_famil; index as i" value={{i+1}}>{{spoint}}</ion-option>
+        <ion-option *ngFor="let spoint of scale_famil; let index as i" value={{i+1}}>{{spoint}}</ion-option>
       </ion-select>
       <br />
       <hr />
@@ -238,7 +238,7 @@
       <div style="text-align:center;padding-bottom:4.5vw">
         (Date: <b>{{citP.cit_results.date}}</b>)
         <br />
-        The information on this page is just for you personally, in case you are interested (i.e., we do not need this data). Below, "Probe 1" represents the suspected probe.
+        The information on this page is just for you personally, in case you are interested (i.e., we do not need this data). Below, "Familiar/famous" row represents all famous identities (faces, names) in the test, that we suspect you recognised among the unfamiliar identities. The "Unfamiliar" rows (1-4) represent one of each randomly selected non-famous identities in each test, for the sake of comparison.
       </div>
 
       <div style="overflow-x:auto;background:#f1f1f1">
@@ -253,30 +253,30 @@
             <th>AR<sub>P</sub><br /><span class='res_unit'>(%)</span></th>
             <th>AR<sub>I</sub><br /><span class='res_unit'>(%)</span></th>
           </tr>
-          <tr *ngFor="let num of [1, 2, 3, 4, 5];">
+          <tr *ngFor="let rowname of ['Familiar/famous', 'Unfamiliar (1)', 'Unfamiliar (2)', 'Unfamiliar (3)', 'Unfamiliar (4)'];let index as num;">
             <td>
-              Probe&nbsp;{{num}}
+              {{rowname}}
             </td>
             <td>
-              {{citP.cit_results['probe' + num]['rt_p_vs_i']}}
+              {{citP.cit_results['probe' + (num + 1)]['rt_p_vs_i']}}
             </td>
             <td>
-              {{citP.cit_results['probe' + num]['rt_probe']}}&nbsp;({{citP.cit_results['probe' + num]['rt_probe_sd']}})
+              {{citP.cit_results['probe' + (num + 1)]['rt_probe']}}&nbsp;({{citP.cit_results['probe' + (num + 1)]['rt_probe_sd']}})
             </td>
             <td>
-              {{citP.cit_results['probe' + num]['rt_irr']}}&nbsp;({{citP.cit_results['probe' + num]['rt_irr_sd']}})
+              {{citP.cit_results['probe' + (num + 1)]['rt_irr']}}&nbsp;({{citP.cit_results['probe' + (num + 1)]['rt_irr_sd']}})
             </td>
             <td style="color:#8b0000;">
-              {{citP.cit_results['probe' + num]['dcit']}}
+              {{citP.cit_results['probe' + (num + 1)]['dcit']}}
             </td>
             <td>
-              {{citP.cit_results['probe' + num]['acc_p_vs_i']}}
+              {{citP.cit_results['probe' + (num + 1)]['acc_p_vs_i']}}
             </td>
             <td>
-              {{citP.cit_results['probe' + num]['acc_probe']}}
+              {{citP.cit_results['probe' + (num + 1)]['acc_probe']}}
             </td>
             <td>
-              {{citP.cit_results['probe' + num]['acc_irr']}}
+              {{citP.cit_results['probe' + (num + 1)]['acc_irr']}}
             </td>
           </tr>
         </table>
@@ -307,7 +307,7 @@
         <span id='expand'><b>(tap to show)</b></span>
         <span id='collapse'><b>(tap to hide)</b></span>
         <div>
-          The <i>d</i><sub>CIT</sub> measure might be used to evaluate whether or not a given probe was recognized. The <i>d</i><sub>CIT</sub> typically falls between around −0.3 and 0.8, where a larger number always indicates a larger likelihood
+          The <i>d</i><sub>CIT</sub> measure might be used to evaluate whether or not a given probe was recognised. The <i>d</i><sub>CIT</sub> typically falls between around −0.3 and 0.8, where a larger number always indicates a larger likelihood
           of
           the
           recognition of the given probe. As of yet, there is no established optimal cut-off value for the evaluation, but, based on a rough approximation in view of previous results, the following table depicts some possible evaluative labels for
@@ -360,7 +360,7 @@
       </div>
       <br />
       <br />
-      In this experiment, <i>d</i><sub>CIT</sub> for <i>Probe 1</i> (the famous identities in each block, either photo or name) should be above ca. 0.20 to consider yourself "caught", i.e., detected as recognizing some of these famous identities.
+      In this experiment, <i>d</i><sub>CIT</sub> for <i>Probe 1</i> (the famous identities in each block, either photo or name) should be above ca. 0.20 to consider yourself "caught", i.e., detected as recognising some of these famous identities.
       <br />
       <br />
       For more details, see the <a href="https://github.com/gasparl/citapp_phone" target="_blank">online
@@ -395,7 +395,7 @@
       </div>
 
       <div style="text-align:left;padding-left: 16px;padding-top:1.5vw;">
-        First, please try to upload the data to the server by pressing the button below. If the upload is successful, the button will disappear and a success message will appear in its place that also contains your completion link. If the upload
+        First, please try to upload the data to the server by pressing the button below. Make sure to turn off flight mode and have an active internet connection. If the upload is successful, the button will disappear and a success message will appear in its place that also contains your completion link. If the upload
         fails, you will get an error message:
         in that case either try again or send data using one of the other options below (in which case we will approve your submission manually).
       </div>

@@ -61,16 +61,10 @@
 
   <div *ngSwitchCase="'div_settings'" style="font-size: 200% !important;" [ngStyle]="{'pointer-events': citP.pointev.div_settings || 'none' }">
     <div style="font-size: 90%;line-height:150%;font-weight:bold">
-      Please turn off the internet or set your phone to "flight mode" so that nothing would interrupt the test. Then please provide your Subject ID (from the Sona LABS System), age, and sex below. (If you do not wish to provide age, please set it to
-      "1".)
+      Please turn off the internet or set your phone to "flight mode" so that nothing would interrupt the test. Then please provide your age and sex below.
     </div>
     <br />
 
-    <ion-item>
-      <ion-label style="font-size: 160% !important;margin-bottom:0;color:black;" fixed>Subject ID</ion-label>
-      <ion-input [(ngModel)]="citP.subj_id" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
-    </ion-item>
-    <br />
     <ion-item>
       <ion-label style="font-size: 160% !important;margin-bottom:0;color:black;" fixed>Age</ion-label>
       <ion-input [(ngModel)]="citP.age" type="number" [ngModelOptions]="{standalone: true}" style="font-style:normal;" text-right></ion-input>
@@ -85,15 +79,16 @@
       </ion-select>
     </ion-item>
 
-    <div *ngIf='citP.subj_id.length > 2 && ((citP.age > 16 && citP.age < 90) || citP.age == 1 ) && citP.gender != ""'>
+    <div *ngIf='((citP.age > 16 && citP.age < 100) ) && citP.gender != ""'>
       <br />
       <br />
       <div style="font-size: 90%;line-height:150%;font-weight:bold;text-align:left">
-        <b>
-          Next comes the lie detection test.
-          <br />
-          Keep in mind that you are denying that you know any of the famous personalities.
-        </b>
+        <br />
+        In the following task, we use a response-time-based "lie detection" test to try to detect whether or not you recognise certain names and faces. Here, famous identities will serve as items whose
+        knowledge you need to be concealing. <b>Please try to imagine yourself in a scenario where you would want to conceal recognising any of the people presented in the test.</b>
+        <br /> <br />
+        As soon as you tap "OK", the lie detection test starts.
+        <b> Keep in mind that you are denying that you know any of the famous personalities.</b>
       </div>
 
       <br />
@@ -160,7 +155,7 @@
     <br />
     <br />
 
-    <div *ngFor="let quest of qs_list; let index as qnum">
+    <div *ngFor="let quest of qs_list; index as qnum">
       <hr />
       <hr />
       <br />
@@ -175,12 +170,13 @@
       <br />
 
     </div>
-    <div *ngIf='citP.misc_ratings[14] != "9"' (swiperight)='citP.misc_ratings[14] = "9"'>
+
+    <div *ngIf='citP.misc_ratings[14] != "9"' (tap)='tapcount()'>
       <hr />
       <hr />
       <br />
       <ion-label style="font-size: 100% !important;margin-bottom:0;color:black;font-style:italic;">
-        To demonstrate that you are paying attention, swipe right on this question.
+        To demonstrate that you are paying attention, tap anywhere on this question three times.
       </ion-label>
       <ion-select [(ngModel)]="citP.misc_ratings[14]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 100%;" placeholder='(please choose)'>
         <ion-option value='1'>1 - Strongly agree</ion-option>
@@ -191,6 +187,7 @@
       </ion-select>
       <br />
     </div>
+
     <div *ngIf='citP.misc_ratings[14] == "9"'>
       <hr />
       <hr />
@@ -212,7 +209,7 @@
     <div *ngFor="let probnum of [0,1,2,3,4,5,6,7]">
       <img style="max-height:30%;max-width:30%;vertical-align: middle;" src="{{this.citP.task_images[this.citP.the_probes[probnum]].src}}">
       <ion-select [(ngModel)]="citP.fam_ratings[probnum]" [ngModelOptions]="{standalone: true}" interface='popover' style="font-size: 100%;" placeholder='(please choose)'>
-        <ion-option *ngFor="let spoint of scale_famil; let index as i" value={{i+1}}>{{spoint}}</ion-option>
+        <ion-option *ngFor="let spoint of scale_famil; index as i" value={{i+1}}>{{spoint}}</ion-option>
       </ion-select>
       <br />
       <hr />
@@ -222,7 +219,12 @@
     <br />
     <br />
 
-    <button ion-button (tap)='citP.store_data();' color='light' block>
+
+
+    <div *ngIf='citP.misc_ratings.includes("NA") || citP.fam_ratings.includes("NA")'>
+      Please select an answer for each question. Only then can you proceed.
+    </div>
+    <button *ngIf='!(citP.misc_ratings.includes("NA") || citP.fam_ratings.includes("NA"))' ion-button (tap)='citP.store_data();' color='light' block>
       OK
     </button>
   </div>
@@ -238,7 +240,8 @@
       <div style="text-align:center;padding-bottom:4.5vw">
         (Date: <b>{{citP.cit_results.date}}</b>)
         <br />
-        The information on this page is just for you personally, in case you are interested (i.e., we do not need this data). Below, "Familiar/famous" row represents all famous identities (faces, names) in the test, that we suspect you recognised among the unfamiliar identities. The "Unfamiliar" rows (1-4) represent one of each randomly selected non-famous identities in each test, for the sake of comparison.
+        The information on this page is just for you personally, in case you are interested (i.e., we do not need this data). Below, "Familiar/famous" row represents all famous identities (faces, names) in the test, that we suspect you recognised
+        among the unfamiliar identities. The "Unfamiliar" rows (1-4) represent one of each randomly selected non-famous identities in each test, for the sake of comparison.
       </div>
 
       <div style="overflow-x:auto;background:#f1f1f1">
@@ -253,7 +256,7 @@
             <th>AR<sub>P</sub><br /><span class='res_unit'>(%)</span></th>
             <th>AR<sub>I</sub><br /><span class='res_unit'>(%)</span></th>
           </tr>
-          <tr *ngFor="let rowname of ['Familiar/famous', 'Unfamiliar (1)', 'Unfamiliar (2)', 'Unfamiliar (3)', 'Unfamiliar (4)'];let index as num;">
+          <tr *ngFor="let rowname of ['Familiar/famous', 'Unfamiliar (1)', 'Unfamiliar (2)', 'Unfamiliar (3)', 'Unfamiliar (4)']; index as num;">
             <td>
               {{rowname}}
             </td>
@@ -391,11 +394,12 @@
     <div [hidden]="citP.current_menu != 'm_sendin'">
 
       <div style="font-size:110%;text-align:center;padding-bottom:1.5vw;padding-top:1.5vw">
-        The test is completed, the only step left is to send your data to be stored
+        The test is completed, the only step left is to send your data to be stored. Apart from that, if you want to prove your participation, make sure to note down your participation code: <b>{{this.citP.subj_id}}</b>.
       </div>
 
       <div style="text-align:left;padding-left: 16px;padding-top:1.5vw;">
-        First, please try to upload the data to the server by pressing the button below. Make sure to turn off flight mode and have an active internet connection. If the upload is successful, the button will disappear and a success message will appear in its place that also contains your completion link. If the upload
+        First, please try to upload the data to the server by pressing the button below. Make sure to turn off flight mode and have an active internet connection. If the upload is successful, the button will disappear and a success message will
+        appear in its place that also contains your completion link. If the upload
         fails, you will get an error message:
         in that case either try again or send data using one of the other options below (in which case we will approve your submission manually).
       </div>

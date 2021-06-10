@@ -19,7 +19,7 @@ export class TranslationProvider {
 
 
   targetref_words_orig: object = {
-    'en': ["FAMILIAR", "MINE", "RECOGNIZED"], // these words are not to be translated literally one by one. The translations should always try to find the simplest, clearest words that relate to relevance, familiarity, recognition, importance. (The English "MINE" is actually not the best, but it's good to also have a shorter word and this fits there.)
+    'en': ['F_FAMILIAR.JPG', 'F_IMPORTANT.JPG', 'F_RECOGNISED.JPG'], // these words are not to be translated literally one by one. The translations should always try to find the simplest, clearest words that relate to relevance, familiarity, recognition, importance. (The English "MINE" is actually not the best, but it's good to also have a shorter word and this fits there.)
     'cn': '中文',
     'de': ["VERTRAUT", "MEIN", "RELEVANT"],
     'hu': ["ÉRTELMES", "FELISMERT", "IGAZI"],
@@ -28,7 +28,7 @@ export class TranslationProvider {
   };
 
   nontargref_words_orig: object = {
-    'en': ["FOREIGN", "IRRELEVANT", "OTHER", "RANDOM", "THEIRS", "UNFAMILIAR"], // these should have the meaning opposite of  relevance, familiarity, importance
+    'en': ['F_IRRELEVANT.JPG', 'F_OTHER.JPG', 'F_RANDOM.JPG', 'F_UNFAMILIAR.JPG', 'F_UNKNOWN.JPG', 'f_UNRELATED.JPG'], // these should have the meaning opposite of  relevance, familiarity, importance
     'cn': '中文',
     'de': ["IRRELEVANT", "FREMD", "UNBEKANNT", "ANDERE", "SONSTIGES", "UNVERTRAUT"],
     'hu': ["SEMMIS", "VALÓTLAN", "HALANDZSA", "ISMERETLEN", "HAMIS", "ZAGYVA"],
@@ -211,12 +211,12 @@ export class TranslationProvider {
         '<span id="feedback_id1">' + intro + intro_end + '</br></br>In the first practice round, you have to categorize two kinds of items. ' + inducers_instructions +
         'There is a certain time limit for making each response. Please try to be both fast and accurate. In each category, you need at least 80% correct responses in time, otherwise you have to repeat the practice round.</span>');
       thetexts.push("<span id='feedback_id2'>In the second practice round, you have to categorize the main test items. The aim of the entire test will be to show whether or not one of these main items is recognized by you. " + main_instruction + main_end + '</span>');
-      let ittypes = [
-        this.it_type_feed_dict['en'].main_item,
-        this.it_type_feed_dict['en'].target,
-        this.it_type_feed_dict['en'].nontargflr,
-        this.it_type_feed_dict['en'].targetflr
-      ].join(', ');
+      // let ittypes = [
+      //   this.it_type_feed_dict['en'].main_item,
+      //   this.it_type_feed_dict['en'].target,
+      //   this.it_type_feed_dict['en'].nontargflr,
+      //   this.it_type_feed_dict['en'].targetflr
+      // ].join(', ');
       thetexts.push(
         "<span id='feedback_id3'>In the third and last practice round all items are present. You again have to respond fast, but a certain number of errors is allowed. The task is the same. Touch the <i>right</i> (→■) button when you see the following items:<br><div class = 'rightitems_list'>" + targs[0].replace('<br>', '') + trefs + "</div>Touch the <i>left</i> (■←) button for everything else.</span>");
 

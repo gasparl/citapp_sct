@@ -23,7 +23,7 @@ export class CitProvider {
       } else if (this.crrnt_phase === 'main') {
         correct_chance = 0.5;
       } else {
-        correct_chance = 1; // 0.9;
+        correct_chance = 0.8; // 0.9;
       }
       if (this.correct_resp == "resp_a") {
         corr_code = "resp_a";
@@ -62,7 +62,7 @@ export class CitProvider {
     }.bind(this), rt_sim);
   }
   //*/
-  to_slice: number = 0; // 0 to ignore // for testing -- TODOREMOVE
+  to_slice: number = 20; // 0 to ignore // for testing -- TODOREMOVE
 
   exp: string = "name_vs_face";
   subj_id: string = '';
@@ -95,6 +95,7 @@ export class CitProvider {
   incorrect: number;
   block_trialnum: number;
   rt_data_dict: any;
+  rt_item_counts: any = {};
   all_rts: object = {
     "probe1": [],
     "probe2": [],
@@ -110,7 +111,7 @@ export class CitProvider {
   no_prac_fail: boolean = true;
   text_to_show: string;
   cit_data: string =
-    ["subject_id", "phase", "block_number", "trial_number", "stimulus_shown", "category", "stim_type", "modality", "response_key", "rt_start", "rt_end", "incorrect", "too_slow", "isi", "date_in_ms"].join('\t') + "\n";
+    ["subject_id", "phase", "block_number", "trial_number", "stimulus_shown", "category", "stim_type", "set_number", "set_modality", "response_key", "rt_start", "rt_end", "incorrect", "too_slow", "isi", "item_count", "date_in_ms"].join('\t') + "\n";
   correct_resp: string = "none";
   blocknum: number;
   rt_start: number = 99999;
@@ -310,6 +311,7 @@ export class CitProvider {
     }.bind(this), this.isi_delay);
   }
 
+  prac3_rep: number = 0;
   practice_eval() {
     let min_ratio;
     var is_valid = true;
@@ -323,6 +325,11 @@ export class CitProvider {
       }
     } else {
       if (this.blocknum === 3) {
+        if (this.prac3_rep == 0) {
+          this.prac3_rep++;
+        } else {
+          return true;
+        }
         min_ratio = 0.5
       } else {
         min_ratio = 0.8
@@ -398,14 +405,23 @@ export class CitProvider {
   }
 
   add_response() {
-    var curr_type;
-    var act_type = this.trial_stim.type.replace(/[0-9]$/, '');
+    let curr_type, curr_itemcount;
+    let act_type = this.trial_stim.type.replace(/[0-9]$/, '');
     if (
       ["targetflr", "nontargflr", "target"].indexOf(act_type) >= 0
     ) {
       curr_type = act_type;
     } else {
       curr_type = "main_item";
+    }
+    if (this.crrnt_phase == 'main') {
+      if (!(this.trial_stim.item in this.rt_item_counts)) {
+        this.rt_item_counts[this.trial_stim.item] = 0;
+      }
+      this.rt_item_counts[this.trial_stim.item]++;
+      curr_itemcount = this.rt_item_counts[this.trial_stim.item];
+    } else {
+      curr_itemcount = 'NA';
     }
     if (!(curr_type in this.rt_data_dict)) {
       this.rt_data_dict[curr_type] = [];
@@ -431,12 +447,6 @@ export class CitProvider {
         this.all_rts[curr_type].push(this.rt_start);
       }
     }
-    let thismod;
-    if (this.trial_stim.item.includes('_img')) {
-      thismod = 'photo';
-    } else {
-      thismod = 'text';
-    }
     this.cit_data +=
       [this.subj_id,
       this.crrnt_phase,
@@ -445,23 +455,28 @@ export class CitProvider {
       this.trial_stim.item,
       this.trial_stim.cat,
       this.trial_stim.type,
-        thismod,
+      this.block_type[0],
+      this.block_type[1],
       this.rspns,
       this.rt_start,
       this.rt_end,
       this.incorrect,
       this.tooslow,
       (this.isi_delay + this.isi_delay_minmax[0]),
+        curr_itemcount,
       String(new Date().getTime())
       ].join('\t') +
       "\n";
     this.next_trial();
   }
 
+  block_type: string[] = ['NA', 'NA'];
+
   nextblock() {
     this.crrnt_phase = 'practice';
     this.bg_color = "#fff";
     this.block_trialnum = 0;
+    this.block_type = ['NA', 'NA'];
     // 0: fillers & target, 1: standard CIT, 2: fillers (no target)
     if (this.blocknum == 1) {
       this.stim_bases.forEach((baseset) => {
@@ -484,6 +499,17 @@ export class CitProvider {
       this.crrnt_phase = 'main';
       this.response_timelimit = this.response_timelimit_main;
       this.teststim = this.all_teststms.shift();
+    }
+    if (this.blocknum !== 1) {
+      let exitem = this.teststim.filter(dct => dct.cat != "filler")[0].item;
+      console.log(exitem);
+      let thismod;
+      if (exitem.includes('_img')) {
+        thismod = 'face';
+      } else {
+        thismod = 'name';
+      }
+      this.block_type = [exitem.slice(1, 2), thismod];
     }
     if (this.to_slice !== 0) {
       this.teststim = this.teststim.slice(0, this.to_slice);
@@ -669,14 +695,15 @@ export class CitProvider {
     } else {
       this.correct_resp = "resp_a";
     }
-    // this.touchsim(); // for testing -- TODOREMOVE
+    //this.touchsim(); // for testing -- TODOREMOVE
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        if (this.trial_stim.mode === 'image') {
-          this.ctx.drawImage(this.task_images[this.trial_stim.item], 0, 0, this.image_width, this.image_width);
-        } else {
-          this.stimulus_text = this.text_to_show;
-        }
+        this.ctx.drawImage(this.task_images[this.trial_stim.item], 0, 0, this.image_width, this.image_width);
+        // if (this.trial_stim.mode === 'image') {
+        //   this.ctx.drawImage(this.task_images[this.trial_stim.item], 0, 0, this.image_width, this.image_width);
+        // } else {
+        //   this.stimulus_text = this.text_to_show;
+        // }
         this.start = performance.now();
         this.listen = true;
         this.response_window = setTimeout(function() {

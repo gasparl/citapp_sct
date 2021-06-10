@@ -70,6 +70,8 @@ export class HomePage {
     public navParams: NavParams,
     public alertCtrl: AlertController
   ) {
+    this.citP.subj_id = this.citP.neat_date() + '_' + this.rchoice("CDFGHJKLMNPQRSTVWXYZ") +
+      this.rchoice("AEIOU") + this.rchoice("CDFGHJKLMNPQRSTVWXYZ");
     this.dataShare.storage.get('reslts').then((cntent) => {
       if (cntent) { // && 1 < 0) {
         console.log(cntent);
@@ -301,9 +303,7 @@ export class HomePage {
   }
 
 
-
   cit_start() {
-    this.citP.subj_id = this.citP.subj_id + '_' + this.citP.neat_date();
     if (this.on_device) {
       this.citP.screenOrientation.lock(this.citP.screenOrientation.ORIENTATIONS.LANDSCAPE_PRIMARY);
     }
@@ -336,6 +336,15 @@ export class HomePage {
     ['In everyday life, I lie easily if I have to.']
   ];
 
+  tapnum: number = 0;
+  tapcount() {
+    if (this.tapnum < 3) {
+      this.tapnum++;
+    } else {
+      this.citP.misc_ratings[14] = "9"
+    }
+  }
+
   async create_stim_base() {
     let probs = [];
     let targs = [];
@@ -357,7 +366,8 @@ export class HomePage {
       });
     }.bind(this));
 
-    const allimgs = JSON.parse(JSON.stringify(probs.concat(conts).concat(targs)));
+    const allimgs = JSON.parse(JSON.stringify(probs.concat(conts).concat(targs).concat(
+      this.targetref_words).concat(this.nontargref_words)));
 
     let item_bases = [];
     probs.forEach((probe, index) => {
@@ -432,7 +442,7 @@ export class HomePage {
         'type': 'targetflr' + num,
         'cat': 'filler'
       }
-      tempdict.mode = 'text';
+      tempdict.mode = 'image';
       tempdict.imgurl = null;
       this.citP.targetrefs.push(tempdict);
     });
@@ -442,7 +452,7 @@ export class HomePage {
         'type': 'nontargflr' + num,
         'cat': 'filler'
       }
-      tempdict.mode = 'text';
+      tempdict.mode = 'image';
       tempdict.imgurl = null;
       this.citP.nontargrefs.push(tempdict);
     });

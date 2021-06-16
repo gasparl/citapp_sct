@@ -126,10 +126,10 @@ export class TranslationProvider {
 
   it_type_feed_dict: object = {
     'en': {
-      targetflr: "secondary items to be categorized to the right side",
-      nontargflr: "secondary items to be categorized to the left side",
-      main_item: "main items [to be categorized to the left side]", //
-      target: "target item [to be categorized to the right side]"
+      targetflr: "secondary items to be categorised to the right side",
+      nontargflr: "secondary items to be categorised to the left side",
+      main_item: "main items [to be categorised to the left side]", //
+      target: "target item [to be categorised to the right side]"
     },
     'cn': '中文',
     'de': {
@@ -196,7 +196,7 @@ export class TranslationProvider {
       } else {
         numprac = 'two';
       }
-      let intro = 'During the test, various items will appear in the middle of the screen. There will be two buttons displayed on the screen: one on the left side and one on the right side. You have to categorize each item by touching the left button or the right button. '; // In English it seems unnecessary, but in other languages, it is often better to clarify that the items appear "one by one". It may also be worthwhile to somehow make it clearer that the "buttons" are just touchscreen surfaces.
+      let intro = 'During the test, various items will appear in the middle of the screen. There will be two buttons displayed on the screen: one on the left side and one on the right side. You have to categorise each item by touching the left button or the right button. Please place your smartphone on a table or other stable surface and use your left and right index fingers to touch the left and right buttons, respectively. '; // In English it seems unnecessary, but in other languages, it is often better to clarify that the items appear "one by one". It may also be worthwhile to somehow make it clearer that the "buttons" are just touchscreen surfaces.
       let intro_end = 'There will be ' + numprac + ' short practice rounds. ';
       let inducers_instructions =
         '</br></br>Touch the <i>right</i> (→■) button when you see any of the following items:<br><div class = "rightitems_list">' + trefs + '</div>Touch the <i>left</i> (■←) button when you see any other item. These other items are:<br>' + nontrefs;
@@ -208,9 +208,9 @@ export class TranslationProvider {
       // 0: fillers & target, 1: standard CIT, 2: fillers (no target)
 
       thetexts.push(
-        '<span id="feedback_id1">' + intro + intro_end + '</br></br>In the first practice round, you have to categorize two kinds of items. ' + inducers_instructions +
+        '<span id="feedback_id1">' + intro + intro_end + '</br></br>In the first practice round, you have to categorise two kinds of items. ' + inducers_instructions +
         'There is a certain time limit for making each response. Please try to be both fast and accurate. In each category, you need at least 80% correct responses in time, otherwise you have to repeat the practice round.</span>');
-      thetexts.push("<span id='feedback_id2'>In the second practice round, you have to categorize the main test items. The aim of the entire test will be to show whether or not one of these main items is recognized by you. " + main_instruction + main_end + '</span>');
+      thetexts.push("<span id='feedback_id2'>In the second practice round, you have to categorise the main test items. The aim of the entire test will be to show whether one of these main items is recognised by you. " + main_instruction + main_end + '</span>');
       // let ittypes = [
       //   this.it_type_feed_dict['en'].main_item,
       //   this.it_type_feed_dict['en'].target,

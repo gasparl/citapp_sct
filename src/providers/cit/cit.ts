@@ -12,7 +12,7 @@ import { ScreenOrientation } from '@ionic-native/screen-orientation';
 export class CitProvider {
   content: any;
 
-  // /*
+  /*
   touchsim() {
     var info = this.trial_stim.type + " (" + this.trial_stim.item + ")";
     var rt_sim = this.itemgenP.randomdigit(600, 830);
@@ -62,7 +62,7 @@ export class CitProvider {
     }.bind(this), rt_sim);
   }
   //*/
-  to_slice: number = 20; // 0 to ignore // for testing -- TODOREMOVE
+  to_slice: number = 0; // 0 to ignore // for testing -- TODOREMOVE
 
   exp: string = "name_vs_face";
   subj_id: string = '';
